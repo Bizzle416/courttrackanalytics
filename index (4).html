@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourtTrack Analytics</title>
+<title>CourtTrack Analytics — Eltham Wildcats 12.1 (Family)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -22,6 +22,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5;}
+.back-btn{display:none !important;}
 .disp{font-family:'Barlow Condensed',sans-serif;}
 header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);}
 .hd-inner{max-width:1140px;margin:0 auto;padding:0 24px;}
@@ -211,47 +212,52 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 </style>
 </head>
 <body>
+<div id="family-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
+  <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
+    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Eltham Wildcats 12.1 &middot; Family access</div>
+    <div style="font-size:13px;color:#344152;margin-bottom:14px;">Enter the access code shared with your family to see your player's stats.</div>
+    <input id="family-code-input" type="text" placeholder="e.g. CODE-XXXX" autocapitalize="characters" autocomplete="off"
+      style="width:100%;padding:12px 14px;border:1.5px solid #e8e6e1;border-radius:8px;font-size:15px;text-align:center;letter-spacing:.05em;text-transform:uppercase;font-family:'Inter',monospace;outline:none;margin-bottom:12px;box-sizing:border-box;">
+    <button id="family-unlock-btn" style="width:100%;padding:12px;border:none;border-radius:8px;background:#101d31;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Unlock</button>
+    <div id="family-gate-error" style="font-size:12px;color:#d9413f;margin-top:12px;min-height:16px;"></div>
+  </div>
+</div>
+<div id="app-root" style="display:none;">
 <header>
   <div class="hd-inner">
     <div class="hd-top">
       <div>
         <div class="hd-logo">Court<span>Track</span> Analytics</div>
-        <div class="hd-tag">Season intelligence &middot; live from the event log</div>
+        <div class="hd-tag">Eltham Wildcats 12.1 &middot; Family view</div>
       </div>
       <div class="team-switcher" id="team-switcher">
-        <button class="team-btn" id="team-btn" onclick="toggleTeamDropdown()">
-          <span id="team-btn-label">Loading&hellip;</span>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
-        </button>
-        <div class="team-dropdown" id="team-dropdown"></div>
+        <span class="team-btn" id="team-btn" style="cursor:default;">
+          <span id="team-btn-label">Eltham 12.1</span>
+        </span>
       </div>
     </div>
     <nav class="view-nav" id="view-tabs"></nav>
   </div>
 </header>
 <main id="main"><div class="loading">Loading season data&hellip;</div></main>
-<footer id="footer">CourtTrack Analytics &middot; figures live from the event log</footer>
+<footer id="footer">CourtTrack Analytics &middot; Eltham Wildcats 12.1 &middot; figures live from the event log</footer>
+</div>
 
 <script>
-/* BUILD:ANALYTICS_CONFIG */
+/* BUILD:ANALYTICS_CONFIG — ELTHAM WILDCATS 12.1 SINGLE-TEAM FAMILY BUILD, DO NOT ADD OTHER TEAMS HERE */
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
   {key:'eltham_u12_girls1',aliases:[],label:'Eltham 12.1',full:'Eltham Wildcats U12 Girls 1',comp:'VC Reserve · 7-min stop clock',
-   roster:{5:{num:'#5',name:'Chloe Connelley'},6:{num:'#6',name:'Lily Collett'},9:{num:'#9',name:'Indiana Sage'},11:{num:'#11',name:'Imogen Wynd'},12:{num:'#12',name:'Kiara Carlson'},14:{num:'#14',name:'Holly Bannister'},18:{num:'#18',name:'Annabelle Liu'},24:{num:'#24',name:'Olivia Oppedisano'},41:{num:'#41',name:'Samantha Neal'},43:{num:'#43',name:'Annabella Buncic'}}},
-  {key:'dv_u12_girls1',aliases:[],label:'Diamond Valley',full:'Diamond Valley U12 Girls 1',comp:'VC Reserve · 7-min stop clock',
-   roster:{19:{num:'#19',name:'Kaiah Black'},31:{num:'#31',name:'Scarlett Walters'},41:{num:'#41',name:'Harper Powell'},43:{num:'#43',name:'Harper Ritchie'},45:{num:'#45',name:'Mila Dixon'},53:{num:'#53',name:'Greta Morris'},55:{num:'#55',name:'Lara Shaw'},73:{num:'#73',name:'Mackenzie Haas-Baker'},75:{num:'#75',name:'Taylah Wignell'},77:{num:'#77',name:'Billie Burrell'}}},
-  {key:'eltham_u12_girls2',aliases:['eltham_u12_wildcats','eltham_wildcats_u12_girls_2','eltham_wildcats_12_2_girls'],label:'Eltham 12.2',full:'Eltham Wildcats U12 Girls 2',comp:'Grading · 10-min running clock',
-   roster:{4:{num:'#4',name:'Elara Jewell'},6:{num:'#6',name:'Grace Burslem'},8:{num:'#8',name:'Evie Davis'},10:{num:'#10',name:'Quinn Cukier'},13:{num:'#13',name:'Emilia Wynne'},15:{num:'#15',name:'Madeline Hadley'},21:{num:'#21',name:'Ellie Spithill'},22:{num:'#22',name:'Harper Bolton'},23:{num:'#23',name:"Zoe O'Connell"},33:{num:'#33',name:'Eva Leverton'}}},
-  {key:'darebin_u163_boys',aliases:[],label:'Darebin 16.3',full:'Darebin U16.3 Boys',comp:'Domestic',
-   roster:{}},
-  {key:'eltham_u182_girls',aliases:[],label:'Eltham 18.2',full:'Eltham Wildcats U18.2 Girls',comp:'Domestic',
-   roster:{10:{num:'#10',name:'Emily Hanks'},11:{num:'#11',name:'Chelsea Kim'},12:{num:'#12',name:'Ashleigh Keogh'},16:{num:'#16',name:'Ivy Donato'},19:{num:'#19',name:'Claudia Williams'},32:{num:'#32',name:'Brooke Suckling'},34:{num:'#34',name:'Nicola Reichstein'},35:{num:'#35',name:'Amalia Gomez'},50:{num:'#50',name:'Olivia de Jonge'},53:{num:'#53',name:'Freya Duckworth'}}}
+   roster:{5:{num:'#5',name:'Chloe Connelley'},6:{num:'#6',name:'Lily Collett'},9:{num:'#9',name:'Indiana Sage'},11:{num:'#11',name:'Imogen Wynd'},12:{num:'#12',name:'Kiara Carlson'},14:{num:'#14',name:'Holly Bannister'},18:{num:'#18',name:'Annabelle Liu'},24:{num:'#24',name:'Olivia Oppedisano'},41:{num:'#41',name:'Samantha Neal'},43:{num:'#43',name:'Annabella Buncic'}}}
 ];
 /* BUILD:ANALYTICS_CONFIG_END */
 
-/* ── MODE DETECTION ── */
-const IS_COACH=(new URLSearchParams(window.location.search)).get('mode')==='coach';
+/* ── MODE DETECTION ──
+   Hardcoded false, not URL-param driven — this is the family link, it must never
+   be flippable into coach mode by editing the URL. */
+const IS_COACH=false;
 
 const COACH_VIEWS=[
   {id:'overview',label:'Overview'},
@@ -283,24 +289,8 @@ let activeGameType='all';
 if(!window.gamesTypeFilter)window.gamesTypeFilter='all';
 
 /* ── team dropdown ── */
-function toggleTeamDropdown(){
-  const btn=document.getElementById('team-btn');
-  const dd=document.getElementById('team-dropdown');
-  const open=dd.classList.toggle('open');
-  btn.classList.toggle('open',open);
-}
-document.addEventListener('click',e=>{
-  if(!document.getElementById('team-switcher').contains(e.target)){
-    document.getElementById('team-dropdown').classList.remove('open');
-    document.getElementById('team-btn').classList.remove('open');
-  }
-});
-function renderTeamDropdown(){
-  document.getElementById('team-btn-label').textContent=TEAMS.find(t=>t.key===curTeam)?.label||'Team';
-  document.getElementById('team-dropdown').innerHTML=TEAMS.map(t=>
-    '<button class="team-option'+(t.key===curTeam?' active':'')+'" onclick="switchTeam(\''+t.key+'\')">'+t.label+'<span class="team-opt-sub">'+t.full+'</span></button>'
-  ).join('');
-}
+function toggleTeamDropdown(){}
+function renderTeamDropdown(){}
 
 /* ── zone model ── */
 const ARC_CX=150,ARC_CY=17.1,ARC_R=130;
@@ -1371,8 +1361,6 @@ function switchTeam(k){
   activeGameType='all';window.gamesTypeFilter='all';selPlayer=null;
   shootFilters={game:'all',player:'all',q:'all',result:'all'};
   oppShootFilters={game:'all',q:'all',result:'all'};
-  document.getElementById('team-dropdown').classList.remove('open');
-  document.getElementById('team-btn').classList.remove('open');
   render(true);
 }
 function switchView(v){
@@ -1398,6 +1386,7 @@ async function render(reload){
       else if(curView==='progression')h+=vProgressionCoach(d);
       else h+=vOpposition(d);
     }else{
+      if(FAMILY_UNLOCKED_PID!=null)selPlayer=FAMILY_UNLOCKED_PID;
       if(curView==='players')h+=vPlayersParent(d);
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
@@ -1408,7 +1397,67 @@ async function render(reload){
     mainEl.innerHTML='<div class="err">Could not load data: '+e.message+'<br><span style="font-size:12px;color:var(--muted);">Check the Supabase project is reachable.</span></div>';
   }
 }
-render(true);
+
+/* ── FAMILY ACCESS GATE ──
+   Cosmetic client-side gate: stops a casual browser from seeing another
+   family's child. The anon key below still fetches the whole team's data
+   into this page's memory regardless of this gate — real per-child
+   isolation needs the Edge Function + RLS work, not yet deployed for this
+   team. Codes are stored as SHA-256 hashes, never plaintext, in this file. */
+const FAMILY_CODES={
+  '904036ab0286ff05a4817c96cf84023a6a8f49f316af09c8c06739b9350f28cd':{pid:5,name:"Chloe Connelley"},
+  '9b146b6c2045f0c0ac34f5bab7b55622c8d5db19e9db4fcaa353df7b27343d3d':{pid:6,name:"Lily Collett"},
+  '3b2780e4ee522abb289a7ebf63b04dfe64a3159654fc433503056770921a152f':{pid:9,name:"Indiana Sage"},
+  'ead7d3f0c2142a25d566e88b3a261ab31303f5fb61db0920eb784dfb38a07aa4':{pid:11,name:"Imogen Wynd"},
+  '98bd86a1e4b32256b755a9ffba60a05aab258ae3ddb41b3a90b0c0237ac0390a':{pid:12,name:"Kiara Carlson"},
+  'c9cf218f321190a33ef9ae6321dcdc7e00e5897a66714fbb7db23c4984fa530a':{pid:14,name:"Holly Bannister"},
+  '2f8327a0a7b372ae497449560f4ca002273d7a973f219acc5f004180353498c7':{pid:18,name:"Annabelle Liu"},
+  '7ed46a9ad65ddad0bb2111aa117652775426fc31a8f030d643379d15e3e7e7f1':{pid:24,name:"Olivia Oppedisano"},
+  '36ecc9c63d811974d70e11af5a6a3610afe9cd9c79dfdf3db7b9a57480729f11':{pid:41,name:"Samantha Neal"},
+  'be9267554da7cb6f8002233762a167b385311fb20594fe150bdc1761181eb159':{pid:43,name:"Annabella Buncic"}
+};
+const FAMILY_STORE_KEY='courttrack_family_ew121';
+let FAMILY_UNLOCKED_PID=null;
+async function sha256Hex(str){
+  const enc=new TextEncoder().encode(str.trim().toUpperCase());
+  const buf=await crypto.subtle.digest('SHA-256',enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function showFamilyApp(){
+  document.getElementById('family-gate').style.display='none';
+  document.getElementById('app-root').style.display='';
+}
+async function attemptFamilyUnlock(){
+  const input=document.getElementById('family-code-input');
+  const err=document.getElementById('family-gate-error');
+  const code=(input.value||'').trim();
+  if(!code){err.textContent='Enter your access code.';return;}
+  const h=await sha256Hex(code);
+  const match=FAMILY_CODES[h];
+  if(!match){err.textContent='Code not recognised — check with your team manager.';return;}
+  FAMILY_UNLOCKED_PID=match.pid;
+  try{localStorage.setItem(FAMILY_STORE_KEY,JSON.stringify({h:h}));}catch(e){}
+  selPlayer=FAMILY_UNLOCKED_PID;
+  showFamilyApp();
+  render(true);
+}
+document.getElementById('family-unlock-btn').addEventListener('click',attemptFamilyUnlock);
+document.getElementById('family-code-input').addEventListener('keydown',e=>{if(e.key==='Enter')attemptFamilyUnlock();});
+async function checkStoredFamilyUnlock(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
+    if(saved&&saved.h&&FAMILY_CODES[saved.h]){
+      FAMILY_UNLOCKED_PID=FAMILY_CODES[saved.h].pid;
+      selPlayer=FAMILY_UNLOCKED_PID;
+      showFamilyApp();
+      render(true);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+checkStoredFamilyUnlock();
 </script>
 </body>
 </html>
