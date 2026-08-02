@@ -76,6 +76,19 @@ h2{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(30px,4vw,40px)
 .view h3{font-family:'Barlow Condensed';font-weight:700;font-size:26px;text-transform:uppercase;margin-bottom:10px;}
 .view p{font-size:14.5px;color:var(--muted);margin-bottom:8px;}
 .view-note{font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);margin-top:14px;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px;}
+@media(max-width:680px){.dash-grid{grid-template-columns:1fr;}}
+.dash-card{border:1px solid rgba(255,255,255,.1);padding:32px 28px;display:flex;flex-direction:column;gap:14px;text-decoration:none;transition:background .15s;}
+.dash-card:hover{background:rgba(255,255,255,.04);}
+.dash-role{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;}
+.dash-card.coach-card .dash-role{color:#7ab3e8;}
+.dash-card.family-card .dash-role{color:var(--maple);}
+.dash-card h3{font-family:'Barlow Condensed';font-weight:700;font-size:28px;text-transform:uppercase;color:var(--chalk);}
+.dash-card p{font-size:14px;color:var(--muted);}
+.dash-card .dash-cta{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:auto;padding-top:8px;}
+.dash-card.coach-card .dash-cta{color:#7ab3e8;}
+.dash-card.family-card .dash-cta{color:var(--maple);}
+.dash-note{font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);margin-top:20px;text-align:center;}
 .contact{text-align:center;padding:72px 0 80px;}
 .contact .lede{margin:0 auto 8px;}
 .contact-line{font-family:'IBM Plex Mono';font-size:13px;color:var(--faint);margin-top:20px;}
@@ -147,7 +160,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
     <div class="wrap">
       <div class="sec-kicker">How it works</div>
       <h2>Watch. Code. Deliver.</h2>
-      <p class="sec-lede">No sensors, no guesswork, no automated tagging. The accuracy comes from a person pausing the replay at every event — the same way a coach would, with the time to do it properly.</p>
+      <p class="sec-lede">No sensors, no guesswork, no automated tagging. Every event is captured from full game footage and logged against the clock.</p>
       <div class="steps">
         <div class="step">
           <div class="step-q">Step 1</div>
@@ -157,7 +170,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
         <div class="step">
           <div class="step-q">Step 2</div>
           <h3>Code every event</h3>
-          <p>Shots, rebounds, assists, steals, turnovers and playing time are logged by hand against the game clock, for your team and the opposition.</p>
+          <p>Shots, rebounds, assists, steals, turnovers and playing time are logged against the game clock, for your team and the opposition.</p>
         </div>
         <div class="step">
           <div class="step-q">Step 3</div>
@@ -176,7 +189,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
         <div class="pk"><h3>Playing time &amp; rotations</h3><p>Minutes per player, who shared the floor together, and how rotations shaped each quarter.</p></div>
         <div class="pk"><h3>Shot charts</h3><p>Every attempt plotted on the court — makes, misses, and where each player's shots actually come from.</p></div>
         <div class="pk"><h3>Game &amp; season trends</h3><p>Scoring runs, turnover patterns and rolling averages across recent games, filtered by competition type.</p></div>
-        <div class="pk"><h3>Written player analysis</h3><p>Individual, human-written notes on each player's game — what the numbers show and what the replay showed. Not auto-generated.</p></div>
+        <div class="pk"><h3>Written player analysis</h3><p>Written notes on each player's game — what the numbers show and what the footage showed.</p></div>
       </div>
     </div>
   </section>
@@ -202,11 +215,32 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
     </div>
   </section>
 
+  <section>
+    <div class="wrap">
+      <div class="sec-kicker">Already on CourtTrack?</div>
+      <h2>Access your dashboard</h2>
+      <p class="sec-lede">Your team link gives you direct access to your post-game intelligence — no app download required.</p>
+      <div class="dash-grid">
+        <a class="dash-card coach-card" href="mailto:enquiries@courttrackanalytics.com.au">
+          <div><div class="dash-role">Coach</div><h3>Coach Dashboard</h3></div>
+          <p>Full team analytics — rotations, shot charts, opposition breakdowns and season trends.</p>
+          <div class="dash-cta">Request your link →</div>
+        </a>
+        <a class="dash-card family-card" href="mailto:enquiries@courttrackanalytics.com.au">
+          <div><div class="dash-role">Family</div><h3>Player Dashboard</h3></div>
+          <p>Your player's minutes, stats and shot chart — every game, in plain language.</p>
+          <div class="dash-cta">Request your link →</div>
+        </a>
+      </div>
+      <p class="dash-note">Links are shared directly by your team manager. Contact us if you haven't received yours.</p>
+    </div>
+  </section>
+
   <section class="contact">
     <div class="wrap">
       <div class="sec-kicker">For clubs &amp; team managers</div>
       <h2>Get your team on CourtTrack</h2>
-      <p class="lede">CourtTrack Analytics currently works with junior teams across VJBL and Victorian representative competitions. If you'd like your team covered next season, get in touch.</p>
+      <p class="lede">CourtTrack Analytics works with junior basketball teams across Victoria. If you'd like your team covered, get in touch.</p>
       <p class="contact-line">Team links are issued directly to your coach and team manager.</p>
     </div>
   </section>
