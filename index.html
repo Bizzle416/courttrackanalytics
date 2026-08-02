@@ -4,51 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CourtTrack Analytics — Game intelligence for junior basketball</title>
-<meta name="description" content="Every game watched in full. Every event coded by hand. Post-game intelligence packs for VJBL junior teams — for coaches and families.">
+<meta name="description" content="Post-game intelligence packs for junior basketball teams — for coaches and families.">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
-:root{
-  --navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;
-  --chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;
-  --maple:#d9a05b;--win:#1a9e72;--loss:#d9413f;
-  --line:rgba(217,160,91,.35);
-}
+:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;--loss:#d9413f;--line:rgba(217,160,91,.35);}
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy);color:var(--chalk);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
-.disp{font-family:'Barlow Condensed',sans-serif;}
-.mono{font-family:'IBM Plex Mono',monospace;}
-a{color:inherit;}
+a{color:inherit;text-decoration:none;}
 .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
-header{padding:22px 0;}
-.hd{display:flex;align-items:center;justify-content:space-between;}
-.logo{font-family:'Barlow Condensed';font-weight:700;font-size:24px;letter-spacing:.06em;text-transform:uppercase;line-height:1;}
+
+/* ---- NAV ---- */
+header{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:0 24px;max-width:1100px;margin:0 auto;height:64px;}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;line-height:1;flex-shrink:0;}
 .logo span{color:var(--maple);}
-.hd-tag{font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;}
-@media(max-width:640px){.hd-tag{display:none;}}
-.hero{padding:64px 0 72px;}
+nav{display:flex;align-items:center;gap:4px;}
+.nav-link{font-family:'Inter';font-size:13.5px;font-weight:500;color:var(--muted);padding:8px 14px;border-radius:6px;white-space:nowrap;transition:color .15s,background .15s;}
+.nav-link:hover{color:var(--chalk);background:rgba(255,255,255,.05);}
+.nav-link.cta{background:var(--maple);color:#0d1a2b;font-weight:600;margin-left:8px;padding:8px 18px;}
+.nav-link.cta:hover{opacity:.88;background:var(--maple);}
+.nav-link.login{border:1px solid rgba(255,255,255,.15);color:var(--chalk);}
+.nav-link.login:hover{background:rgba(255,255,255,.06);}
+.mob-menu{display:none;background:none;border:none;color:var(--chalk);cursor:pointer;padding:8px;}
+.mob-nav{display:none;flex-direction:column;background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);padding:12px 24px 20px;}
+.mob-nav a{display:block;padding:11px 0;font-size:15px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05);}
+.mob-nav a:last-child{border:none;}
+.mob-nav a.cta{color:var(--maple);font-weight:600;}
+@media(max-width:860px){nav{display:none;}.mob-menu{display:block;}}
+@media(max-width:860px){.mob-nav.open{display:flex;}}
+
+/* ---- HERO ---- */
+.hero{padding:72px 0 80px;}
 .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:center;}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px;}}
 .kicker{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:18px;}
 h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(42px,6vw,64px);line-height:1.02;letter-spacing:.01em;text-transform:uppercase;margin-bottom:22px;}
 h1 em{font-style:normal;color:var(--maple);}
-.lede{font-size:17px;color:var(--muted);max-width:46ch;margin-bottom:28px;}
+.lede{font-size:17px;color:var(--muted);max-width:46ch;margin-bottom:28px;line-height:1.6;}
 .lede strong{color:var(--chalk);font-weight:600;}
-.ticker{border-left:2px solid var(--maple);padding:10px 0 10px 16px;display:flex;flex-direction:column;gap:7px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase;padding:13px 28px;border-radius:8px;transition:opacity .15s;}
+.btn-primary:hover{opacity:.88;}
+.btn-ghost{border:1px solid rgba(255,255,255,.2);color:var(--chalk);font-family:'Barlow Condensed';font-weight:600;font-size:18px;letter-spacing:.06em;text-transform:uppercase;padding:13px 28px;border-radius:8px;transition:background .15s;}
+.btn-ghost:hover{background:rgba(255,255,255,.05);}
+.ticker{border-left:2px solid var(--maple);padding:10px 0 10px 16px;display:flex;flex-direction:column;gap:7px;margin-top:28px;}
 .tk{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;animation:tkin .5s ease forwards;}
 .tk b{font-weight:500;color:var(--muted);}
-.tk .w{color:var(--win);} .tk .l{color:var(--loss);}
-.tk:nth-child(1){animation-delay:.3s;}
-.tk:nth-child(2){animation-delay:.9s;}
-.tk:nth-child(3){animation-delay:1.5s;}
-.tk:nth-child(4){animation-delay:2.1s;}
+.tk .w{color:var(--win);}.tk .l{color:var(--loss);}
+.tk:nth-child(1){animation-delay:.3s;}.tk:nth-child(2){animation-delay:.9s;}.tk:nth-child(3){animation-delay:1.5s;}.tk:nth-child(4){animation-delay:2.1s;}
 @keyframes tkin{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 .court-box{position:relative;}
 .court-cap{font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;text-align:center;margin-top:12px;}
-.court-cap i{font-style:normal;color:var(--win);} .court-cap u{text-decoration:none;color:var(--loss);}
+.court-cap i{font-style:normal;color:var(--win);}.court-cap u{text-decoration:none;color:var(--loss);}
 .shot{opacity:0;animation:shotin .35s ease forwards;}
 @keyframes shotin{from{opacity:0;transform:scale(.3);transform-origin:center;transform-box:fill-box;}to{opacity:1;transform:scale(1);}}
 @media(prefers-reduced-motion:reduce){.tk,.shot{animation:none;opacity:1;}}
+
+/* ---- SECTIONS ---- */
 section{padding:64px 0;border-top:1px solid rgba(255,255,255,.07);}
 .sec-kicker{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:12px;}
 h2{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(30px,4vw,40px);line-height:1.05;letter-spacing:.01em;text-transform:uppercase;margin-bottom:14px;}
@@ -85,23 +98,47 @@ h2{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(30px,4vw,40px)
 .dash-card.family-card .dash-role{color:var(--maple);}
 .dash-card h3{font-family:'Barlow Condensed';font-weight:700;font-size:28px;text-transform:uppercase;color:var(--chalk);}
 .dash-card p{font-size:14px;color:var(--muted);}
-.dash-card .dash-cta{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:auto;padding-top:8px;}
+.dash-cta{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:auto;padding-top:8px;}
 .dash-card.coach-card .dash-cta{color:#7ab3e8;}
 .dash-card.family-card .dash-cta{color:var(--maple);}
 .dash-note{font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);margin-top:20px;text-align:center;}
-.contact{text-align:center;padding:72px 0 80px;}
-.contact .lede{margin:0 auto 8px;}
-.contact-line{font-family:'IBM Plex Mono';font-size:13px;color:var(--faint);margin-top:20px;}
+
+/* ---- CTA BAND ---- */
+.cta-band{background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:56px 0;text-align:center;}
+.cta-band h2{margin-bottom:12px;}
+.cta-band p{color:var(--muted);max-width:52ch;margin:0 auto 28px;}
+.cta-band .btn-primary{display:inline-block;}
+
+/* ---- FOOTER ---- */
 footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
 .ft{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'IBM Plex Mono';font-size:11.5px;color:var(--faint);letter-spacing:.04em;}
+.ft-links{display:flex;gap:20px;}
+.ft-links a{color:var(--faint);transition:color .15s;}
+.ft-links a:hover{color:var(--muted);}
 </style>
 </head>
 <body>
 
-<header class="wrap">
+<header>
   <div class="hd">
-    <div class="logo">Court<span>Track</span> Analytics</div>
-    <div class="hd-tag">Junior basketball · Victoria</div>
+    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
+    <nav>
+      <a class="nav-link" href="/about">About</a>
+      <a class="nav-link" href="/pricing">Pricing</a>
+      <a class="nav-link" href="/faqs">FAQs</a>
+      <a class="nav-link login" href="/login">Team Login</a>
+      <a class="nav-link cta" href="/free-trial">Free Trial</a>
+    </nav>
+    <button class="mob-menu" onclick="document.querySelector('.mob-nav').classList.toggle('open')" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/></svg>
+    </button>
+  </div>
+  <div class="mob-nav">
+    <a href="/about">About</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/faqs">FAQs</a>
+    <a href="/login">Team Login</a>
+    <a href="/free-trial" class="cta">Free Trial →</a>
   </div>
 </header>
 
@@ -109,9 +146,13 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
   <div class="hero wrap">
     <div class="hero-grid">
       <div>
-        <div class="kicker">Full-replay, hand-coded game analysis</div>
+        <div class="kicker">Game intelligence for junior basketball</div>
         <h1>Every minute watched.<br>Every event <em>coded.</em></h1>
-        <p class="lede">CourtTrack Analytics is a managed analysis service for junior basketball teams. An analyst watches your full game replay and logs <strong>every possession, shot, rebound and turnover by hand</strong> — then turns it into a post-game intelligence pack for your coach and your families.</p>
+        <p class="lede">CourtTrack Analytics turns your team's game footage into a post-game intelligence pack — <strong>playing time, shot charts, trends and player notes</strong> — delivered to your coach and families after every game.</p>
+        <div class="hero-btns">
+          <a class="btn-primary" href="/free-trial">Start free trial →</a>
+          <a class="btn-ghost" href="#how-it-works">How it works</a>
+        </div>
         <div class="ticker" aria-hidden="true">
           <div class="tk"><b>Q1 07:41</b> — #23 <span class="w">made 2PT</span> · assisted #8</div>
           <div class="tk"><b>Q2 03:15</b> — #10 def. rebound → outlet</div>
@@ -119,7 +160,6 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
           <div class="tk"><b>Q4 01:58</b> — turnover forced · #13 steal</div>
         </div>
       </div>
-
       <div class="court-box" aria-hidden="true">
         <svg viewBox="0 0 420 400" width="100%" xmlns="http://www.w3.org/2000/svg">
           <g stroke="rgba(217,160,91,.35)" stroke-width="2" fill="none">
@@ -137,46 +177,26 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
             <circle class="shot" style="animation-delay:1.3s" cx="265" cy="95" r="6" fill="#1a9e72" fill-opacity=".9" stroke="#0d1a2b" stroke-width="1"/>
             <circle class="shot" style="animation-delay:1.9s" cx="210" cy="185" r="6" fill="#1a9e72" fill-opacity=".9" stroke="#0d1a2b" stroke-width="1"/>
             <circle class="shot" style="animation-delay:2.5s" cx="115" cy="215" r="6" fill="#1a9e72" fill-opacity=".9" stroke="#0d1a2b" stroke-width="1"/>
-            <g class="shot" style="animation-delay:.55s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round">
-              <line x1="300" y1="150" x2="312" y2="162"/><line x1="312" y1="150" x2="300" y2="162"/>
-            </g>
-            <g class="shot" style="animation-delay:1.0s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round">
-              <line x1="90" y1="60" x2="102" y2="72"/><line x1="102" y1="60" x2="90" y2="72"/>
-            </g>
-            <g class="shot" style="animation-delay:1.6s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round">
-              <line x1="240" y1="250" x2="252" y2="262"/><line x1="252" y1="250" x2="240" y2="262"/>
-            </g>
-            <g class="shot" style="animation-delay:2.2s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round">
-              <line x1="160" y1="290" x2="172" y2="302"/><line x1="172" y1="290" x2="160" y2="302"/>
-            </g>
+            <g class="shot" style="animation-delay:.55s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round"><line x1="300" y1="150" x2="312" y2="162"/><line x1="312" y1="150" x2="300" y2="162"/></g>
+            <g class="shot" style="animation-delay:1.0s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round"><line x1="90" y1="60" x2="102" y2="72"/><line x1="102" y1="60" x2="90" y2="72"/></g>
+            <g class="shot" style="animation-delay:1.6s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round"><line x1="240" y1="250" x2="252" y2="262"/><line x1="252" y1="250" x2="240" y2="262"/></g>
+            <g class="shot" style="animation-delay:2.2s" stroke="#d9413f" stroke-width="2.4" stroke-linecap="round"><line x1="160" y1="290" x2="172" y2="302"/><line x1="172" y1="290" x2="160" y2="302"/></g>
           </g>
         </svg>
-        <div class="court-cap">Shot chart · <i>●</i> made &nbsp;<u>✕</u> missed · plotted from replay</div>
+        <div class="court-cap">Shot chart · <i>●</i> made &nbsp;<u>✕</u> missed · plotted from footage</div>
       </div>
     </div>
   </div>
 
-  <section>
+  <section id="how-it-works">
     <div class="wrap">
       <div class="sec-kicker">How it works</div>
       <h2>Watch. Code. Deliver.</h2>
       <p class="sec-lede">No sensors, no guesswork, no automated tagging. Every event is captured from full game footage and logged against the clock.</p>
       <div class="steps">
-        <div class="step">
-          <div class="step-q">Step 1</div>
-          <h3>Film &amp; watch</h3>
-          <p>Your game is filmed courtside. The analyst then watches the full replay — every quarter, every rotation, both ends of the floor.</p>
-        </div>
-        <div class="step">
-          <div class="step-q">Step 2</div>
-          <h3>Code every event</h3>
-          <p>Shots, rebounds, assists, steals, turnovers and playing time are logged against the game clock, for your team and the opposition.</p>
-        </div>
-        <div class="step">
-          <div class="step-q">Step 3</div>
-          <h3>Deliver the pack</h3>
-          <p>Within days of the final siren, your coach and families get their post-game intelligence pack — stats, charts and written analysis.</p>
-        </div>
+        <div class="step"><div class="step-q">Step 1</div><h3>Film &amp; watch</h3><p>Your team supplies game footage. We watch the full replay — every quarter, every rotation, both ends of the floor.</p></div>
+        <div class="step"><div class="step-q">Step 2</div><h3>Code every event</h3><p>Shots, rebounds, assists, steals, turnovers and playing time are logged against the game clock, for your team and the opposition.</p></div>
+        <div class="step"><div class="step-q">Step 3</div><h3>Deliver the pack</h3><p>Your coach and families get their post-game intelligence pack — stats, charts and written analysis.</p></div>
       </div>
     </div>
   </section>
@@ -188,8 +208,8 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
       <div class="pack">
         <div class="pk"><h3>Playing time &amp; rotations</h3><p>Minutes per player, who shared the floor together, and how rotations shaped each quarter.</p></div>
         <div class="pk"><h3>Shot charts</h3><p>Every attempt plotted on the court — makes, misses, and where each player's shots actually come from.</p></div>
-        <div class="pk"><h3>Game &amp; season trends</h3><p>Scoring runs, turnover patterns and rolling averages across recent games, filtered by competition type.</p></div>
-        <div class="pk"><h3>Written player analysis</h3><p>Written notes on each player's game — what the numbers show and what the footage showed.</p></div>
+        <div class="pk"><h3>Game &amp; season trends</h3><p>Scoring runs, turnover patterns and rolling averages across recent games.</p></div>
+        <div class="pk"><h3>Written player notes</h3><p>Written notes on each player's game — what the numbers show and what the footage showed.</p></div>
       </div>
     </div>
   </section>
@@ -202,13 +222,13 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
         <div class="view coach">
           <div class="view-role">Coach view</div>
           <h3>The full picture</h3>
-          <p>Complete team analytics: rotation analysis, opposition breakdowns, turnover pressure points, and the trends that shape training priorities.</p>
+          <p>Complete team analytics: rotation analysis, opposition breakdowns, turnover pressure points, and trends that shape training priorities.</p>
           <div class="view-note">Shared privately with your team's coach.</div>
         </div>
         <div class="view family">
           <div class="view-role">Family view</div>
           <h3>Your player's story</h3>
-          <p>A family-friendly view of the same game: your player's minutes, stats and shot chart, written in plain language with the actual numbers.</p>
+          <p>Your player's minutes, stats and shot chart, written in plain language with the actual numbers.</p>
           <div class="view-note">Shared with your team's families via a private link.</div>
         </div>
       </div>
@@ -221,37 +241,41 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
       <h2>Access your dashboard</h2>
       <p class="sec-lede">Your team link gives you direct access to your post-game intelligence — no app download required.</p>
       <div class="dash-grid">
-        <a class="dash-card coach-card" href="mailto:enquiries@courttrackanalytics.com.au">
+        <a class="dash-card coach-card" href="/login">
           <div><div class="dash-role">Coach</div><h3>Coach Dashboard</h3></div>
           <p>Full team analytics — rotations, shot charts, opposition breakdowns and season trends.</p>
-          <div class="dash-cta">Request your link →</div>
+          <div class="dash-cta">Access dashboard →</div>
         </a>
-        <a class="dash-card family-card" href="mailto:enquiries@courttrackanalytics.com.au">
+        <a class="dash-card family-card" href="/login">
           <div><div class="dash-role">Family</div><h3>Player Dashboard</h3></div>
           <p>Your player's minutes, stats and shot chart — every game, in plain language.</p>
-          <div class="dash-cta">Request your link →</div>
+          <div class="dash-cta">Access dashboard →</div>
         </a>
       </div>
-      <p class="dash-note">Links are shared directly by your team manager. Contact us if you haven't received yours.</p>
-    </div>
-  </section>
-
-  <section class="contact">
-    <div class="wrap">
-      <div class="sec-kicker">For clubs &amp; team managers</div>
-      <h2>Get your team on CourtTrack</h2>
-      <p class="lede">CourtTrack Analytics works with junior basketball teams across Victoria. If you'd like your team covered, get in touch.</p>
-      <p class="contact-line">Team links are issued directly to your coach and team manager.</p>
+      <p class="dash-note">Links are shared directly by your team manager. <a href="mailto:enquiries@courttrackanalytics.com.au" style="color:var(--maple);">Contact us</a> if you haven't received yours.</p>
     </div>
   </section>
 </main>
 
+<div class="cta-band">
+  <div class="wrap">
+    <h2>Get your first game free</h2>
+    <p>Send us your game footage and we'll deliver a full post-game intelligence pack at no cost. No commitment.</p>
+    <a class="btn-primary" href="/free-trial">Start free trial →</a>
+  </div>
+</div>
+
 <footer>
   <div class="wrap ft">
-    <div>© 2026 CourtTrack Analytics</div>
-    <div>ABN registered · Victoria, Australia</div>
+    <div>© 2026 CourtTrack Analytics · ABN registered</div>
+    <div class="ft-links">
+      <a href="/about">About</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/faqs">FAQs</a>
+      <a href="/free-trial">Free Trial</a>
+      <a href="mailto:enquiries@courttrackanalytics.com.au">Contact</a>
+    </div>
   </div>
 </footer>
-
 </body>
 </html>
