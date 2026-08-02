@@ -1470,6 +1470,13 @@ document.getElementById('family-code-input').addEventListener('keydown',e=>{if(e
 async function checkStoredFamilyUnlock(){
   try{
     
+
+  // Fresh login — clear cached player so gate always shows on new entry
+  if(new URLSearchParams(window.location.search).get('fresh')==='1'){
+    try{localStorage.removeItem(FAMILY_STORE_KEY);}catch(e){}
+    window.history.replaceState(null,'',window.location.pathname);
+  }
+
   // Admin bypass — skip gate entirely
   if(window.__ADMIN_BYPASS__){
     document.getElementById('family-gate').style.display='none';
