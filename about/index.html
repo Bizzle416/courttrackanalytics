@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — CourtTrack Analytics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+header{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:0 24px;max-width:1100px;margin:0 auto;height:64px;}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;}
+.logo span{color:var(--maple);}
+nav{display:flex;align-items:center;gap:4px;}
+.nav-link{font-size:13.5px;font-weight:500;color:var(--muted);padding:8px 14px;border-radius:6px;transition:color .15s,background .15s;}
+.nav-link:hover{color:var(--chalk);background:rgba(255,255,255,.05);}
+.nav-link.active{color:var(--chalk);}
+.nav-link.login{border:1px solid rgba(255,255,255,.15);color:var(--chalk);}
+.nav-link.cta{background:var(--maple);color:#0d1a2b;font-weight:600;margin-left:8px;padding:8px 18px;}
+.nav-link.cta:hover{opacity:.88;background:var(--maple);}
+.mob-menu{display:none;background:none;border:none;color:var(--chalk);cursor:pointer;padding:8px;}
+.mob-nav{display:none;flex-direction:column;background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);padding:12px 24px 20px;}
+.mob-nav a{display:block;padding:11px 0;font-size:15px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05);}
+.mob-nav a.cta{color:var(--maple);font-weight:600;border:none;}
+@media(max-width:860px){nav{display:none;}.mob-menu{display:block;}}
+@media(max-width:860px){.mob-nav.open{display:flex;}}
+
+/* ── HERO ── */
+.hero{border-bottom:1px solid rgba(255,255,255,.07);padding:72px 24px 64px;}
+.hero-inner{max-width:760px;margin:0 auto;}
+.hero-inner h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(48px,7vw,80px);text-transform:uppercase;line-height:.96;letter-spacing:.01em;margin-bottom:28px;}
+.hero-inner h1 em{font-style:normal;color:var(--maple);}
+.hero-inner p{font-size:18px;color:var(--muted);max-width:52ch;line-height:1.7;}
+
+/* ── CREDENTIALS ── */
+.creds{border-bottom:1px solid rgba(255,255,255,.07);padding:48px 24px;}
+.creds-inner{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(255,255,255,.07);}
+@media(max-width:680px){.creds-inner{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){.creds-inner{grid-template-columns:1fr;}}
+.cred{background:var(--navy);padding:24px 22px;}
+.cred-label{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:10px;}
+.cred p{font-size:14px;color:var(--muted);line-height:1.5;}
+
+/* ── STORY ── */
+.story{max-width:760px;margin:0 auto;padding:64px 24px 80px;}
+.story-block{margin-bottom:48px;}
+.story-block:last-child{margin-bottom:0;}
+.pull{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(26px,3.5vw,34px);text-transform:uppercase;line-height:1.05;color:var(--chalk);margin-bottom:18px;padding-left:20px;border-left:4px solid var(--maple);}
+.story-block p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;max-width:62ch;}
+.story-block p:last-child{margin-bottom:0;}
+.story-block p strong{color:var(--chalk);font-weight:600;}
+
+/* ── CTA BAND ── */
+.cta-band{background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);padding:56px 24px;text-align:center;}
+.cta-band-inner{max-width:560px;margin:0 auto;}
+.cta-band h2{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(30px,4vw,42px);text-transform:uppercase;margin-bottom:12px;}
+.cta-band p{color:var(--muted);font-size:15px;margin-bottom:28px;line-height:1.65;}
+.btn{display:inline-block;background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding:14px 32px;border-radius:8px;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+.btn-ghost{display:inline-block;border:1px solid rgba(255,255,255,.2);color:var(--chalk);font-family:'Barlow Condensed';font-weight:600;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding:14px 32px;border-radius:8px;margin-left:12px;transition:background .15s;}
+.btn-ghost:hover{background:rgba(255,255,255,.05);}
+@media(max-width:480px){.btn-ghost{margin-left:0;margin-top:12px;}}
+footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
+    <nav>
+      <a class="nav-link active" href="/about">About</a>
+      <a class="nav-link" href="/pricing">Pricing</a>
+      <a class="nav-link" href="/faqs">FAQs</a>
+      <a class="nav-link login" href="/login">Team Login</a>
+      <a class="nav-link cta" href="/free-trial">Free Trial</a>
+    </nav>
+    <button class="mob-menu" onclick="document.querySelector('.mob-nav').classList.toggle('open')" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/></svg>
+    </button>
+  </div>
+  <div class="mob-nav">
+    <a href="/about">About</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/faqs">FAQs</a>
+    <a href="/login">Team Login</a>
+    <a href="/free-trial" class="cta">Free Trial →</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Built by someone<br>who knows the <em>game.</em></h1>
+    <p>CourtTrack Analytics was created by someone who has been on every side of junior basketball — as a player, a coach, a competition coordinator, and now a parent in the stands watching his kids compete.</p>
+  </div>
+</div>
+
+<div class="creds">
+  <div class="creds-inner">
+    <div class="cred">
+      <div class="cred-label">Player</div>
+      <p>Representative basketball player with firsthand experience of the game at junior competition level.</p>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Coach</div>
+      <p>Coached across both domestic and representative competitions throughout the Victorian junior system.</p>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Coordinator</div>
+      <p>Served as Coordinator of U8 and U10 domestic competitions — understanding how junior clubs operate from the inside.</p>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Parent</div>
+      <p>Currently a parent of representative players — the perspective that sparked CourtTrack Analytics.</p>
+    </div>
+  </div>
+</div>
+
+<div class="story">
+  <div class="story-block">
+    <div class="pull">Years inside junior basketball.</div>
+    <p>Justin has spent years in the Victorian junior basketball system. He played representative basketball himself, then transitioned into coaching — working across both domestic and representative competitions. He later served as Coordinator for U8 and U10 domestic competitions, giving him a deep understanding of how junior clubs operate and what coaches actually need.</p>
+  </div>
+
+  <div class="story-block">
+    <div class="pull">Then he became a parent.</div>
+    <p>Becoming a parent of a representative player changed everything. Every week, Justin watched his kids leave it all on the court — and then the game just disappeared. No data, no record of what happened, no way to track their development over a season.</p>
+    <p>The tools that existed were either built for professional environments or relied on automated systems that missed the nuance of junior basketball. <strong>So he built one.</strong></p>
+  </div>
+
+  <div class="story-block">
+    <div class="pull">Game intelligence built for junior basketball.</div>
+    <p>CourtTrack Analytics is a managed game-analysis service built specifically for junior basketball. Every game is watched in full, every event is logged from the footage, and the data is turned into a post-game intelligence pack — delivered to coaches and families after every game.</p>
+    <p>Coaches get the full team picture. Families get their player's story. No sensors, no guesswork — just someone who understands the game, analysing it the way a coach would.</p>
+  </div>
+</div>
+
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <h2>Get your team covered</h2>
+    <p>Start with one free game — no commitment, no contract. If you love what you see, we'll talk about the season ahead.</p>
+    <div>
+      <a class="btn" href="/free-trial">Start free trial →</a>
+      <a class="btn-ghost" href="mailto:enquiries@courttrackanalytics.com.au">Get in touch</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia</footer>
+
+</body>
+</html>
