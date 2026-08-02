@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourtTrack Analytics — Eltham Wildcats 12.1 (Coach)</title>
+<title>CourtTrack Analytics — Eltham 12.1 (Coach)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +22,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5;}
-.back-btn{display:none !important;}
 .disp{font-family:'Barlow Condensed',sans-serif;}
 header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);}
 .hd-inner{max-width:1140px;margin:0 auto;padding:0 24px;}
@@ -212,24 +211,12 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 </style>
 </head>
 <body>
-<div id="family-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
-  <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
-    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Eltham Wildcats 12.1 &middot; Family access</div>
-    <div style="font-size:13px;color:#344152;margin-bottom:14px;">Enter the access code shared with your family to see your player's stats.</div>
-    <input id="family-code-input" type="text" placeholder="e.g. CODE-XXXX" autocapitalize="characters" autocomplete="off"
-      style="width:100%;padding:12px 14px;border:1.5px solid #e8e6e1;border-radius:8px;font-size:15px;text-align:center;letter-spacing:.05em;text-transform:uppercase;font-family:'Inter',monospace;outline:none;margin-bottom:12px;box-sizing:border-box;">
-    <button id="family-unlock-btn" style="width:100%;padding:12px;border:none;border-radius:8px;background:#101d31;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Unlock</button>
-    <div id="family-gate-error" style="font-size:12px;color:#d9413f;margin-top:12px;min-height:16px;"></div>
-  </div>
-</div>
-<div id="app-root" style="display:none;">
 <header>
   <div class="hd-inner">
     <div class="hd-top">
       <div>
         <div class="hd-logo">Court<span>Track</span> Analytics</div>
-        <div class="hd-tag">Eltham Wildcats 12.1 &middot; Family view</div>
+        <div class="hd-tag">Eltham Wildcats 12.1 &middot; live from the event log</div>
       </div>
       <div class="team-switcher" id="team-switcher">
         <span class="team-btn" id="team-btn" style="cursor:default;">
@@ -242,10 +229,9 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 </header>
 <main id="main"><div class="loading">Loading season data&hellip;</div></main>
 <footer id="footer">CourtTrack Analytics &middot; Eltham Wildcats 12.1 &middot; figures live from the event log</footer>
-</div>
 
 <script>
-/* BUILD:ANALYTICS_CONFIG — ELTHAM WILDCATS 12.1 SINGLE-TEAM FAMILY BUILD, DO NOT ADD OTHER TEAMS HERE */
+/* BUILD:ANALYTICS_CONFIG — ELTHAM 12.1 SINGLE-TEAM COACH BUILD, DO NOT ADD OTHER TEAMS HERE */
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
@@ -255,8 +241,8 @@ const TEAMS=[
 /* BUILD:ANALYTICS_CONFIG_END */
 
 /* ── MODE DETECTION ──
-   Hardcoded false, not URL-param driven — this is the family link, it must never
-   be flippable into coach mode by editing the URL. */
+   Hardcoded true, not URL-param driven — this file is a link handed straight
+   to the coach, it must render coach mode regardless of the URL. */
 const IS_COACH=true;
 
 const COACH_VIEWS=[
@@ -289,6 +275,8 @@ let activeGameType='all';
 if(!window.gamesTypeFilter)window.gamesTypeFilter='all';
 
 /* ── team dropdown ── */
+/* Single-team build: no dropdown to toggle or render. Kept as no-ops so any
+   code path that still calls renderTeamDropdown() elsewhere doesn't throw. */
 function toggleTeamDropdown(){}
 function renderTeamDropdown(){}
 
@@ -1357,6 +1345,7 @@ function renderTabs(){
   }).join('');
 }
 function switchTeam(k){
+  /* Single-team build — unreachable from the UI, left intact as a safe no-op. */
   curTeam=k;selPlayer=null;expandedGame=null;expandedOppGame=null;expandedParentGame=null;
   activeGameType='all';window.gamesTypeFilter='all';selPlayer=null;
   shootFilters={game:'all',player:'all',q:'all',result:'all'};
@@ -1386,7 +1375,6 @@ async function render(reload){
       else if(curView==='progression')h+=vProgressionCoach(d);
       else h+=vOpposition(d);
     }else{
-      if(FAMILY_UNLOCKED_PID!=null)selPlayer=FAMILY_UNLOCKED_PID;
       if(curView==='players')h+=vPlayersParent(d);
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
@@ -1397,67 +1385,7 @@ async function render(reload){
     mainEl.innerHTML='<div class="err">Could not load data: '+e.message+'<br><span style="font-size:12px;color:var(--muted);">Check the Supabase project is reachable.</span></div>';
   }
 }
-
-/* ── FAMILY ACCESS GATE ──
-   Cosmetic client-side gate: stops a casual browser from seeing another
-   family's child. The anon key below still fetches the whole team's data
-   into this page's memory regardless of this gate — real per-child
-   isolation needs the Edge Function + RLS work, not yet deployed for this
-   team. Codes are stored as SHA-256 hashes, never plaintext, in this file. */
-const FAMILY_CODES={
-  '904036ab0286ff05a4817c96cf84023a6a8f49f316af09c8c06739b9350f28cd':{pid:5,name:"Chloe Connelley"},
-  '9b146b6c2045f0c0ac34f5bab7b55622c8d5db19e9db4fcaa353df7b27343d3d':{pid:6,name:"Lily Collett"},
-  '3b2780e4ee522abb289a7ebf63b04dfe64a3159654fc433503056770921a152f':{pid:9,name:"Indiana Sage"},
-  'ead7d3f0c2142a25d566e88b3a261ab31303f5fb61db0920eb784dfb38a07aa4':{pid:11,name:"Imogen Wynd"},
-  '98bd86a1e4b32256b755a9ffba60a05aab258ae3ddb41b3a90b0c0237ac0390a':{pid:12,name:"Kiara Carlson"},
-  'c9cf218f321190a33ef9ae6321dcdc7e00e5897a66714fbb7db23c4984fa530a':{pid:14,name:"Holly Bannister"},
-  '2f8327a0a7b372ae497449560f4ca002273d7a973f219acc5f004180353498c7':{pid:18,name:"Annabelle Liu"},
-  '7ed46a9ad65ddad0bb2111aa117652775426fc31a8f030d643379d15e3e7e7f1':{pid:24,name:"Olivia Oppedisano"},
-  '36ecc9c63d811974d70e11af5a6a3610afe9cd9c79dfdf3db7b9a57480729f11':{pid:41,name:"Samantha Neal"},
-  'be9267554da7cb6f8002233762a167b385311fb20594fe150bdc1761181eb159':{pid:43,name:"Annabella Buncic"}
-};
-const FAMILY_STORE_KEY='courttrack_family_ew121';
-let FAMILY_UNLOCKED_PID=null;
-async function sha256Hex(str){
-  const enc=new TextEncoder().encode(str.trim().toUpperCase());
-  const buf=await crypto.subtle.digest('SHA-256',enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-function showFamilyApp(){
-  document.getElementById('family-gate').style.display='none';
-  document.getElementById('app-root').style.display='';
-}
-async function attemptFamilyUnlock(){
-  const input=document.getElementById('family-code-input');
-  const err=document.getElementById('family-gate-error');
-  const code=(input.value||'').trim();
-  if(!code){err.textContent='Enter your access code.';return;}
-  const h=await sha256Hex(code);
-  const match=FAMILY_CODES[h];
-  if(!match){err.textContent='Code not recognised — check with your team manager.';return;}
-  FAMILY_UNLOCKED_PID=match.pid;
-  try{localStorage.setItem(FAMILY_STORE_KEY,JSON.stringify({h:h}));}catch(e){}
-  selPlayer=FAMILY_UNLOCKED_PID;
-  showFamilyApp();
-  render(true);
-}
-document.getElementById('family-unlock-btn').addEventListener('click',attemptFamilyUnlock);
-document.getElementById('family-code-input').addEventListener('keydown',e=>{if(e.key==='Enter')attemptFamilyUnlock();});
-async function checkStoredFamilyUnlock(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
-    if(saved&&saved.h&&FAMILY_CODES[saved.h]){
-      FAMILY_UNLOCKED_PID=FAMILY_CODES[saved.h].pid;
-      selPlayer=FAMILY_UNLOCKED_PID;
-      showFamilyApp();
-      render(true);
-      return true;
-    }
-  }catch(e){}
-  return false;
-}
-
-checkStoredFamilyUnlock();
+render(true);
 </script>
 </body>
 </html>
