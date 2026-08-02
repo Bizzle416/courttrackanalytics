@@ -139,7 +139,9 @@ function tryLogin(){
     return;
   }
   if(dest){
-    window.location.href = dest;
+    // Add fresh=1 to family URLs so cache is ignored on arrival
+    const url = dest.includes('/family') ? dest + '?fresh=1' : dest;
+    window.location.href = url;
   } else {
     const inp = document.getElementById('code');
     inp.classList.add('error');
