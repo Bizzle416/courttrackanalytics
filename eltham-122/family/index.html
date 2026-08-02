@@ -1469,20 +1469,41 @@ document.getElementById('family-unlock-btn').addEventListener('click',attemptFam
 document.getElementById('family-code-input').addEventListener('keydown',e=>{if(e.key==='Enter')attemptFamilyUnlock();});
 async function checkStoredFamilyUnlock(){
   try{
-    
+    const params=new URLSearchParams(window.location.search);
 
   // Fresh login — clear cached player so gate always shows on new entry
-  if(new URLSearchParams(window.location.search).get('fresh')==='1'){
+  if(params.get('fresh')==='1'){
     try{localStorage.removeItem(FAMILY_STORE_KEY);}catch(e){}
     window.history.replaceState(null,'',window.location.pathname);
   }
 
-  // Admin bypass — skip gate entirely
+  // Admin bypass — skip gate entirely and render the app straight away
   if(window.__ADMIN_BYPASS__){
     document.getElementById('family-gate').style.display='none';
     document.getElementById('switch-player-btn').style.display='none';
-    return;
+    showFamilyApp();
+    render(true);
+    return true;
   }
+
+  // Direct code link (?code=XXXX) — used by the Admin Hub player rows so a
+  // click opens straight into that player's view with no manual code entry.
+  const urlCode=params.get('code');
+  if(urlCode){
+    const h=await sha256Hex(urlCode);
+    const match=FAMILY_CODES[h];
+    if(match){
+      FAMILY_UNLOCKED_PID=match.pid;
+      try{localStorage.setItem(FAMILY_STORE_KEY,JSON.stringify({h:h}));}catch(e){}
+      selPlayer=FAMILY_UNLOCKED_PID;
+      window.history.replaceState(null,'',window.location.pathname);
+      showFamilyApp();
+      document.getElementById('switch-player-btn').style.display='block';
+      render(true);
+      return true;
+    }
+  }
+
   const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
   if(saved){document.getElementById('switch-player-btn').style.display='block';}
     if(saved&&saved.h&&FAMILY_CODES[saved.h]){
