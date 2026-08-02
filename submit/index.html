@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Game Footage — CourtTrack Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1a2b;--navy2:#132540;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{padding:22px 24px;border-bottom:1px solid rgba(255,255,255,.07);}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--chalk);}
+.logo span{color:var(--maple);}
+.wrap{max-width:680px;margin:0 auto;padding:56px 24px 80px;}
+.kicker{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:14px;}
+h1{font-family:'Barlow Condensed';font-weight:700;font-size:48px;text-transform:uppercase;line-height:1;margin-bottom:16px;}
+.intro{color:var(--muted);font-size:15px;margin-bottom:40px;line-height:1.6;}
+.form{display:flex;flex-direction:column;gap:20px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:560px){.row{grid-template-columns:1fr;}}
+.grp{display:flex;flex-direction:column;gap:8px;}
+.grp label{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.hint{font-size:10px;color:var(--faint);letter-spacing:.04em;text-transform:none;margin-left:6px;}
+.grp input,.grp textarea,.grp select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:13px 16px;color:var(--chalk);font-family:'Inter';font-size:14px;outline:none;transition:border-color .15s;resize:vertical;width:100%;}
+.grp input::placeholder,.grp textarea::placeholder{color:var(--faint);}
+.grp select option{background:var(--navy2);color:var(--chalk);}
+.grp input:focus,.grp textarea:focus,.grp select:focus{border-color:var(--maple);}
+.divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:8px 0;}
+.link-box{background:rgba(217,160,91,.06);border:1px solid rgba(217,160,91,.2);border-radius:8px;padding:20px;}
+.link-label{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--maple);margin-bottom:8px;}
+.link-note{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.btn{background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;padding:15px 36px;border:none;border-radius:8px;cursor:pointer;align-self:flex-start;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+.footer-note{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--faint);margin-top:6px;}
+.success{background:rgba(26,158,114,.1);border:1px solid rgba(26,158,114,.3);border-radius:8px;padding:24px 28px;color:#1a9e72;font-size:15px;display:none;line-height:1.6;}
+.success.show{display:block;}
+.back{font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);text-decoration:none;letter-spacing:.08em;display:inline-flex;align-items:center;gap:6px;margin-top:32px;}
+.back:hover{color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="/">Court<span>Track</span> Analytics</a>
+</header>
+<div class="wrap">
+  <div class="kicker">Existing teams</div>
+  <h1>Submit Game Footage</h1>
+  <p class="intro">Drop your game footage link below and we'll get to work. Make sure the link is set to "anyone with the link can view" before submitting.</p>
+
+  <form class="form" onsubmit="handleSubmit(event)">
+    <div class="row">
+      <div class="grp">
+        <label>Club name</label>
+        <input type="text" id="s-club" placeholder="e.g. Eltham Basketball" required>
+      </div>
+      <div class="grp">
+        <label>Team name</label>
+        <input type="text" id="s-team" placeholder="e.g. U12 Girls 2" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grp">
+        <label>Game date</label>
+        <input type="date" id="s-date" required>
+      </div>
+      <div class="grp">
+        <label>Opposition</label>
+        <input type="text" id="s-opp" placeholder="e.g. Diamond Valley" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grp">
+        <label>Result <span class="hint">Optional</span></label>
+        <select id="s-result">
+          <option value="">Select...</option>
+          <option>Win</option>
+          <option>Loss</option>
+          <option>Draw</option>
+        </select>
+      </div>
+      <div class="grp">
+        <label>Your email</label>
+        <input type="email" id="s-email" placeholder="for confirmation" required>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="link-box">
+      <div class="link-label">Footage link</div>
+      <p class="link-note">Share your video via Google Drive, Dropbox, YouTube (unlisted) or any platform. Make sure sharing is set to <strong style="color:var(--chalk)">"Anyone with the link"</strong> before submitting.</p>
+      <div class="grp">
+        <input type="url" id="s-link" placeholder="https://drive.google.com/file/..." required>
+      </div>
+    </div>
+
+    <div class="grp">
+      <label>Notes <span class="hint">Optional — player numbers, key matchups, anything useful</span></label>
+      <textarea id="s-notes" rows="3" placeholder="e.g. #10 is our point guard, opposition wore white..."></textarea>
+    </div>
+
+    <div>
+      <button type="submit" class="btn">Submit footage →</button>
+      <p class="footer-note">We'll confirm receipt and estimated turnaround within 24 hours.</p>
+    </div>
+
+    <div class="success" id="success-msg">
+      ✓ Your email client should have opened with everything pre-filled — hit send and we'll take it from there. Expect a confirmation from us within 24 hours.
+    </div>
+  </form>
+
+  <a class="back" href="/">← Back to courttrackanalytics.com.au</a>
+</div>
+
+<script>
+function handleSubmit(e){
+  e.preventDefault();
+  const club=document.getElementById('s-club').value;
+  const team=document.getElementById('s-team').value;
+  const date=document.getElementById('s-date').value;
+  const opp=document.getElementById('s-opp').value;
+  const result=document.getElementById('s-result').value;
+  const email=document.getElementById('s-email').value;
+  const link=document.getElementById('s-link').value;
+  const notes=document.getElementById('s-notes').value;
+  const body=`Game Footage Submission\n\nClub: ${club}\nTeam: ${team}\nDate: ${date}\nOpposition: ${opp}\nResult: ${result||'Not specified'}\nContact email: ${email}\n\nFootage link: ${link}\n\nNotes: ${notes||'None'}`;
+  const mailto=`mailto:enquiries@courttrackanalytics.com.au?subject=Footage — ${encodeURIComponent(club)} ${encodeURIComponent(team)} vs ${encodeURIComponent(opp)} ${date}&body=${encodeURIComponent(body)}`;
+  window.location.href=mailto;
+  document.getElementById('success-msg').classList.add('show');
+}
+</script>
+</body>
+</html>
