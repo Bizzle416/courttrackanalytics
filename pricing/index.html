@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — CourtTrack Analytics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+header{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:0 24px;max-width:1100px;margin:0 auto;height:64px;}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;}
+.logo span{color:var(--maple);}
+nav{display:flex;align-items:center;gap:4px;}
+.nav-link{font-size:13.5px;font-weight:500;color:var(--muted);padding:8px 14px;border-radius:6px;transition:color .15s,background .15s;}
+.nav-link:hover{color:var(--chalk);background:rgba(255,255,255,.05);}
+.nav-link.active{color:var(--chalk);}
+.nav-link.login{border:1px solid rgba(255,255,255,.15);color:var(--chalk);}
+.nav-link.cta{background:var(--maple);color:#0d1a2b;font-weight:600;margin-left:8px;padding:8px 18px;}
+.nav-link.cta:hover{opacity:.88;}
+.mob-menu{display:none;background:none;border:none;color:var(--chalk);cursor:pointer;padding:8px;}
+.mob-nav{display:none;flex-direction:column;background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);padding:12px 24px 20px;}
+.mob-nav a{display:block;padding:11px 0;font-size:15px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05);}
+.mob-nav a.cta{color:var(--maple);font-weight:600;border:none;}
+@media(max-width:860px){nav{display:none;}.mob-menu{display:block;}}
+@media(max-width:860px){.mob-nav.open{display:flex;}}
+
+/* ── PAGE ── */
+.wrap{max-width:1060px;margin:0 auto;padding:64px 24px 80px;}
+.page-hero{text-align:center;margin-bottom:48px;}
+.page-hero h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(44px,6vw,68px);text-transform:uppercase;line-height:1;margin-bottom:14px;}
+.page-hero p{color:var(--muted);font-size:16px;max-width:48ch;margin:0 auto;}
+.page-hero p span{color:var(--maple);font-weight:600;}
+
+/* ── TOGGLE ── */
+.toggle-wrap{display:flex;justify-content:center;margin-bottom:44px;}
+.toggle{background:var(--navy2);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:5px;display:flex;gap:4px;}
+.tog-btn{font-family:'Barlow Condensed';font-weight:600;font-size:18px;letter-spacing:.06em;text-transform:uppercase;padding:10px 28px;border-radius:40px;border:none;cursor:pointer;background:none;color:var(--muted);transition:all .2s;}
+.tog-btn.active{background:var(--maple);color:#0d1a2b;}
+
+/* ── GRID ── */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.07);}
+@media(max-width:760px){.price-grid{grid-template-columns:1fr;}}
+.price-card{background:var(--navy);padding:36px 30px;display:flex;flex-direction:column;position:relative;}
+.price-card.featured{background:var(--navy2);outline:2px solid var(--maple);}
+.badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--maple);color:#0d1a2b;font-family:'IBM Plex Mono';font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:4px 14px;border-radius:0 0 8px 8px;white-space:nowrap;}
+.tier-name{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--maple);margin-bottom:10px;margin-top:12px;}
+.tier-desc{font-size:13.5px;color:var(--muted);margin-bottom:28px;line-height:1.55;}
+.price-block{margin-bottom:28px;}
+.price-amount{font-family:'Barlow Condensed';font-weight:700;font-size:64px;line-height:1;letter-spacing:-.01em;}
+.price-per{font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);margin-top:4px;letter-spacing:.06em;}
+.features{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:32px;flex:1;}
+.features li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--muted);line-height:1.45;}
+.features li::before{content:'';width:6px;height:6px;background:var(--maple);border-radius:50%;flex-shrink:0;margin-top:6px;}
+.features li.dim{color:var(--faint);}
+.features li.dim::before{background:var(--faint);}
+.card-btn{display:block;text-align:center;padding:13px;border-radius:8px;font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase;transition:opacity .15s;}
+.card-btn.primary{background:var(--maple);color:#0d1a2b;}
+.card-btn.primary:hover{opacity:.88;}
+.card-btn.ghost{border:1px solid rgba(255,255,255,.18);color:var(--chalk);}
+.card-btn.ghost:hover{background:rgba(255,255,255,.05);}
+.price-note{text-align:center;font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);margin-top:20px;letter-spacing:.04em;}
+
+/* ── COMPARE TABLE ── */
+.compare{margin-top:64px;}
+.compare h2{font-family:'Barlow Condensed';font-weight:700;font-size:32px;text-transform:uppercase;margin-bottom:24px;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead th{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--maple);padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1);}
+thead th:first-child{color:var(--faint);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.05);}
+tbody tr:last-child{border:none;}
+tbody td{padding:13px 16px;color:var(--muted);vertical-align:middle;}
+tbody td:first-child{color:var(--chalk);font-weight:500;}
+.tick{color:var(--win);font-size:16px;}
+.cross{color:var(--faint);font-size:16px;}
+
+/* ── CTA BAND ── */
+.cta-band{margin-top:64px;background:rgba(217,160,91,.07);border:1px solid rgba(217,160,91,.2);border-radius:12px;padding:40px 32px;text-align:center;}
+.cta-band h2{font-family:'Barlow Condensed';font-weight:700;font-size:34px;text-transform:uppercase;margin-bottom:10px;}
+.cta-band p{color:var(--muted);font-size:15px;margin-bottom:24px;}
+.btn{display:inline-block;background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:19px;letter-spacing:.06em;text-transform:uppercase;padding:13px 28px;border-radius:8px;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+
+.trial-note{text-align:center;font-size:14px;color:var(--muted);margin-top:10px;}
+.trial-note a{color:var(--maple);font-weight:500;}
+.asterisk-note{text-align:center;font-size:12px;color:var(--faint);margin-top:8px;font-family:"IBM Plex Mono",monospace;letter-spacing:.02em;}
+.sub-bullets{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px;padding-left:0;}
+.sub-bullets li{font-size:13px;color:var(--muted);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.sub-bullets li::before{content:'';width:4px;height:4px;background:var(--muted);border-radius:50%;flex-shrink:0;margin-top:6px;}
+footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);text-align:center;margin-top:80px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
+    <nav>
+      <a class="nav-link" href="/about">About</a>
+      <a class="nav-link active" href="/pricing">Pricing</a>
+      <a class="nav-link" href="/faqs">FAQs</a>
+      <a class="nav-link login" href="/login">Team Login</a>
+      <a class="nav-link cta" href="/free-trial">Free Trial</a>
+    </nav>
+    <button class="mob-menu" onclick="document.querySelector('.mob-nav').classList.toggle('open')" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/></svg>
+    </button>
+  </div>
+  <div class="mob-nav">
+    <a href="/about">About</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/faqs">FAQs</a>
+    <a href="/login">Team Login</a>
+    <a href="/free-trial" class="cta">Free Trial →</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-hero">
+    <h1>Simple, transparent pricing</h1>
+    <p>First game free. No lock-in contracts. <span>Pay per game or save with a season pass.</span></p>
+  </div>
+
+  <!-- TOGGLE -->
+  <div class="toggle-wrap">
+    <div class="toggle">
+      <button class="tog-btn active" onclick="setMode('game', event)">Per Game</button>
+      <button class="tog-btn" onclick="setMode('games15', event)">15 Games</button>
+      <button class="tog-btn" onclick="setMode('season', event)">Season</button>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="price-grid">
+
+    <!-- PLAYER -->
+    <div class="price-card">
+      <div class="tier-name">Player</div>
+      <div class="tier-desc">Your player's stats, shot chart and minutes — every game, delivered to your family.</div>
+      <div class="price-block">
+        <div class="price-amount" id="p1-price">$15</div>
+        <div class="price-per" id="p1-per">per game · family view only</div>
+      </div>
+      <ul class="features">
+        <li>Player minutes &amp; playing time</li>
+        <li>Player shot chart</li>
+        <li>
+          <div class="feat-text">
+            Player game stats
+            <ul class="sub-bullets">
+              <li>Scoring: points &amp; shooting percentages</li>
+              <li>Activity: rebounds, assists, steals &amp; turnovers</li>
+            </ul>
+          </div>
+        </li>
+        <li>Season stats &amp; trends *</li>
+      </ul>
+      <a class="card-btn ghost" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Player Plan">Buy now →</a>
+    </div>
+
+    <!-- TEAM -->
+    <div class="price-card featured">
+      <div class="badge">Most popular</div>
+      <div class="tier-name">Team</div>
+      <div class="tier-desc">Full coach dashboard plus every player's family view — the complete team package.</div>
+      <div class="price-block">
+        <div class="price-amount" id="p2-price">$49</div>
+        <div class="price-per" id="p2-per">per game · coach + all families</div>
+      </div>
+      <ul class="features">
+        <li>Player minutes &amp; playing time</li>
+        <li>Shot charts for every player</li>
+        <li>Player rotation analysis</li>
+        <li>Season stats &amp; trends *</li>
+        <li>Coach team dashboard</li>
+        <li>Every player has their own stats view</li>
+      </ul>
+      <a class="card-btn primary" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Team Plan">Buy now →</a>
+    </div>
+
+    <!-- TEAM+ -->
+    <div class="price-card">
+      <div class="tier-name">Team+</div>
+      <div class="tier-desc">Everything in Team, plus written analyst notes on every player after every game.</div>
+      <div class="price-block">
+        <div class="price-amount" id="p3-price">$79</div>
+        <div class="price-per" id="p3-per">per game · full service</div>
+      </div>
+      <ul class="features">
+        <li>Player minutes &amp; playing time</li>
+        <li>Shot charts for every player</li>
+        <li>Player rotation analysis</li>
+        <li>Season stats &amp; trends *</li>
+        <li>Coach team dashboard</li>
+        <li>Every player has their own stats view</li>
+        <li>Opposition shot chart &amp; stats</li>
+        <li><strong style="color:var(--chalk)">Written notes on every player</strong></li>
+      </ul>
+      <a class="card-btn ghost" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Team+ Plan">Buy now →</a>
+    </div>
+
+  </div>
+  <p class="price-note">All prices in AUD · GST inclusive</p>
+  <p class="trial-note">Not ready to commit? <a href="/free-trial">Start with a free game →</a></p>
+  <p class="asterisk-note">* Season stats &amp; trends unlock across multiple game purchases — the more games logged, the richer your data.</p>
+
+  <!-- COMPARE TABLE -->
+  <div class="compare">
+    <h2>What's included</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Team+</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Player minutes &amp; playing time</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Shot chart per player</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Player rotation analysis</td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Individual player stats view</td><td>Your player only</td><td>Every player</td><td>Every player</td></tr>
+          <tr><td>Coach team dashboard</td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Opposition breakdown</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Written player notes</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="tick">✓</span></td></tr>
+          <tr><td>Season stats &amp; trends *</td><td>Builds over time</td><td>Builds over time</td><td>Builds over time</td></tr>
+          <tr><td>Unique access code per player</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <h2>Not sure which plan?</h2>
+    <p>Start with a free game on any plan — no commitment, no contract. We'll help you figure out what fits your team.</p>
+    <a class="btn" href="/free-trial">Start free trial →</a>
+  </div>
+</div>
+
+<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia</footer>
+
+<script>
+const prices = {
+  game: {
+    p1: { amount: '$15', per: 'per game · player view only' },
+    p2: { amount: '$49', per: 'per game · coach + all players' },
+    p3: { amount: '$79', per: 'per game · full service' }
+  },
+  games15: {
+    p1: { amount: '$180', per: '15 games · save 20% vs per game' },
+    p2: { amount: '$588', per: '15 games · save 20% vs per game' },
+    p3: { amount: '$948', per: '15 games · save 20% vs per game' }
+  },
+  season: {
+    p1: { amount: '$225', per: 'full season · best value' },
+    p2: { amount: '$735', per: 'full season · best value' },
+    p3: { amount: '$1,185', per: 'full season · best value' }
+  }
+};
+
+function setMode(mode, e) {
+  const d = prices[mode];
+  document.getElementById('p1-price').textContent = d.p1.amount;
+  document.getElementById('p1-per').textContent = d.p1.per;
+  document.getElementById('p2-price').textContent = d.p2.amount;
+  document.getElementById('p2-per').textContent = d.p2.per;
+  document.getElementById('p3-price').textContent = d.p3.amount;
+  document.getElementById('p3-per').textContent = d.p3.per;
+  document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+}
+</script>
+</body>
+</html>
