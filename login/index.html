@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Login — CourtTrack Analytics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;--loss:#d9413f;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+header{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:0 24px;max-width:1100px;margin:0 auto;height:64px;}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;}
+.logo span{color:var(--maple);}
+nav{display:flex;align-items:center;gap:4px;}
+.nav-link{font-size:13.5px;font-weight:500;color:var(--muted);padding:8px 14px;border-radius:6px;transition:color .15s;}
+.nav-link:hover{color:var(--chalk);}
+.nav-link.cta{background:var(--maple);color:#0d1a2b;font-weight:600;margin-left:8px;padding:8px 18px;}
+.nav-link.active{color:var(--chalk);}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+.box{width:100%;max-width:440px;}
+.kicker{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--maple);margin-bottom:14px;}
+h1{font-family:'Barlow Condensed';font-weight:700;font-size:44px;text-transform:uppercase;line-height:1;margin-bottom:10px;}
+.sub{color:var(--muted);font-size:14px;margin-bottom:36px;line-height:1.6;}
+.field-wrap{position:relative;margin-bottom:10px;}
+.code-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:18px 56px 18px 20px;color:var(--chalk);font-family:'IBM Plex Mono';font-size:20px;letter-spacing:.18em;text-transform:uppercase;outline:none;transition:border-color .15s;}
+.code-input::placeholder{color:var(--faint);font-size:16px;letter-spacing:.06em;text-transform:none;}
+.code-input:focus{border-color:var(--maple);}
+.code-input.error{border-color:var(--loss);animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.toggle-vis{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--faint);cursor:pointer;padding:4px;}
+.toggle-vis:hover{color:var(--muted);}
+.error-msg{font-family:'IBM Plex Mono';font-size:12px;color:var(--loss);margin-bottom:16px;min-height:18px;letter-spacing:.04em;}
+.login-btn{width:100%;background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;padding:15px;border:none;border-radius:10px;cursor:pointer;transition:opacity .15s;}
+.login-btn:hover{opacity:.88;}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:14px;margin:28px 0;}
+.divider span{font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);white-space:nowrap;letter-spacing:.1em;text-transform:uppercase;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+.help{font-size:13.5px;color:var(--muted);text-align:center;line-height:1.6;}
+.help a{color:var(--maple);}
+.trial-link{display:block;text-align:center;margin-top:24px;font-family:'IBM Plex Mono';font-size:12px;color:var(--faint);letter-spacing:.08em;}
+.trial-link a{color:var(--maple);}
+footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);border-top:1px solid rgba(255,255,255,.05);}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
+    <nav>
+      <a class="nav-link" href="/about">About</a>
+      <a class="nav-link" href="/pricing">Pricing</a>
+      <a class="nav-link" href="/faqs">FAQs</a>
+      <a class="nav-link active" href="/login">Team Login</a>
+      <a class="nav-link cta" href="/free-trial">Free Trial</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="box">
+    <div class="kicker">Team access</div>
+    <h1>Enter your<br>access code</h1>
+    <p class="sub">Your access code was sent to you by your team manager. Enter it below to view your dashboard.</p>
+
+    <div class="field-wrap">
+      <input class="code-input" id="code" type="password" placeholder="Enter your access code" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" oninput="clearError()" onkeydown="if(event.key==='Enter')tryLogin()">
+      <button class="toggle-vis" onclick="toggleVis()" aria-label="Show/hide code" tabindex="-1">
+        <svg id="eye-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="error-msg" id="err"></div>
+    <button class="login-btn" onclick="tryLogin()">Access dashboard →</button>
+
+    <div class="divider"><span>need help?</span></div>
+    <p class="help">Contact your team manager or reach us at<br><a href="mailto:enquiries@courttrackanalytics.com.au">enquiries@courttrackanalytics.com.au</a></p>
+
+    <p class="trial-link">Not a member yet? <a href="/free-trial">Start a free trial →</a></p>
+  </div>
+</main>
+
+<footer>© 2026 CourtTrack Analytics · ABN registered</footer>
+
+<script>
+// CODE MAP: code → redirect URL
+const CODES = {
+  // ── ELTHAM 12.2 ──────────────────────────────
+  'YQR9-026Q-L4MI': '/eltham-122',           // Coach
+  'EW122-PS3A': '/eltham-122/family',         // #4  Elara Jewell
+  'EW122-9KS2': '/eltham-122/family',         // #6  Grace Burslem
+  'EW122-2F50': '/eltham-122/family',         // #8  Evie Davis
+  'EW122-HRJ8': '/eltham-122/family',         // #10 Quinn Cukier
+  'EW122-X7N9': '/eltham-122/family',         // #13 Emilia Wynne
+  'EW122-GS64': '/eltham-122/family',         // #15 Madeline Hadley
+  'EW122-OF8I': '/eltham-122/family',         // #21 Ellie Spithill
+  'EW122-LO27': '/eltham-122/family',         // #22 Harper Bolton
+  'EW122-GL50': '/eltham-122/family',         // #23 Zoe O'Connell
+  'EW122-LK01': '/eltham-122/family',         // #33 Eva Leverton
+
+  // ── ELTHAM 12.1 ──────────────────────────────
+  '4O4I-Z5LI-V89P': '/eltham-121',           // Coach
+  'EW121-0AOR': '/eltham-121/family',         // #5  Chloe Connelley
+  'EW121-CDON': '/eltham-121/family',         // #6  Lily Collett
+  'EW121-S900': '/eltham-121/family',         // #9  Indiana Sage
+  'EW121-5G3H': '/eltham-121/family',         // #11 Imogen Wynd
+  'EW121-ST53': '/eltham-121/family',         // #12 Kiara Carlson
+  'EW121-J7XW': '/eltham-121/family',         // #14 Holly Bannister
+  'EW121-VM0G': '/eltham-121/family',         // #18 Annabelle Liu
+  'EW121-21F8': '/eltham-121/family',         // #24 Olivia Oppedisano
+  'EW121-RNG9': '/eltham-121/family',         // #41 Samantha Neal
+  'EW121-RUQS': '/eltham-121/family',         // #43 Annabella Buncic
+
+  // ── DV 12.1 ──────────────────────────────────
+  'E1TH-ZKUL-3LTM': '/dv-121',              // Coach
+  'DV121-IQYE': '/dv-121/family',            // #19 Kaiah Black
+  'DV121-6YYW': '/dv-121/family',            // #31 Scarlett Walters
+  'DV121-BHC2': '/dv-121/family',            // #41 Harper Powell
+  'DV121-IDKH': '/dv-121/family',            // #43 Harper Ritchie
+  'DV121-VRNK': '/dv-121/family',            // #45 Mila Dixon
+  'DV121-O93W': '/dv-121/family',            // #53 Greta Morris
+  'DV121-3M5G': '/dv-121/family',            // #55 Lara Shaw
+  'DV121-HI2R': '/dv-121/family',            // #73 Mackenzie Haas-Baker
+  'DV121-U9RY': '/dv-121/family',            // #75 Taylah Wignell
+  'DV121-HOIM': '/dv-121/family',            // #77 Billie Burrell
+};
+
+function tryLogin(){
+  const raw = document.getElementById('code').value.trim().toUpperCase();
+  const dest = CODES[raw];
+  if(dest){
+    window.location.href = dest;
+  } else {
+    const inp = document.getElementById('code');
+    inp.classList.add('error');
+    document.getElementById('err').textContent = 'Code not recognised — check your code and try again.';
+    setTimeout(()=>inp.classList.remove('error'), 400);
+  }
+}
+
+function clearError(){
+  document.getElementById('err').textContent = '';
+}
+
+function toggleVis(){
+  const inp = document.getElementById('code');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>
