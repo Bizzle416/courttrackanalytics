@@ -151,6 +151,9 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .pp-name{font-family:'Barlow Condensed';font-size:36px;font-weight:700;color:var(--ink);}
 .pp-num{font-family:'Barlow Condensed';font-size:28px;font-weight:700;color:var(--maple);}
 .pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;margin-top:16px;}
+
+.switch-player-btn{position:fixed;top:14px;right:16px;z-index:1000;background:rgba(13,26,43,.85);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Inter',sans-serif;color:#8fa0b8;cursor:pointer;backdrop-filter:blur(8px);transition:color .15s,border-color .15s;}
+.switch-player-btn:hover{color:#f1eee6;border-color:rgba(255,255,255,.3);}
 .back-btn{background:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--muted);margin-bottom:14px;font-family:'Inter';}
 .back-btn:hover{color:var(--ink);border-color:var(--subtle);}
 .gm-detail{background:var(--card2);}
@@ -210,8 +213,23 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
   .hero-meta-item .v{font-size:22px;}
 }
 </style>
+<script>
+// ── ADMIN BYPASS ──────────────────────────────────────────────────────────
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('bypass') === 'IV4K-8YC9-JK6V-4B26'){
+    // Valid admin bypass — remove token from URL cleanly then continue
+    const clean = window.location.pathname;
+    window.history.replaceState(null,'',clean);
+    window.__ADMIN_BYPASS__ = true;
+  }
+})();
+// ──────────────────────────────────────────────────────────────────────────
+</script>
 </head>
 <body>
+
+<button class="switch-player-btn" id="switch-player-btn" style="display:none;" onclick="switchPlayer()">⇄ Switch player</button>
 <div id="family-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
   <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
     <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
@@ -1425,6 +1443,7 @@ async function sha256Hex(str){
 }
 function showFamilyApp(){
   document.getElementById('family-gate').style.display='none';
+  document.getElementById('switch-player-btn').style.display='block';
   document.getElementById('app-root').style.display='';
 }
 async function attemptFamilyUnlock(){
@@ -1441,11 +1460,24 @@ async function attemptFamilyUnlock(){
   showFamilyApp();
   render(true);
 }
+
+function switchPlayer(){
+  try{localStorage.removeItem('courttrack_family_dv121');}catch(e){}
+  location.reload();
+}
 document.getElementById('family-unlock-btn').addEventListener('click',attemptFamilyUnlock);
 document.getElementById('family-code-input').addEventListener('keydown',e=>{if(e.key==='Enter')attemptFamilyUnlock();});
 async function checkStoredFamilyUnlock(){
   try{
-    const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
+    
+  // Admin bypass — skip gate entirely
+  if(window.__ADMIN_BYPASS__){
+    document.getElementById('family-gate').style.display='none';
+    document.getElementById('switch-player-btn').style.display='none';
+    return;
+  }
+  const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
+  if(saved){document.getElementById('switch-player-btn').style.display='block';}
     if(saved&&saved.h&&FAMILY_CODES[saved.h]){
       FAMILY_UNLOCKED_PID=FAMILY_CODES[saved.h].pid;
       selPlayer=FAMILY_UNLOCKED_PID;
