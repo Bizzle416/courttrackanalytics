@@ -87,6 +87,9 @@ footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size
 <script>
 // CODE MAP: code → redirect URL
 const CODES = {
+  // ── ADMIN ────────────────────────────────────
+  'KOSA-9E2V-FW6M-8NKF': '__ADMIN__',         // Superadmin
+
   // ── ELTHAM 12.2 ──────────────────────────────
   'YQR9-026Q-L4MI': '/eltham-122',           // Coach
   'EW122-PS3A': '/eltham-122/family',         // #4  Elara Jewell
@@ -130,6 +133,11 @@ const CODES = {
 function tryLogin(){
   const raw = document.getElementById('code').value.trim().toUpperCase();
   const dest = CODES[raw];
+  if(dest === '__ADMIN__'){
+    sessionStorage.setItem('ct_admin', '1');
+    window.location.href = '/admin';
+    return;
+  }
   if(dest){
     window.location.href = dest;
   } else {
