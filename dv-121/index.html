@@ -294,6 +294,7 @@ let curView=IS_COACH?'overview':'players';
 let cache={},selPlayer=null,expandedGame=null,expandedOppGame=null,expandedParentGame=null;
 let shootFilters={game:'all',player:'all',q:'all',result:'all'};
 let oppShootFilters={game:'all',q:'all',result:'all'};
+let rotGameSel=null;
 let activeGameType='all';
 if(!window.gamesTypeFilter)window.gamesTypeFilter='all';
 
@@ -874,6 +875,26 @@ function vShooting(d){
   return h;
 }
 
+function buildOnCourtSecsMap(g){
+  const{segs}=buildOnCourtStints(g);
+  const out={};
+  Object.keys(segs).forEach(pid=>{out[pid]=segs[pid].reduce((s,seg)=>s+(seg.end-seg.start),0);});
+  return out;
+}
+function rotationPlayerAgg(gs){
+  const agg={},secsCache={};
+  gs.forEach(g=>{
+    const secsMap=buildOnCourtSecsMap(g);
+    secsCache[g.id]=secsMap;
+    Object.keys(secsMap).forEach(pidStr=>{
+      const pid=Number(pidStr),mins=secsMap[pidStr]/60;
+      if(!agg[pid])agg[pid]={pid,gp:0,min:0};
+      if(mins>0.5)agg[pid].gp++;
+      agg[pid].min+=mins;
+    });
+  });
+  return{rows:Object.values(agg),secsCache};
+}
 function vRotation(d){
   const allGs=d.games;
   if(!allGs.length)return'<div class="card"><div class="loading">No completed games recorded for this team yet.</div></div>';
@@ -881,14 +902,15 @@ function vRotation(d){
   const filterLabel=activeGameType==='all'?'All games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(allGs);
   if(!gs.length)return h+'<div class="card"><div class="loading">No '+filterLabel.toLowerCase()+' logged yet.</div></div>';
-  const rows=seasonPlayersFiltered(d,gs).filter(a=>a.gp>0);
-  if(!rows.length)return h+'<div class="card"><div class="loading">No minutes logged yet for '+filterLabel.toLowerCase()+'.</div></div>';
+  const{rows,secsCache}=rotationPlayerAgg(gs);
+  const rowsF=rows.filter(a=>a.gp>0);
+  if(!rowsF.length)return h+'<div class="card"><div class="loading">No minutes logged yet for '+filterLabel.toLowerCase()+'.</div></div>';
   const gameLen=d.team.gameLenMin||28;
-  const withAvg=rows.map(a=>({...a,avgMin:a.min/a.gp})).sort((x,y)=>y.avgMin-x.avgMin);
+  const withAvg=rowsF.map(a=>({...a,avgMin:a.min/a.gp})).sort((x,y)=>y.avgMin-x.avgMin);
   const n=withAvg.length;
   const hiCut=Math.ceil(n/3),midCut=Math.ceil(n*2/3);
   h+='<div class="card"><div class="sec-h">Bench depth &nbsp;&mdash;&nbsp; '+filterLabel+' ('+gs.length+' game'+(gs.length===1?'':'s')+')</div>';
-  h+='<div class="bd-sub">Avg minutes per game played, shown vs a '+gameLen+'-min game</div>';
+  h+='<div class="bd-sub">Avg minutes per game played, shown vs a '+gameLen+'-min game &middot; computed from the substitution log</div>';
   h+='<div class="bd-list">';
   withAvg.forEach((a,i)=>{
     const pctOfGame=Math.min(100,Math.round(a.avgMin/gameLen*100));
@@ -905,13 +927,19 @@ function vRotation(d){
   h+='<div class="bd-legend"><div class="mom-legend-item"><span class="mom-dot" style="background:var(--win);"></span>Top third — heaviest minutes</div><div class="mom-legend-item"><span class="mom-dot" style="background:var(--vjbl);"></span>Middle third</div><div class="mom-legend-item"><span class="mom-dot" style="background:#9aa4b2;"></span>Bottom third — bench depth</div></div>';
   h+='</div>';
   h+='<div class="card"><div class="sec-h">Game-by-game rotation &nbsp;&mdash;&nbsp; '+filterLabel+'</div>';
-  h+='<div class="bd-sub">Minutes played per game &middot; darker = more minutes, relative to a '+gameLen+'-min game</div>';
-  h+=gameByGameTable(d,gs,withAvg,gameLen);
+  h+='<div class="bd-sub">Minutes played per game &middot; darker = more minutes, relative to the actual game length &middot; computed from the substitution log</div>';
+  h+=gameByGameTable(d,gs,withAvg,secsCache);
   h+='<div class="rot-legend"><span class="rot-swatch" style="background:#0f6e50;"></span><span class="rot-swatch-lbl">Heavy minutes</span><span class="rot-swatch" style="background:#a9d8c3;"></span><span class="rot-swatch-lbl">Moderate</span><span class="rot-swatch" style="background:#e7f2ec;"></span><span class="rot-swatch-lbl">Light</span><span class="rot-swatch" style="background:#f0eeea;border:1px solid var(--line);"></span><span class="rot-swatch-lbl">Did not play</span></div>';
+  h+='</div>';
+  const selG=gs.find(x=>String(x.id)===String(rotGameSel))||gs[gs.length-1];
+  h+='<div class="card"><div class="sec-h">On-court timeline &nbsp;&mdash;&nbsp; pick a game</div>';
+  h+='<div class="filters"><label class="flt">Game<select onchange="rotGameSel=this.value;render();">'+gs.map(function(gm){return'<option value="'+gm.id+'"'+(String(gm.id)===String(selG.id)?' selected':'')+'>'+gLabel(gm)+' &middot; '+(gm.date||'')+'</option>';}).join('')+'</select></label></div>';
+  h+='<div style="font-size:13px;color:var(--ink2);margin:4px 0 12px;">'+gLabel(selG)+' &middot; '+(selG.date||'')+' &middot; '+resBadge(selG)+'</div>';
+  h+=renderOnCourtTimeline(d,selG);
   h+='</div>';
   return h;
 }
-function gameByGameTable(d,gs,playersOrder,gameLen){
+function gameByGameTable(d,gs,playersOrder,secsCache){
   if(!gs.length||!playersOrder.length)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No games to show.</div>';
   let h='<div class="tbl-wrap"><table class="rot-table"><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--card);">Player</th>';
   gs.forEach(g=>{h+='<th>'+gLabel(g)+'<br><span style="font-weight:400;color:var(--muted);">'+(g.date||'')+'</span></th>';});
@@ -919,11 +947,13 @@ function gameByGameTable(d,gs,playersOrder,gameLen){
   playersOrder.forEach(a=>{
     h+='<tr><td style="text-align:left;position:sticky;left:0;background:var(--card);white-space:nowrap;"><span class="bd-num">'+pnum(d.names,a.pid)+'</span>'+pname(d.names,a.pid)+'</td>';
     gs.forEach(g=>{
-      const m=g.summary.minutes[a.pid]||0;
-      const pctG=gameLen?Math.min(100,Math.round(m/gameLen*100)):0;
-      const bg=rotCellColor(pctG,m>0);
+      const secs=(secsCache[g.id]&&secsCache[g.id][a.pid])||0;
+      const m=secs/60;
+      const gameFullSecs=(g.periodSecs||(isTwoHalf(g)?1200:420))*(isTwoHalf(g)?2:4);
+      const pctG=gameFullSecs?Math.min(100,Math.round(secs/gameFullSecs*100)):0;
+      const bg=rotCellColor(pctG,secs>0);
       const fg=pctG>=45?'#fff':'var(--ink)';
-      const label=m>0?fmtMin(m):'—';
+      const label=secs>0?fmtMin(m):'—';
       h+='<td class="rot-cell" style="background:'+bg+';color:'+fg+';" title="'+gLabel(g)+': '+fmtMin(m)+' min ('+pctG+'% of game)">'+label+'</td>';
     });
     const avg=a.gp>0?a.min/a.gp:0;
@@ -939,6 +969,78 @@ function rotCellColor(pct,played){
   if(pct>=40)return'#7cc4a6';
   if(pct>=20)return'#c4e3d4';
   return'#e7f2ec';
+}
+/* ── ON-COURT TIMELINE — reconstructed from sub_on/sub_off/start events ── */
+function parseElapsedSecs(ts){
+  if(!ts)return 0;
+  const parts=ts.split(' ');
+  if(parts.length<2)return 0;
+  const mmss=parts[1].split(':');
+  if(mmss.length<2)return 0;
+  return(parseInt(mmss[0])||0)*60+(parseInt(mmss[1])||0);
+}
+function buildOnCourtStints(g){
+  const periodSecs=g.periodSecs||(isTwoHalf(g)?1200:420);
+  const tl=(g.timeline||[]).slice().sort((a,b)=>(a.id||0)-(b.id||0));
+  const open={},segs={};
+  const addSeg=(pid,q,start,end)=>{if(end<=start)return;if(!segs[pid])segs[pid]=[];segs[pid].push({q,start,end});};
+  const closeStint=(pid,endQ,endElapsed)=>{
+    const o=open[pid];if(!o)return;
+    if(endQ===o.q){addSeg(pid,o.q,o.elapsed,endElapsed);}
+    else{
+      addSeg(pid,o.q,o.elapsed,periodSecs);
+      for(let q=o.q+1;q<endQ;q++)addSeg(pid,q,0,periodSecs);
+      addSeg(pid,endQ,0,endElapsed);
+    }
+    delete open[pid];
+  };
+  let maxQ=1;
+  tl.forEach(ev=>{
+    maxQ=Math.max(maxQ,ev.q||1);
+    if(ev.type==='start'){
+      ((ev.data&&ev.data.pids)||[]).forEach(pid=>{open[pid]={q:1,elapsed:0};});
+    }else if(ev.type==='sub_on'){
+      const pid=ev.data&&ev.data.pid;if(pid==null)return;
+      open[pid]={q:ev.q||1,elapsed:parseElapsedSecs(ev.ts)};
+    }else if(ev.type==='sub_off'){
+      const pid=ev.data&&ev.data.pid;if(pid==null)return;
+      closeStint(pid,ev.q||1,parseElapsedSecs(ev.ts));
+    }
+  });
+  const finalQ=Math.max(maxQ,g.quarter||1);
+  Object.keys(open).forEach(pid=>{closeStint(Number(pid),finalQ,periodSecs);});
+  const periods=isTwoHalf(g)?2:Math.min(4,Math.max(finalQ,1));
+  return{segs,periods,periodSecs};
+}
+function renderOnCourtTimeline(d,g){
+  const{segs,periods,periodSecs}=buildOnCourtStints(g);
+  const pids=Object.keys(segs).map(Number);
+  if(!pids.length)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No on-court tracking logged for this game.</div>';
+  const totalSecs={};
+  pids.forEach(pid=>{totalSecs[pid]=(segs[pid]||[]).reduce((s,seg)=>s+(seg.end-seg.start),0);});
+  const order=pids.slice().sort((a,b)=>totalSecs[b]-totalSecs[a]);
+  const totalWidth=periods*periodSecs;
+  const rowH=28,gap=6,labelW=150,chartW=560,rightW=64;
+  const svgW=labelW+chartW+rightW;
+  const svgH=order.length*(rowH+gap)+30;
+  const xOf=sec=>labelW+(sec/totalWidth)*chartW;
+  let s='<div style="overflow-x:auto;"><svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;min-width:560px;display:block;">';
+  for(let p=1;p<=periods;p++){
+    const x0=xOf((p-1)*periodSecs),x1=xOf(p*periodSecs);
+    s+='<line x1="'+x1+'" y1="16" x2="'+x1+'" y2="'+(svgH-6)+'" stroke="#e8e6e1" stroke-width="1"/>';
+    s+='<text x="'+((x0+x1)/2)+'" y="12" text-anchor="middle" font-size="10" font-weight="600" fill="#9aa4b2">'+(periods===2?'H':'Q')+p+'</text>';
+  }
+  order.forEach((pid,i)=>{
+    const y=22+i*(rowH+gap);
+    s+='<text x="0" y="'+(y+rowH/2+4)+'" font-size="12" font-weight="500" fill="#17202b">'+pnum(d.names,pid)+' '+pname(d.names,pid)+'</text>';
+    (segs[pid]||[]).forEach(seg=>{
+      const gx=xOf((seg.q-1)*periodSecs+seg.start),gx2=xOf((seg.q-1)*periodSecs+seg.end);
+      s+='<rect x="'+gx+'" y="'+y+'" width="'+Math.max(1,gx2-gx)+'" height="'+rowH+'" rx="4" fill="var(--vjbl)"><title>'+pname(d.names,pid)+' '+(periods===2?'H':'Q')+seg.q+': '+Math.round((seg.end-seg.start)/6)/10+' min</title></rect>';
+    });
+    const mins=(totalSecs[pid]/60).toFixed(1);
+    s+='<text x="'+(svgW-rightW+8)+'" y="'+(y+rowH/2+4)+'" font-size="12" font-weight="600" fill="#344152">'+mins+'m</text>';
+  });
+  return s+'</svg></div>';
 }
 function vOpposition(d){
   const gs=d.games;
