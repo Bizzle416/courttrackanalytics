@@ -206,6 +206,14 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .bd-val{font-size:12px;color:var(--ink2);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .bd-pct{color:var(--muted);font-size:11px;}
 .bd-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;}
+.rot-table{border-collapse:separate;border-spacing:3px;}
+.rot-table th{font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;white-space:nowrap;text-align:center;text-transform:none;letter-spacing:0;border-bottom:none;}
+.rot-table th:first-child{text-align:left;}
+.rot-table td{padding:0;border-bottom:none;text-align:center;}
+.rot-cell{min-width:56px;height:34px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;border-radius:5px;white-space:nowrap;}
+.rot-legend{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);}
+.rot-swatch{width:16px;height:12px;border-radius:3px;display:inline-block;}
+.rot-swatch-lbl{margin-right:10px;}
 footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:var(--subtle);}
 @media(max-width:700px){
   main{padding:20px 16px 60px;}
@@ -909,7 +917,41 @@ function vRotation(d){
   h+='</div>';
   h+='<div class="bd-legend"><div class="mom-legend-item"><span class="mom-dot" style="background:var(--win);"></span>Top third — heaviest minutes</div><div class="mom-legend-item"><span class="mom-dot" style="background:var(--vjbl);"></span>Middle third</div><div class="mom-legend-item"><span class="mom-dot" style="background:#9aa4b2;"></span>Bottom third — bench depth</div></div>';
   h+='</div>';
+  h+='<div class="card"><div class="sec-h">Game-by-game rotation &nbsp;&mdash;&nbsp; '+filterLabel+'</div>';
+  h+='<div class="bd-sub">Minutes played per game &middot; darker = more minutes, relative to a '+gameLen+'-min game</div>';
+  h+=gameByGameTable(d,gs,withAvg,gameLen);
+  h+='<div class="rot-legend"><span class="rot-swatch" style="background:#0f6e50;"></span><span class="rot-swatch-lbl">Heavy minutes</span><span class="rot-swatch" style="background:#a9d8c3;"></span><span class="rot-swatch-lbl">Moderate</span><span class="rot-swatch" style="background:#e7f2ec;"></span><span class="rot-swatch-lbl">Light</span><span class="rot-swatch" style="background:#f0eeea;border:1px solid var(--line);"></span><span class="rot-swatch-lbl">Did not play</span></div>';
+  h+='</div>';
   return h;
+}
+function gameByGameTable(d,gs,playersOrder,gameLen){
+  if(!gs.length||!playersOrder.length)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No games to show.</div>';
+  let h='<div class="tbl-wrap"><table class="rot-table"><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--card);">Player</th>';
+  gs.forEach(g=>{h+='<th>'+gLabel(g)+'<br><span style="font-weight:400;color:var(--muted);">'+(g.date||'')+'</span></th>';});
+  h+='<th>Season avg</th></tr></thead><tbody>';
+  playersOrder.forEach(a=>{
+    h+='<tr><td style="text-align:left;position:sticky;left:0;background:var(--card);white-space:nowrap;"><span class="bd-num">'+pnum(d.names,a.pid)+'</span>'+pname(d.names,a.pid)+'</td>';
+    gs.forEach(g=>{
+      const m=g.summary.minutes[a.pid]||0;
+      const pctG=gameLen?Math.min(100,Math.round(m/gameLen*100)):0;
+      const bg=rotCellColor(pctG,m>0);
+      const fg=pctG>=45?'#fff':'var(--ink)';
+      const label=m>0?fmtMin(m):'—';
+      h+='<td class="rot-cell" style="background:'+bg+';color:'+fg+';" title="'+gLabel(g)+': '+fmtMin(m)+' min ('+pctG+'% of game)">'+label+'</td>';
+    });
+    const avg=a.gp>0?a.min/a.gp:0;
+    h+='<td style="font-weight:600;">'+fmtMin(avg)+'</td>';
+    h+='</tr>';
+  });
+  return h+'</tbody></table></div>';
+}
+function rotCellColor(pct,played){
+  if(!played)return'#f0eeea';
+  if(pct>=70)return'#0f6e50';
+  if(pct>=55)return'#1a9e72';
+  if(pct>=40)return'#7cc4a6';
+  if(pct>=20)return'#c4e3d4';
+  return'#e7f2ec';
 }
 function vOpposition(d){
   const gs=d.games;
