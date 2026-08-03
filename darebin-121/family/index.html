@@ -1462,7 +1462,15 @@ async function attemptFamilyUnlock(){
 }
 
 function switchPlayer(){
-  try{localStorage.removeItem('courttrack_family_dar121');}catch(e){}
+  if(window.__ADMIN_BYPASS__){
+    // Admin session: never reload (reload loses the bypass flag and the
+    // one-time ?bypass= URL param is already stripped) — just drop back
+    // to the player picker client-side, same as the in-panel back button.
+    selPlayer=null;
+    render();
+    return;
+  }
+  try{localStorage.removeItem(FAMILY_STORE_KEY);}catch(e){}
   location.reload();
 }
 document.getElementById('family-unlock-btn').addEventListener('click',attemptFamilyUnlock);
@@ -1477,10 +1485,13 @@ async function checkStoredFamilyUnlock(){
     window.history.replaceState(null,'',window.location.pathname);
   }
 
-  // Admin bypass — skip gate entirely and render the app straight away
+  // Admin bypass — skip gate entirely and render the app straight away.
+  // Switch-player button stays visible: switchPlayer() now checks this same
+  // flag and never reloads under bypass, so admins can move between players
+  // without hitting the code gate again.
   if(window.__ADMIN_BYPASS__){
     document.getElementById('family-gate').style.display='none';
-    document.getElementById('switch-player-btn').style.display='none';
+    document.getElementById('switch-player-btn').style.display='block';
     showFamilyApp();
     render(true);
     return true;
