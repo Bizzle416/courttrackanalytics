@@ -1394,7 +1394,7 @@ async function render(reload){
     if(reload||!cache[curTeam])mainEl.innerHTML='<div class="loading">Loading season data&hellip;</div>';
     const d=await loadTeam(curTeam);
     const t=d.team;
-    let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
+    let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
     if(IS_COACH){
       if(curView==='overview')h+=vOverview(d);
       else if(curView==='games')h+=vGames(d);
@@ -1423,16 +1423,16 @@ async function render(reload){
    isolation needs the Edge Function + RLS work, not yet deployed for this
    team. Codes are stored as SHA-256 hashes, never plaintext, in this file. */
 const FAMILY_CODES={
-  'bb6a6d4663e42a6da756aac31cb724936483ccd6756f7961618df375791bc7f9':{pid:19,name:"Kaiah Black"},
-  '9f6e6c5e8a00b88d13ff62435c80c427df1196b2bf7c560f298f6248783a894d':{pid:31,name:"Scarlett Walters"},
-  '7a98cf84658b3d6c21adcb242c18bb994192e680e109046124495382d3f54104':{pid:41,name:"Harper Powell"},
-  '305936777bdad72eaacf987a56693ae48d76d57625c01566c23b7366d3da7443':{pid:43,name:"Harper Ritchie"},
-  '9bcc65f90e470ac39013b2ec754945d2ba617fdf39d1120539189722b8dad21c':{pid:45,name:"Mila Dixon"},
-  '2b3ba2b2b7c39b634dbafae379a6114cf641654e6d784ef24f32f616b67c727b':{pid:53,name:"Greta Morris"},
-  '935b5d49a7ceb8eb4dbd3262fd615a085ec4883d176562414ff0c8cc44046473':{pid:55,name:"Lara Shaw"},
-  'cbcf3297c62617bf27acbc86effce50cd1b88a61052ec07646a19a3eb393715f':{pid:73,name:"Mackenzie Haas-Baker"},
-  '15d71b894aa40bf7b9a7f5299e3fd4c8e4f1e27d749f2449d4b94267951e9e6a':{pid:75,name:"Taylah Wignell"},
-  '0870a8d99597e433f708283acdd6ee2714712cb7391f65b4251050f2350873c7':{pid:77,name:"Billie Burrell"}
+  'bb6a6d4663e42a6da756aac31cb724936483ccd6756f7961618df375791bc7f9':{pid:19},
+  '9f6e6c5e8a00b88d13ff62435c80c427df1196b2bf7c560f298f6248783a894d':{pid:31},
+  '7a98cf84658b3d6c21adcb242c18bb994192e680e109046124495382d3f54104':{pid:41},
+  '305936777bdad72eaacf987a56693ae48d76d57625c01566c23b7366d3da7443':{pid:43},
+  '9bcc65f90e470ac39013b2ec754945d2ba617fdf39d1120539189722b8dad21c':{pid:45},
+  '2b3ba2b2b7c39b634dbafae379a6114cf641654e6d784ef24f32f616b67c727b':{pid:53},
+  '935b5d49a7ceb8eb4dbd3262fd615a085ec4883d176562414ff0c8cc44046473':{pid:55},
+  'cbcf3297c62617bf27acbc86effce50cd1b88a61052ec07646a19a3eb393715f':{pid:73},
+  '15d71b894aa40bf7b9a7f5299e3fd4c8e4f1e27d749f2449d4b94267951e9e6a':{pid:75},
+  '0870a8d99597e433f708283acdd6ee2714712cb7391f65b4251050f2350873c7':{pid:77}
 };
 const FAMILY_STORE_KEY='courttrack_family_dv121';
 let FAMILY_UNLOCKED_PID=null;
