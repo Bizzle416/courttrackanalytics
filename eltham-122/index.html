@@ -192,6 +192,20 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .pgm-stat.s-loss .sv{color:var(--loss);}
 /* ── NOTICE ── */
 .notice{padding:12px 16px;background:#fef9ec;border:1px solid #edd9a3;border-radius:8px;font-size:13px;color:#7a5500;margin-bottom:16px;line-height:1.5;}
+/* ── ROTATION / BENCH DEPTH ── */
+.bd-sub{font-size:12px;color:var(--muted);margin:-10px 0 16px;}
+.bd-list{display:flex;flex-direction:column;gap:10px;}
+.bd-row{display:grid;grid-template-columns:150px 1fr 96px;align-items:center;gap:14px;}
+.bd-name{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bd-num{color:var(--maple);font-weight:700;margin-right:4px;}
+.bd-track{height:22px;background:var(--line2);border-radius:5px;overflow:hidden;position:relative;}
+.bd-fill{height:100%;border-radius:5px;transition:width .2s;}
+.bd-fill.bd-high{background:var(--win);}
+.bd-fill.bd-mid{background:var(--vjbl);}
+.bd-fill.bd-low{background:#9aa4b2;}
+.bd-val{font-size:12px;color:var(--ink2);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.bd-pct{color:var(--muted);font-size:11px;}
+.bd-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;}
 footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:var(--subtle);}
 @media(max-width:700px){
   main{padding:20px 16px 60px;}
@@ -248,7 +262,7 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
-  {key:'eltham_u12_girls2',aliases:['eltham_u12_wildcats','eltham_wildcats_u12_girls_2','eltham_wildcats_12_2_girls'],label:'Eltham 12.2',full:'Eltham Wildcats U12 Girls 2',comp:'Grading · 10-min running clock',
+  {key:'eltham_u12_girls2',aliases:['eltham_u12_wildcats','eltham_wildcats_u12_girls_2','eltham_wildcats_12_2_girls'],label:'Eltham 12.2',full:'Eltham Wildcats U12 Girls 2',comp:'Grading · 10-min running clock',gameLenMin:40,
    roster:{4:{num:'#4',name:'Elara Jewell'},6:{num:'#6',name:'Grace Burslem'},8:{num:'#8',name:'Evie Davis'},10:{num:'#10',name:'Quinn Cukier'},13:{num:'#13',name:'Emilia Wynne'},15:{num:'#15',name:'Madeline Hadley'},21:{num:'#21',name:'Ellie Spithill'},22:{num:'#22',name:'Harper Bolton'},23:{num:'#23',name:"Zoe O'Connell"},33:{num:'#33',name:'Eva Leverton'}}}
 ];
 /* BUILD:ANALYTICS_CONFIG_END */
@@ -263,6 +277,7 @@ const COACH_VIEWS=[
   {id:'games',label:'Games'},
   {id:'players',label:'Players'},
   {id:'shooting',label:'Shooting'},
+  {id:'rotation',label:'Rotation'},
   {id:'opposition',label:'Opposition'},
   {id:'analytics',label:'Analytics'},
   {id:'progression',label:'Progression'}
@@ -864,6 +879,38 @@ function vShooting(d){
   return h;
 }
 
+function vRotation(d){
+  const allGs=d.games;
+  if(!allGs.length)return'<div class="card"><div class="loading">No completed games recorded for this team yet.</div></div>';
+  const gs=filteredGames(allGs);
+  const filterLabel=activeGameType==='all'?'All games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  let h=gameTypeFilterBar(allGs);
+  if(!gs.length)return h+'<div class="card"><div class="loading">No '+filterLabel.toLowerCase()+' logged yet.</div></div>';
+  const rows=seasonPlayersFiltered(d,gs).filter(a=>a.gp>0);
+  if(!rows.length)return h+'<div class="card"><div class="loading">No minutes logged yet for '+filterLabel.toLowerCase()+'.</div></div>';
+  const gameLen=d.team.gameLenMin||28;
+  const withAvg=rows.map(a=>({...a,avgMin:a.min/a.gp})).sort((x,y)=>y.avgMin-x.avgMin);
+  const n=withAvg.length;
+  const hiCut=Math.ceil(n/3),midCut=Math.ceil(n*2/3);
+  h+='<div class="card"><div class="sec-h">Bench depth &nbsp;&mdash;&nbsp; '+filterLabel+' ('+gs.length+' game'+(gs.length===1?'':'s')+')</div>';
+  h+='<div class="bd-sub">Avg minutes per game played, shown vs a '+gameLen+'-min game</div>';
+  h+='<div class="bd-list">';
+  withAvg.forEach((a,i)=>{
+    const pctOfGame=Math.min(100,Math.round(a.avgMin/gameLen*100));
+    const tier=i<hiCut?'high':i<midCut?'mid':'low';
+    const mm=Math.floor(a.avgMin),ss=Math.round((a.avgMin-mm)*60);
+    const timeStr=mm+':'+String(ss).padStart(2,'0');
+    h+='<div class="bd-row">';
+    h+='<div class="bd-name"><span class="bd-num">'+pnum(d.names,a.pid)+'</span>'+pname(d.names,a.pid)+'</div>';
+    h+='<div class="bd-track"><div class="bd-fill bd-'+tier+'" style="width:'+pctOfGame+'%;"></div></div>';
+    h+='<div class="bd-val">'+timeStr+' <span class="bd-pct">('+pctOfGame+'%)</span></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<div class="bd-legend"><div class="mom-legend-item"><span class="mom-dot" style="background:var(--win);"></span>Top third — heaviest minutes</div><div class="mom-legend-item"><span class="mom-dot" style="background:var(--vjbl);"></span>Middle third</div><div class="mom-legend-item"><span class="mom-dot" style="background:#9aa4b2;"></span>Bottom third — bench depth</div></div>';
+  h+='</div>';
+  return h;
+}
 function vOpposition(d){
   const gs=d.games;
   if(!gs.length)return'<div class="card"><div class="loading">No completed games yet.</div></div>';
@@ -1386,6 +1433,7 @@ async function render(reload){
       else if(curView==='shooting')h+=vShooting(d);
       else if(curView==='analytics')h+=vAnalytics(d);
       else if(curView==='progression')h+=vProgressionCoach(d);
+      else if(curView==='rotation')h+=vRotation(d);
       else h+=vOpposition(d);
     }else{
       if(curView==='players')h+=vPlayersParent(d);
