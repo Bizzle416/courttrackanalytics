@@ -6,7 +6,7 @@
 <title>Free Trial — CourtTrack Analytics</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
-:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;}
+:root{--navy:#0d1a2b;--navy2:#132540;--navy3:#1b3152;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;--win:#1a9e72;--err:#d9645b;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;-webkit-font-smoothing:antialiased;}
 a{color:inherit;text-decoration:none;}
@@ -33,10 +33,12 @@ h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px)
 @media(max-width:580px){.form-row{grid-template-columns:1fr;}}
 .grp{display:flex;flex-direction:column;gap:8px;}
 .grp label{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.grp label .req{color:var(--maple);}
 .hint{font-size:10px;color:var(--faint);letter-spacing:.04em;text-transform:none;margin-left:6px;}
 .grp input,.grp textarea{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:13px 16px;color:var(--chalk);font-family:'Inter';font-size:14px;outline:none;transition:border-color .15s;resize:vertical;width:100%;}
 .grp input::placeholder,.grp textarea::placeholder{color:var(--faint);}
 .grp input:focus,.grp textarea:focus{border-color:var(--maple);}
+.grp input:invalid:not(:placeholder-shown){border-color:var(--err);}
 .link-box{background:rgba(217,160,91,.06);border:1px solid rgba(217,160,91,.25);border-radius:8px;padding:24px;}
 .link-box .lb-title{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--maple);margin-bottom:8px;}
 .link-box .lb-note{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.55;}
@@ -45,9 +47,12 @@ h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px)
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07);}
 .btn{background:var(--maple);color:#0d1a2b;font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;padding:15px 36px;border:none;border-radius:8px;cursor:pointer;align-self:flex-start;transition:opacity .15s;}
 .btn:hover{opacity:.88;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
 .foot-note{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--faint);margin-top:6px;}
-.success{background:rgba(26,158,114,.1);border:1px solid rgba(26,158,114,.3);border-radius:8px;padding:24px 28px;color:#1a9e72;font-size:15px;line-height:1.65;display:none;}
-.success.show{display:block;}
+.success,.error{border-radius:8px;padding:24px 28px;font-size:15px;line-height:1.65;display:none;}
+.success{background:rgba(26,158,114,.1);border:1px solid rgba(26,158,114,.3);color:#1a9e72;}
+.error{background:rgba(217,100,91,.1);border:1px solid rgba(217,100,91,.3);color:var(--err);}
+.success.show,.error.show{display:block;}
 footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM Plex Mono';font-size:11.5px;color:var(--faint);text-align:center;}
 </style>
 </head>
@@ -73,10 +78,9 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   <div class="promise">
     <div class="promise-item"><div class="pi-label">What you send</div><p>A shareable link to your game footage. Any platform, any format.</p></div>
     <div class="promise-item"><div class="pi-label">What you get</div><p>Full intelligence pack for coaches + a family view for every player.</p></div>
-
   </div>
 
-  <form class="form" onsubmit="handleTrial(event)">
+  <form class="form" id="trialForm" onsubmit="handleTrial(event)">
     <div class="form-row">
       <div class="grp"><label>Club name</label><input type="text" id="t-club" placeholder="e.g. Eltham Basketball Club" required></div>
       <div class="grp"><label>Team name</label><input type="text" id="t-team" placeholder="e.g. U12 Girls 2" required></div>
@@ -89,30 +93,103 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="divider">footage link</div>
 
     <div class="link-box">
-      <div class="lb-title">Shareable footage link</div>
-      <p class="lb-note">Upload your game to Google Drive, Dropbox, YouTube (unlisted) or any platform and paste the link below. Make sure sharing is set to <strong>"Anyone with the link can view"</strong> before submitting.</p>
-      <div class="grp"><input type="url" id="t-link" placeholder="https://drive.google.com/file/..." ></div>
+      <div class="lb-title">Shareable footage link <span class="req">*required</span></div>
+      <p class="lb-note">Upload your game to Google Drive, Dropbox, YouTube (unlisted) or any platform and paste the link below. Make sure sharing is set to <strong>"Anyone with the link can view"</strong> before submitting. <strong>We can't start your trial without this</strong> — it's the whole point.</p>
+      <div class="grp"><input type="url" id="t-link" placeholder="https://drive.google.com/file/..." required></div>
     </div>
 
     <div class="grp"><label>Notes <span class="hint">Optional — game date, opposition, player numbers, anything useful</span></label><textarea id="t-notes" rows="3" placeholder="e.g. Round 4 vs Diamond Valley, 12 Jul. #10 is our point guard..."></textarea></div>
 
-    <div>
-      <button type="submit" class="btn">Submit for free trial →</button>
-      <p class="foot-note">We'll be in touch once we've received your submission.</p>
+    <!-- honeypot: real users never see or fill this -->
+    <div style="position:absolute;left:-9999px;" aria-hidden="true">
+      <input type="text" id="t-hp" name="website" tabindex="-1" autocomplete="off">
     </div>
-    <div class="success" id="success">✓ Your email client should have opened with everything pre-filled — hit send and we'll take it from there. Expect a confirmation from us within 24 hours.</div>
+
+    <div>
+      <button type="submit" class="btn" id="submitBtn">Submit for free trial →</button>
+      <p class="foot-note">You'll get an automatic confirmation email the moment this is submitted.</p>
+    </div>
+    <div class="success" id="success">✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll follow up within 24 hours to talk through your footage.</div>
+    <div class="error" id="error">Something went wrong submitting your request. Please try again, or email us directly at <strong>enquiries@courttrackanalytics.com.au</strong>.</div>
   </form>
 </div>
 
 <footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-function handleTrial(e){
+// ---- CONFIG: fill these in before deploying ----
+const SUPABASE_URL = 'https://uenxuzczcwtmiuzbnoxk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOj';
+
+const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
+const EMAILJS_SERVICE_ID = 'service_nx9448n';
+const EMAILJS_TEMPLATE_ID = 'template_c8242oc';
+// --------------------------------------------------
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'REPLACE_EMAILJS_PUBLIC_KEY') {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
+async function handleTrial(e){
   e.preventDefault();
-  const v=id=>document.getElementById(id).value;
-  const body=`Free Trial Request\n\nClub: ${v('t-club')}\nTeam: ${v('t-team')}\nContact: ${v('t-name')}\nEmail: ${v('t-email')}\nFootage link: ${v('t-link')||'Not provided'}\nNotes: ${v('t-notes')||'None'}`;
-  window.location.href=`mailto:enquiries@courttrackanalytics.com.au?subject=Free Trial — ${encodeURIComponent(v('t-club'))} ${encodeURIComponent(v('t-team'))}&body=${encodeURIComponent(body)}`;
-  document.getElementById('success').classList.add('show');
+
+  const successEl = document.getElementById('success');
+  const errorEl = document.getElementById('error');
+  successEl.classList.remove('show');
+  errorEl.classList.remove('show');
+
+  // honeypot: bots fill every field, humans never see this one
+  if (document.getElementById('t-hp').value) return;
+
+  const v = id => document.getElementById(id).value.trim();
+  const club = v('t-club'), team = v('t-team'), name = v('t-name'),
+        email = v('t-email'), link = v('t-link'), notes = v('t-notes');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const { error: dbError } = await supabaseClient
+      .from('trial_submissions')
+      .insert({
+        club_name: club,
+        team_name: team,
+        contact_name: name,
+        email: email,
+        footage_link: link,
+        notes: notes || null
+      });
+
+    if (dbError) throw dbError;
+
+    // Confirmation email is best-effort — a failure here should not make
+    // the user think their submission failed, since it's already saved.
+    if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'REPLACE_EMAILJS_PUBLIC_KEY') {
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email: email,
+          contact_name: name,
+          club_name: club,
+          team_name: team
+        });
+      } catch (emailErr) {
+        console.error('Confirmation email failed (submission still saved):', emailErr);
+      }
+    }
+
+    successEl.classList.add('show');
+    document.getElementById('trialForm').reset();
+  } catch (err) {
+    console.error('Trial submission failed:', err);
+    errorEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit for free trial →';
+  }
 }
 </script>
 </body>
