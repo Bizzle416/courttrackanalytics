@@ -231,8 +231,33 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
   .hero-meta-item .v{font-size:22px;}
 }
 </style>
+<script>
+// ── ADMIN BYPASS ──────────────────────────────────────────────────────────
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('bypass') === 'C90C7E45-EA0A-469B-8284-A5332D59DFA0'){
+    // Valid admin bypass — remove token from URL cleanly then continue
+    const clean = window.location.pathname;
+    window.history.replaceState(null,'',clean);
+    window.__ADMIN_BYPASS__ = true;
+  }
+})();
+// ──────────────────────────────────────────────────────────────────────────
+</script>
 </head>
 <body>
+<div id="coach-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
+  <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
+    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Diamond Valley U12.1 &middot; Coach access</div>
+    <div style="font-size:13px;color:#344152;margin-bottom:14px;">Enter the coach passcode to view full team analytics.</div>
+    <input id="coach-code-input" type="text" placeholder="Coach passcode" autocapitalize="characters" autocomplete="off"
+      style="width:100%;padding:12px 14px;border:1.5px solid #e8e6e1;border-radius:8px;font-size:15px;text-align:center;letter-spacing:.05em;text-transform:uppercase;font-family:'Inter',monospace;outline:none;margin-bottom:12px;box-sizing:border-box;">
+    <button id="coach-unlock-btn" style="width:100%;padding:12px;border:none;border-radius:8px;background:#101d31;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Unlock</button>
+    <div id="coach-gate-error" style="font-size:12px;color:#d9413f;margin-top:12px;min-height:16px;"></div>
+  </div>
+</div>
+<div id="app-root" style="display:none;">
 <header>
   <div class="hd-inner">
     <div class="hd-top">
@@ -251,6 +276,7 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 </header>
 <main id="main"><div class="loading">Loading season data&hellip;</div></main>
 <footer id="footer">CourtTrack Analytics &middot; Diamond Valley U12.1 &middot; figures live from the event log</footer>
+</div>
 
 <script>
 /* BUILD:ANALYTICS_CONFIG — DIAMOND VALLEY 12.1 SINGLE-TEAM COACH BUILD, DO NOT ADD OTHER TEAMS HERE */
@@ -1577,7 +1603,49 @@ async function render(reload){
     mainEl.innerHTML='<div class="err">Could not load data: '+e.message+'<br><span style="font-size:12px;color:var(--muted);">Check the Supabase project is reachable.</span></div>';
   }
 }
-render(true);
+/* ── COACH ACCESS GATE ──
+   Cosmetic client-side gate: stops a casual link-holder from seeing full
+   team analytics. The anon key below still fetches the whole team's data
+   into this page's memory regardless of this gate — real protection needs
+   the Edge Function + RLS work, not yet deployed for this team. The code
+   is stored as a SHA-256 hash, never plaintext, in this file. */
+const COACH_CODE_HASH='90ce1546e1b9960c3cc6ac122e789207045b915a5fe5b252490c3d643246b297';
+const COACH_STORE_KEY='courttrack_coach_dv121';
+function showCoachApp(){
+  document.getElementById('coach-gate').style.display='none';
+  document.getElementById('app-root').style.display='';
+}
+async function attemptCoachUnlock(){
+  const input=document.getElementById('coach-code-input');
+  const err=document.getElementById('coach-gate-error');
+  const code=(input.value||'').trim();
+  if(!code){err.textContent='Enter the coach passcode.';return;}
+  const h=await sha256Hex(code);
+  if(h!==COACH_CODE_HASH){err.textContent='Incorrect passcode.';return;}
+  try{localStorage.setItem(COACH_STORE_KEY,JSON.stringify({h:h}));}catch(e){}
+  showCoachApp();
+  render(true);
+}
+document.getElementById('coach-unlock-btn').addEventListener('click',attemptCoachUnlock);
+document.getElementById('coach-code-input').addEventListener('keydown',e=>{if(e.key==='Enter')attemptCoachUnlock();});
+async function sha256Hex(str){
+  const enc=new TextEncoder().encode(str.trim().toUpperCase());
+  const buf=await crypto.subtle.digest('SHA-256',enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function checkStoredCoachUnlock(){
+  try{
+    if(window.__ADMIN_BYPASS__){
+      showCoachApp();render(true);return true;
+    }
+    const saved=JSON.parse(localStorage.getItem(COACH_STORE_KEY)||'null');
+    if(saved&&saved.h===COACH_CODE_HASH){
+      showCoachApp();render(true);return true;
+    }
+  }catch(e){}
+  return false;
+}
+checkStoredCoachUnlock();
 </script>
 </body>
 </html>
