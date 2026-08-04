@@ -48,119 +48,83 @@ footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size
 </head>
 <body>
 <header>
-  <div class="hd">
-    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
-    <nav>
-      <a class="nav-link" href="/about">About</a>
-      <a class="nav-link" href="/pricing">Pricing</a>
-      <a class="nav-link" href="/faqs">FAQs</a>
-      <a class="nav-link active" href="/login">Team Login</a>
-      <a class="nav-link cta" href="/free-trial">Free Trial</a>
-    </nav>
-  </div>
+<div class="hd">
+<a class="logo" href="/">Court<span>Track</span> Analytics</a>
+<nav>
+<a class="nav-link" href="/about">About</a>
+<a class="nav-link" href="/pricing">Pricing</a>
+<a class="nav-link" href="/faqs">FAQs</a>
+<a class="nav-link active" href="/login">Team Login</a>
+<a class="nav-link cta" href="/free-trial">Free Trial</a>
+</nav>
+</div>
 </header>
-
 <main>
-  <div class="box">
-    <div class="kicker">Team access</div>
-    <h1>Enter your<br>access code</h1>
-    <p class="sub">Your access code was sent to you by your team manager. Enter it below to view your dashboard.</p>
-
-    <div class="field-wrap">
-      <input class="code-input" id="code" type="password" placeholder="Enter your access code" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" oninput="clearError()" onkeydown="if(event.key==='Enter')tryLogin()">
-      <button class="toggle-vis" onclick="toggleVis()" aria-label="Show/hide code" tabindex="-1">
-        <svg id="eye-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
-    </div>
-    <div class="error-msg" id="err"></div>
-    <button class="login-btn" onclick="tryLogin()">Access dashboard →</button>
-
-    <div class="divider"><span>need help?</span></div>
-    <p class="help">Contact your team manager or reach us at<br><a href="mailto:enquiries@courttrackanalytics.com.au">enquiries@courttrackanalytics.com.au</a></p>
-
-    <p class="trial-link">Not a member yet? <a href="/free-trial">Start a free trial →</a></p>
-  </div>
+<div class="box">
+<div class="kicker">Team access</div>
+<h1>Enter your<br>access code</h1>
+<p class="sub">Your access code was sent to you by your team manager. Enter it below to view your dashboard.</p>
+<div class="field-wrap">
+<input class="code-input" id="code" type="password" placeholder="Enter your access code" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" oninput="clearError()" onkeydown="if(event.key==='Enter')tryLogin()">
+<button class="toggle-vis" onclick="toggleVis()" aria-label="Show/hide code" tabindex="-1">
+<svg id="eye-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+</button>
+</div>
+<div class="error-msg" id="err"></div>
+<button class="login-btn" id="login-btn" onclick="tryLogin()">Access dashboard →</button>
+<div class="divider"><span>need help?</span></div>
+<p class="help">Contact your team manager or reach us at<br><a href="mailto:enquiries@courttrackanalytics.com.au">enquiries@courttrackanalytics.com.au</a></p>
+<p class="trial-link">Not a member yet? <a href="/free-trial">Start a free trial →</a></p>
+</div>
 </main>
-
 <footer>© 2026 CourtTrack Analytics · ABN registered</footer>
-
 <script>
-// CODE MAP: code → redirect URL
-const CODES = {
-  // ── ADMIN ────────────────────────────────────
-  'KOSA-9E2V-FW6M-8NKF': '__ADMIN__',         // Superadmin
+// No codes live in this file anymore. Every attempt is checked server-side
+// by the validate-code Edge Function, which is the only thing that can
+// see the access_codes table (via the service role key, never exposed
+// to the browser). Update this URL once you deploy the function.
+const VALIDATE_URL = 'https://uenxuzczcwtmiuzbnoxk.functions.supabase.co/validate-code';
 
-  // ── ELTHAM 12.2 ──────────────────────────────
-  'YQR9-026Q-L4MI': '/eltham-122',           // Coach
-  'EW122-PS3A': '/eltham-122/family',         // #4  Elara Jewell
-  'EW122-9KS2': '/eltham-122/family',         // #6  Grace Burslem
-  'EW122-2F50': '/eltham-122/family',         // #8  Evie Davis
-  'EW122-HRJ8': '/eltham-122/family',         // #10 Quinn Cukier
-  'EW122-X7N9': '/eltham-122/family',         // #13 Emilia Wynne
-  'EW122-GS64': '/eltham-122/family',         // #15 Madeline Hadley
-  'EW122-OF8I': '/eltham-122/family',         // #21 Ellie Spithill
-  'EW122-LO27': '/eltham-122/family',         // #22 Harper Bolton
-  'EW122-GL50': '/eltham-122/family',         // #23 Zoe O'Connell
-  'EW122-LK01': '/eltham-122/family',         // #33 Eva Leverton
-
-  // ── ELTHAM 12.1 ──────────────────────────────
-  '4O4I-Z5LI-V89P': '/eltham-121',           // Coach
-  'EW121-0AOR': '/eltham-121/family',         // #5  Chloe Connelley
-  'EW121-CDON': '/eltham-121/family',         // #6  Lily Collett
-  'EW121-S900': '/eltham-121/family',         // #9  Indiana Sage
-  'EW121-5G3H': '/eltham-121/family',         // #11 Imogen Wynd
-  'EW121-ST53': '/eltham-121/family',         // #12 Kiara Carlson
-  'EW121-J7XW': '/eltham-121/family',         // #14 Holly Bannister
-  'EW121-VM0G': '/eltham-121/family',         // #18 Annabelle Liu
-  'EW121-21F8': '/eltham-121/family',         // #24 Olivia Oppedisano
-  'EW121-RNG9': '/eltham-121/family',         // #41 Samantha Neal
-  'EW121-RUQS': '/eltham-121/family',         // #43 Annabella Buncic
-
-  // ── DV 12.1 ──────────────────────────────────
-  'E1TH-ZKUL-3LTM': '/dv-121',              // Coach
-  'DV121-IQYE': '/dv-121/family',            // #19 Kaiah Black
-  'DV121-6YYW': '/dv-121/family',            // #31 Scarlett Walters
-  'DV121-BHC2': '/dv-121/family',            // #41 Harper Powell
-  'DV121-IDKH': '/dv-121/family',            // #43 Harper Ritchie
-  'DV121-VRNK': '/dv-121/family',            // #45 Mila Dixon
-  'DV121-O93W': '/dv-121/family',            // #53 Greta Morris
-  'DV121-3M5G': '/dv-121/family',            // #55 Lara Shaw
-  'DV121-HI2R': '/dv-121/family',            // #73 Mackenzie Haas-Baker
-  'DV121-U9RY': '/dv-121/family',            // #75 Taylah Wignell
-  'DV121-HOIM': '/dv-121/family',            // #77 Billie Burrell
-
-  // ── DAREBIN 12.1 ─────────────────────────────
-  '3XKP-5JHY-4MU9': '/darebin-121',          // Coach
-  'DAR121-Z33T': '/darebin-121/family',       // #1 Zoe Panagiotopoulos
-  'DAR121-AMXZ': '/darebin-121/family',       // #2 Matea Fakalata
-  'DAR121-MZ9U': '/darebin-121/family',       // #3 Lola Muscat
-  'DAR121-KYTR': '/darebin-121/family',       // #5 Selena Torres
-  'DAR121-D3WN': '/darebin-121/family',       // #11 Alice Ngo
-  'DAR121-VVD7': '/darebin-121/family',       // #13 Zoe Pulsford
-  'DAR121-BKMQ': '/darebin-121/family',       // #21 Georgia D'Errico
-  'DAR121-KHJV': '/darebin-121/family',       // #23 Raya Raymond
-  'DAR121-4ZGA': '/darebin-121/family',       // #75 Isabelle Kelton
-  'DAR121-PKQK': '/darebin-121/family',       // #90 Scout Austin
-};
-
-function tryLogin(){
+async function tryLogin(){
   const raw = document.getElementById('code').value.trim().toUpperCase();
-  const dest = CODES[raw];
-  if(dest === '__ADMIN__'){
-    sessionStorage.setItem('ct_admin', '1');
-    window.location.href = '/admin';
-    return;
+  if(!raw){ showError(); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+
+  try{
+    const res = await fetch(VALIDATE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: raw })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if(res.ok && data.redirect === '__ADMIN__'){
+      sessionStorage.setItem('ct_admin', '1');
+      window.location.href = '/admin';
+      return;
+    }
+    if(res.ok && data.redirect){
+      const url = data.redirect.includes('/family') ? data.redirect + '?fresh=1' : data.redirect;
+      window.location.href = url;
+      return;
+    }
+    showError();
+  } catch(e){
+    showError('Something went wrong — check your connection and try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Access dashboard →';
   }
-  if(dest){
-    // Add fresh=1 to family URLs so cache is ignored on arrival
-    const url = dest.includes('/family') ? dest + '?fresh=1' : dest;
-    window.location.href = url;
-  } else {
-    const inp = document.getElementById('code');
-    inp.classList.add('error');
-    document.getElementById('err').textContent = 'Code not recognised — check your code and try again.';
-    setTimeout(()=>inp.classList.remove('error'), 400);
-  }
+}
+
+function showError(msg){
+  const inp = document.getElementById('code');
+  inp.classList.add('error');
+  document.getElementById('err').textContent = msg || 'Code not recognised — check your code and try again.';
+  setTimeout(()=>inp.classList.remove('error'), 400);
 }
 
 function clearError(){
