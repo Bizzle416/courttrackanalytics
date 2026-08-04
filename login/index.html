@@ -83,8 +83,7 @@ footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size
 // by the validate-code Edge Function, which is the only thing that can
 // see the access_codes table (via the service role key, never exposed
 // to the browser). Update this URL once you deploy the function.
-const VALIDATE_URL = 'https://uenxuzczcwtmiuzbnoxk.functions.supabase.co/validate-code';
-
+const VALIDATE_URL = 'https://uenxuzczcwtmiuzbnoxk.supabase.co/functions/v1/validate-code';
 async function tryLogin(){
   const raw = document.getElementById('code').value.trim().toUpperCase();
   if(!raw){ showError(); return; }
