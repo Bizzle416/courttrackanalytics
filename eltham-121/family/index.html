@@ -216,17 +216,17 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 }
 </style>
 <script>
-// ── ADMIN BYPASS ──────────────────────────────────────────────────────────
+// ── ADMIN SESSION UNLOCK ────────────────────────────────
+// No static bypass secret in this file anymore. If this browser tab already
+// logged into /admin this session (server-validated via validate-code),
+// sessionStorage carries that flag here automatically — one login covers
+// every team.
 (function(){
-  const p = new URLSearchParams(window.location.search);
-  if(p.get('bypass') === 'E29B5E59-3386-45CD-9EBD-6E3F271AAB89'){
-    // Valid admin bypass — remove token from URL cleanly then continue
-    const clean = window.location.pathname;
-    window.history.replaceState(null,'',clean);
-    window.__ADMIN_BYPASS__ = true;
-  }
+if(sessionStorage.getItem('ct_admin') === '1'){
+window.__ADMIN_BYPASS__ = true;
+}
 })();
-// ──────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────
 </script>
 </head>
 <body>

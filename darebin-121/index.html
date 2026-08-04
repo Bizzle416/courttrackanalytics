@@ -236,17 +236,17 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 </head>
 <body>
 <script>
-// ── ADMIN BYPASS ──────────────────────────────────────────────────────────
+// ── ADMIN SESSION UNLOCK ────────────────────────────────
+// No static bypass secret in this file anymore. If this browser tab already
+// logged into /admin this session (server-validated via validate-code),
+// sessionStorage carries that flag here automatically — one login covers
+// every team.
 (function(){
-  const p = new URLSearchParams(window.location.search);
-  if(p.get('bypass') === 'IV4K-8YC9-JK6V-4B26'){
-    // Valid admin bypass — remove token from URL cleanly then continue
-    const clean = window.location.pathname;
-    window.history.replaceState(null,'',clean);
-    window.__ADMIN_BYPASS__ = true;
-  }
+if(sessionStorage.getItem('ct_admin') === '1'){
+window.__ADMIN_BYPASS__ = true;
+}
 })();
-// ──────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────
 </script>
 <div id="coach-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
   <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
