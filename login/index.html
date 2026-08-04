@@ -95,7 +95,10 @@ async function tryLogin(){
   try{
     const res = await fetch(VALIDATE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY',
+  'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY'
+  },
       body: JSON.stringify({ code: raw })
     });
     const data = await res.json().catch(() => ({}));
