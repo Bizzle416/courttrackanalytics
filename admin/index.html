@@ -52,7 +52,7 @@ a.player-row:hover .player-name{color:var(--chalk);}
 .player-name{color:var(--muted);flex:1;}
 .player-code{font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);letter-spacing:.06em;}
 
-.quick-links{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:48px;}
+.quick-links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:48px;}
 @media(max-width:760px){.quick-links{grid-template-columns:repeat(2,1fr);}}
 .quick-link{background:var(--navy2);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:16px 18px;display:flex;align-items:center;gap:12px;transition:background .15s;}
 .quick-link:hover{background:var(--navy3);}
@@ -82,10 +82,6 @@ a.player-row:hover .player-name{color:var(--chalk);}
   <!-- QUICK LINKS -->
   <div class="section-label">Quick access</div>
   <div class="quick-links">
-    <a class="quick-link" href="/analytics">
-      <div class="ql-icon green"><svg width="18" height="18" fill="none" stroke="#1a9e72" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <div class="ql-text"><div class="ql-title">Master Analytics</div><div class="ql-sub">All teams dashboard</div></div>
-    </a>
     <a class="quick-link" href="/free-trial">
       <div class="ql-icon orange"><svg width="18" height="18" fill="none" stroke="#d9a05b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
       <div class="ql-text"><div class="ql-title">Free Trial Page</div><div class="ql-sub">courttrackanalytics.com.au/free-trial</div></div>
