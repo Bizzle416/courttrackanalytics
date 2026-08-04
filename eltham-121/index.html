@@ -34,6 +34,8 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:100;box-s
 .mode-badge.coach{background:rgba(45,111,181,.2);color:#7ab3e8;}
 .team-switcher{position:relative;}
 .team-btn{background:var(--navy3);border:1px solid rgba(255,255,255,.12);color:#fff;font-family:'Barlow Condensed';font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:8px 14px 8px 16px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.admin-hub-link{background:none;border:1px solid rgba(255,255,255,.15);color:#8fa0b8;font-family:'Inter',-apple-system,sans-serif;font-size:12px;font-weight:500;padding:8px 12px;border-radius:8px;text-decoration:none;margin-right:8px;display:inline-flex;align-items:center;transition:color .15s,border-color .15s;}
+.admin-hub-link:hover{color:#f1eee6;border-color:rgba(255,255,255,.3);}
 .team-btn:hover{background:var(--navy2);}
 .team-btn svg{width:14px;height:14px;opacity:.7;transition:transform .2s;}
 .team-btn.open svg{transform:rotate(180deg);}
@@ -314,6 +316,13 @@ const VIEWS=IS_COACH?COACH_VIEWS:PARENT_VIEWS;
 /* stamp header */
 document.querySelector('.hd-logo').insertAdjacentHTML('afterend',
   '<span class="mode-badge '+(IS_COACH?'coach':'parent')+'">'+(IS_COACH?'Coach view':'Family view')+'</span>');
+/* Admin Hub link -- only shown to a browser tab that actually logged into
+   /admin this session (sessionStorage flag set there). Regular coaches and
+   families never see this; it never appears for them. */
+if(sessionStorage.getItem('ct_admin')==='1'){
+  document.getElementById('team-switcher').insertAdjacentHTML('afterbegin',
+    '<a href="/admin" class="admin-hub-link">&larr; Admin Hub</a>');
+}
 
 let curTeam=TEAMS[0].key;
 let curView=IS_COACH?'overview':'players';
