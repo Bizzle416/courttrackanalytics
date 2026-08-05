@@ -73,11 +73,11 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <div class="wrap">
   <div class="kicker">No commitment · One game · Full pack</div>
   <h1>Start your<br>free trial</h1>
-  <p class="intro">Send us one game and we'll deliver a <strong>complete post-game intelligence pack</strong> — playing time, shot charts, season trends and written player notes — at no cost. If you love it, we'll talk about covering your season.</p>
+  <p class="intro">Send us one game and we'll deliver a <strong>complete post-game analytics pack</strong> — playing time, shot charts, season trends and written player notes — at no cost. If you love it, we'll talk about covering your season.</p>
 
   <div class="promise">
     <div class="promise-item"><div class="pi-label">What you send</div><p>A shareable link to your game footage. Any platform, any format.</p></div>
-    <div class="promise-item"><div class="pi-label">What you get</div><p>Full intelligence pack for coaches + a family view for every player.</p></div>
+    <div class="promise-item"><div class="pi-label">What you get</div><p>Full analytics pack for coaches + a family view for every player.</p></div>
   </div>
 
   <form class="form" id="trialForm" onsubmit="handleTrial(event)">
@@ -88,6 +88,15 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="form-row">
       <div class="grp"><label>Your name</label><input type="text" id="t-name" placeholder="Coach or team manager" required></div>
       <div class="grp"><label>Email address</label><input type="email" id="t-email" placeholder="your@email.com" required></div>
+    </div>
+    <div class="grp"><label>Which plan are you interested in?</label>
+      <select id="t-package" required>
+        <option value="">Select a plan...</option>
+        <option value="Player">Player — $15/game (family view only)</option>
+        <option value="Team">Team — $49/game (coach + all families)</option>
+        <option value="Team+">Team+ — $79/game (full service, written notes)</option>
+        <option value="Not sure yet">Not sure yet</option>
+      </select>
     </div>
 
     <div class="divider">footage link</div>
@@ -109,7 +118,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
       <button type="submit" class="btn" id="submitBtn">Submit for free trial →</button>
       <p class="foot-note">You'll get an automatic confirmation email the moment this is submitted.</p>
     </div>
-    <div class="success" id="success">✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll follow up within 24 hours to talk through your footage.</div>
+    <div class="success" id="success">✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll follow up within 24 hours to talk through your footage and get you set up.</div>
     <div class="error" id="error">Something went wrong submitting your request. Please try again, or email us directly at <strong>enquiries@courttrackanalytics.com.au</strong>.</div>
   </form>
 </div>
@@ -121,11 +130,11 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <script>
 // ---- CONFIG: fill these in before deploying ----
 const SUPABASE_URL = 'https://uenxuzczcwtmiuzbnoxk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
+const SUPABASE_ANON_KEY = 'REPLACE_SUPABASE_ANON_KEY';
 
-const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
-const EMAILJS_SERVICE_ID = 'service_nx9448n';
-const EMAILJS_TEMPLATE_ID = 'template_c8242oc';
+const EMAILJS_PUBLIC_KEY = 'REPLACE_EMAILJS_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID = 'REPLACE_EMAILJS_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'REPLACE_EMAILJS_TEMPLATE_ID';
 // --------------------------------------------------
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -146,7 +155,8 @@ async function handleTrial(e){
 
   const v = id => document.getElementById(id).value.trim();
   const club = v('t-club'), team = v('t-team'), name = v('t-name'),
-        email = v('t-email'), link = v('t-link'), notes = v('t-notes');
+        email = v('t-email'), link = v('t-link'), notes = v('t-notes'),
+        pkg = v('t-package');
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -161,7 +171,8 @@ async function handleTrial(e){
         contact_name: name,
         email: email,
         footage_link: link,
-        notes: notes || null
+        notes: notes || null,
+        package_interest: pkg
       });
 
     if (dbError) throw dbError;
@@ -174,13 +185,18 @@ async function handleTrial(e){
           to_email: email,
           contact_name: name,
           club_name: club,
-          team_name: team
+          team_name: team,
+          package_interest: pkg
         });
       } catch (emailErr) {
         console.error('Confirmation email failed (submission still saved):', emailErr);
       }
     }
 
+    const pkgLine = pkg && pkg !== 'Not sure yet'
+      ? ` We'll set you up with the ${pkg} plan for your trial game.`
+      : ' We\'ll help you find the right plan once we see your footage.';
+    successEl.textContent = `✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll follow up within 24 hours to talk through your footage.${pkgLine}`;
     successEl.classList.add('show');
     document.getElementById('trialForm').reset();
   } catch (err) {
