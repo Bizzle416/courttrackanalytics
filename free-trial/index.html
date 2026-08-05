@@ -35,7 +35,9 @@ h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px)
 .grp label{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
 .grp label .req{color:var(--maple);}
 .hint{font-size:10px;color:var(--faint);letter-spacing:.04em;text-transform:none;margin-left:6px;}
-.grp input,.grp textarea{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:13px 16px;color:var(--chalk);font-family:'Inter';font-size:14px;outline:none;transition:border-color .15s;resize:vertical;width:100%;}
+.grp input,.grp textarea,.grp select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:13px 16px;color:var(--chalk);font-family:'Inter';font-size:14px;outline:none;transition:border-color .15s;resize:vertical;width:100%;}
+.grp select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:44px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%238fa0b8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 16px center;}
+.grp select option{background:var(--navy2);color:var(--chalk);}
 .grp input::placeholder,.grp textarea::placeholder{color:var(--faint);}
 .grp input:focus,.grp textarea:focus{border-color:var(--maple);}
 .grp input:invalid:not(:placeholder-shown){border-color:var(--err);}
@@ -92,9 +94,9 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="grp"><label>Which plan are you interested in?</label>
       <select id="t-package" required>
         <option value="">Select a plan...</option>
-        <option value="Player">Player — $15/game (family view only)</option>
-        <option value="Team">Team — $49/game (coach + all families)</option>
-        <option value="Team+">Team+ — $79/game (full service, written notes)</option>
+        <option value="Player">Player — family view only</option>
+        <option value="Team">Team — coach + all families</option>
+        <option value="Team+">Team+ — full service, written notes</option>
         <option value="Not sure yet">Not sure yet</option>
       </select>
     </div>
