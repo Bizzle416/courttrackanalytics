@@ -1440,8 +1440,8 @@ function vSubmit(d){
     '<input id="sg-date" type="date" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Opposition</label>'+
     '<input id="sg-opp" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
-    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link</label>'+
-    '<input id="sg-link" type="url" required placeholder="https://drive.google.com/..." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link(s)</label>'+
+    '<textarea id="sg-link" required rows="3" placeholder="https://drive.google.com/...\nIf the game was recorded in parts (e.g. separate files per quarter), paste one link per line." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Notes (optional)</label>'+
     '<textarea id="sg-notes" rows="2" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></textarea></div>'+
     '<button type="submit" id="sg-btn" style="align-self:flex-start;background:var(--maple);color:#0d1a2b;font-weight:700;padding:11px 26px;border:none;border-radius:8px;cursor:pointer;">Submit footage &rarr;</button>'+
@@ -1497,7 +1497,7 @@ async function handleSubmitGame(e){
     msg.style.color='#1a9e72';
     msg.textContent=isDup
       ? 'Got it -- looks like we already have a submission for this game. We\'ll treat yours as a backup and follow up if we need it.'
-      : 'Footage received -- we\'ll confirm and get started within 24 hours.';
+      : 'Footage received.';
     document.getElementById('submit-form').reset();
   }catch(err){
     msg.style.color='#d9413f';
