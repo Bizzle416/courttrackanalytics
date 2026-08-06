@@ -290,7 +290,7 @@ const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
    not passed at send time. -- */
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
-const EMAILJS_TEMPLATE_ID_GAME = 'template_2jbxgqs';
+const EMAILJS_TEMPLATE_ID_GAME = 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID';
 if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
   emailjs.init(EMAILJS_PUBLIC_KEY);
 }
@@ -1630,6 +1630,13 @@ function vSubmit(d){
     '<input id="sg-opp" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link(s)</label>'+
     '<textarea id="sg-link" required rows="3" placeholder="https://drive.google.com/...\nIf the game was recorded in parts (e.g. separate files per quarter), paste one link per line." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Package for this game</label>'+
+    '<select id="sg-package" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff;">'+
+    '<option value="">Select...</option>'+
+    '<option value="player">Player \u2014 family view only ($15)</option>'+
+    '<option value="team">Team \u2014 coach + all families ($49)</option>'+
+    '<option value="team_plus">Team+ \u2014 full service, written notes ($79)</option>'+
+    '</select></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Notes (optional)</label>'+
     '<textarea id="sg-notes" rows="2" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></textarea></div>'+
     '<button type="submit" id="sg-btn" style="align-self:flex-start;background:var(--maple);color:#0d1a2b;font-weight:700;padding:11px 26px;border:none;border-radius:8px;cursor:pointer;">Submit footage &rarr;</button>'+
@@ -1653,6 +1660,7 @@ async function handleSubmitGame(e){
       submitter_role:IS_COACH?'coach':'family',
       game_date:gameDate, opposition:opp,
       footage_link:document.getElementById('sg-link').value,
+      package:document.getElementById('sg-package').value,
       notes:document.getElementById('sg-notes').value||null,
       is_possible_duplicate:isDup
     };
