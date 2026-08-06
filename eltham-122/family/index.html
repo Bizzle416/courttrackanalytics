@@ -1449,7 +1449,7 @@ function vSubmit(d){
     '<input id="sg-opp" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link(s)</label>'+
     '<textarea id="sg-link" required rows="3" placeholder="https://drive.google.com/...\nIf the game was recorded in parts (e.g. separate files per quarter), paste one link per line." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea></div>'+
-    '<div style="background:#f4f6f9;border-radius:6px;padding:10px 12px;font-size:13px;color:var(--muted);">Package on file: <strong style="color:#0d1a2b;">'+(PACKAGE_LABELS[pkg]||pkg)+'</strong> \u2014 if that\'s not right, add a note below and we\'ll sort it.</div>'+
+    (pkg!=='REPLACE_WITH_TEAM_PACKAGE' ? '<div style="background:#f4f6f9;border-radius:6px;padding:10px 12px;font-size:13px;color:var(--muted);">Package on file: <strong style="color:#0d1a2b;">'+(PACKAGE_LABELS[pkg]||pkg)+'</strong> \u2014 if that\'s not right, add a note below and we\'ll sort it.</div>' : '')+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Notes (optional)</label>'+
     '<textarea id="sg-notes" rows="2" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></textarea></div>'+
     '<button type="submit" id="sg-btn" style="align-self:flex-start;background:var(--maple);color:#0d1a2b;font-weight:700;padding:11px 26px;border:none;border-radius:8px;cursor:pointer;">Submit footage &rarr;</button>'+
@@ -1478,7 +1478,7 @@ async function handleSubmitGame(e){
       submitter_role:IS_COACH?'coach':'family',
       game_date:gameDate, opposition:opp,
       footage_link:document.getElementById('sg-link').value,
-      package:resolvedPkg,
+      package:(resolvedPkg==='REPLACE_WITH_TEAM_PACKAGE'?null:resolvedPkg),
       notes:document.getElementById('sg-notes').value||null,
       is_possible_duplicate:isDup
     };
