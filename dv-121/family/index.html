@@ -264,6 +264,7 @@ window.__ADMIN_BYPASS__ = true;
 <footer id="footer">CourtTrack Analytics &middot; Diamond Valley U12.1 &middot; figures live from the event log</footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 /* BUILD:ANALYTICS_CONFIG — DIAMOND VALLEY U12.1 SINGLE-TEAM FAMILY BUILD, DO NOT ADD OTHER TEAMS HERE */
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
@@ -292,7 +293,8 @@ const PARENT_VIEWS=[
   {id:'players',label:'My Player'},
   {id:'overview',label:'Team Season'},
   {id:'games',label:'Results'},
-  {id:'progression',label:'Progression'}
+  {id:'progression',label:'Progression'},
+  {id:'submit',label:'Submit Game'}
 ];
 const VIEWS=IS_COACH?COACH_VIEWS:PARENT_VIEWS;
 
@@ -1396,6 +1398,129 @@ function switchView(v){
   if(v==='games')window.gamesTypeFilter=activeGameType;
   render();
 }
+const TEAM_PACKAGE = 'REPLACE_WITH_TEAM_PACKAGE'; // 'player' | 'team' | 'team_plus' -- set once, applies to everyone unless overridden per-family below
+const PACKAGE_LABELS = {
+  player: 'Player \u2014 family view only',
+  team: 'Team \u2014 coach + all families',
+  team_plus: 'Team+ \u2014 full service, written notes'
+};
+/* -- EmailJS: confirmation to uploader, BCC to CourtTrack is set
+   INSIDE the EmailJS template itself (Bcc field in the template editor),
+   not passed at send time. -- */
+const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
+const EMAILJS_SERVICE_ID = 'service_nx9448n';
+const EMAILJS_TEMPLATE_ID_GAME = 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID';
+if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
+/* -- SUBMIT GAME FOOTAGE -- */
+const SUBMIT_TABLE = SB_URL+'/rest/v1/game_submissions';
+
+async function checkDuplicateSubmission(teamKey,gameDate,opposition){
+  const url=SUBMIT_TABLE+'?team_key=eq.'+encodeURIComponent(teamKey)+
+    '&game_date=eq.'+encodeURIComponent(gameDate)+
+    '&opposition=eq.'+encodeURIComponent(opposition)+'&select=id';
+  const res=await fetch(url,{headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON}});
+  if(!res.ok)return false;
+  const rows=await res.json();
+  return rows.length>0;
+}
+
+function vSubmit(d){
+  let defaultName='';
+  let pkg=TEAM_PACKAGE;
+  if(!IS_COACH && typeof FAMILY_UNLOCKED_PID!=='undefined' && FAMILY_UNLOCKED_PID!=null && typeof FAMILY_CODES!=='undefined'){
+    const match=Object.values(FAMILY_CODES).find(v=>v.pid===FAMILY_UNLOCKED_PID);
+    if(match){defaultName=match.name; if(match.package)pkg=match.package;}
+  }
+  return '<div class="card"><div class="sec-h">Submit game footage</div>'+
+    '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;">Got footage from a recent game? Drop the link below and we\'ll get it logged and analysed.</p>'+
+    '<form id="submit-form" style="display:flex;flex-direction:column;gap:14px;max-width:520px;" onsubmit="handleSubmitGame(event)">'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Your name</label>'+
+    '<input id="sg-name" required value="'+defaultName+'" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Your email</label>'+
+    '<input id="sg-email" type="email" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Game date</label>'+
+    '<input id="sg-date" type="date" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Opposition</label>'+
+    '<input id="sg-opp" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link(s)</label>'+
+    '<textarea id="sg-link" required rows="3" placeholder="https://drive.google.com/...\nIf the game was recorded in parts (e.g. separate files per quarter), paste one link per line." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea></div>'+
+    (pkg!=='REPLACE_WITH_TEAM_PACKAGE' ? '<div style="background:#f4f6f9;border-radius:6px;padding:10px 12px;font-size:13px;color:var(--muted);">Package on file: <strong style="color:#0d1a2b;">'+(PACKAGE_LABELS[pkg]||pkg)+'</strong> \u2014 if that\'s not right, add a note below and we\'ll sort it.</div>' : '')+
+    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Notes (optional)</label>'+
+    '<textarea id="sg-notes" rows="2" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></textarea></div>'+
+    '<button type="submit" id="sg-btn" style="align-self:flex-start;background:var(--maple);color:#0d1a2b;font-weight:700;padding:11px 26px;border:none;border-radius:8px;cursor:pointer;">Submit footage &rarr;</button>'+
+    '<div id="sg-msg" style="font-size:13px;line-height:1.5;"></div></form></div>';
+}
+
+async function handleSubmitGame(e){
+  e.preventDefault();
+  const btn=document.getElementById('sg-btn');
+  const msg=document.getElementById('sg-msg');
+  btn.disabled=true; btn.textContent='Submitting...';
+  const teamKey=curTeam, teamLabel=TEAMS.find(x=>x.key===teamKey).full;
+  const gameDate=document.getElementById('sg-date').value;
+  const opp=document.getElementById('sg-opp').value;
+  let resolvedPkg=TEAM_PACKAGE;
+  if(!IS_COACH && typeof FAMILY_UNLOCKED_PID!=='undefined' && FAMILY_UNLOCKED_PID!=null && typeof FAMILY_CODES!=='undefined'){
+    const match=Object.values(FAMILY_CODES).find(v=>v.pid===FAMILY_UNLOCKED_PID);
+    if(match&&match.package)resolvedPkg=match.package;
+  }
+  try{
+    const isDup=await checkDuplicateSubmission(teamKey,gameDate,opp);
+    const payload={
+      team_key:teamKey, team_label:teamLabel,
+      submitted_by:document.getElementById('sg-name').value,
+      submitter_email:document.getElementById('sg-email').value,
+      submitter_role:IS_COACH?'coach':'family',
+      game_date:gameDate, opposition:opp,
+      footage_link:document.getElementById('sg-link').value,
+      package:(resolvedPkg==='REPLACE_WITH_TEAM_PACKAGE'?null:resolvedPkg),
+      notes:document.getElementById('sg-notes').value||null,
+      is_possible_duplicate:isDup
+    };
+    const res=await fetch(SUBMIT_TABLE,{method:'POST',headers:{
+      'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON,
+      'Content-Type':'application/json','Prefer':'return=minimal'
+    },body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error('Insert failed');
+
+    // Confirmation email is best-effort -- a failure here should not make
+    // the uploader think their submission failed, since it's already saved
+    // in game_submissions. CourtTrack's copy arrives via the template's
+    // own Bcc field, so this one send covers both.
+    if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_GAME, {
+          to_email: payload.submitter_email,
+          submitter_name: payload.submitted_by,
+          team_label: payload.team_label,
+          game_date: payload.game_date,
+          opposition: payload.opposition,
+          footage_link: payload.footage_link,
+          is_duplicate: isDup ? 'Yes -- we already had one for this game' : 'No'
+        });
+      } catch (emailErr) {
+        console.error('Confirmation email failed (submission still saved):', emailErr);
+      }
+    }
+
+    msg.style.color='#1a9e72';
+    msg.textContent=isDup
+      ? 'Got it -- looks like we already have a submission for this game. We\'ll treat yours as a backup and follow up if we need it.'
+      : 'Footage received.';
+    document.getElementById('submit-form').reset();
+  }catch(err){
+    msg.style.color='#d9413f';
+    msg.textContent='Something went wrong -- please try again or email enquiries@courttrackanalytics.com.au directly.';
+  }finally{
+    btn.disabled=false; btn.textContent='Submit footage \u2192';
+  }
+}
+
 async function render(reload){
   renderTabs();
   const mainEl=document.getElementById('main');
@@ -1417,6 +1542,7 @@ async function render(reload){
       if(curView==='players')h+=vPlayersParent(d);
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
+      else if(curView==='submit')h+=vSubmit(d);
       else h+=vGames(d);
     }
     mainEl.innerHTML=h;
