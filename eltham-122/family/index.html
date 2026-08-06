@@ -279,6 +279,12 @@ if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIP
   emailjs.init(EMAILJS_PUBLIC_KEY);
 }
 
+const TEAM_PACKAGE = 'REPLACE_WITH_TEAM_PACKAGE'; // 'player' | 'team' | 'team_plus' -- set once, applies to everyone unless overridden per-family below
+const PACKAGE_LABELS = {
+  player: 'Player \u2014 family view only',
+  team: 'Team \u2014 coach + all families',
+  team_plus: 'Team+ \u2014 full service, written notes'
+};
 const TEAMS=[
   {key:'eltham_u12_girls2',aliases:['eltham_u12_wildcats','eltham_wildcats_u12_girls_2','eltham_wildcats_12_2_girls'],label:'Eltham 12.2',full:'Eltham Wildcats U12 Girls 2',comp:'Grading · 10-min running clock',
    roster:{4:{num:'#4',name:'Elara Jewell'},6:{num:'#6',name:'Grace Burslem'},8:{num:'#8',name:'Evie Davis'},10:{num:'#10',name:'Quinn Cukier'},13:{num:'#13',name:'Emilia Wynne'},15:{num:'#15',name:'Madeline Hadley'},21:{num:'#21',name:'Ellie Spithill'},22:{num:'#22',name:'Harper Bolton'},23:{num:'#23',name:"Zoe O'Connell"},33:{num:'#33',name:'Eva Leverton'}}}
@@ -1423,9 +1429,10 @@ async function checkDuplicateSubmission(teamKey,gameDate,opposition){
 
 function vSubmit(d){
   let defaultName='';
+  let pkg=TEAM_PACKAGE;
   if(!IS_COACH && typeof FAMILY_UNLOCKED_PID!=='undefined' && FAMILY_UNLOCKED_PID!=null && typeof FAMILY_CODES!=='undefined'){
     const match=Object.values(FAMILY_CODES).find(v=>v.pid===FAMILY_UNLOCKED_PID);
-    if(match)defaultName=match.name;
+    if(match){defaultName=match.name; if(match.package)pkg=match.package;}
   }
   return '<div class="card"><div class="sec-h">Submit game footage</div>'+
     '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;">Got footage from a recent game? Drop the link below and we\'ll get it logged and analysed.</p>'+
@@ -1442,13 +1449,7 @@ function vSubmit(d){
     '<input id="sg-opp" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></div></div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Footage link(s)</label>'+
     '<textarea id="sg-link" required rows="3" placeholder="https://drive.google.com/...\nIf the game was recorded in parts (e.g. separate files per quarter), paste one link per line." style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;resize:vertical;"></textarea></div>'+
-    '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Package for this game</label>'+
-    '<select id="sg-package" required style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff;">'+
-    '<option value="">Select...</option>'+
-    '<option value="player">Player \u2014 family view only ($15)</option>'+
-    '<option value="team">Team \u2014 coach + all families ($49)</option>'+
-    '<option value="team_plus">Team+ \u2014 full service, written notes ($79)</option>'+
-    '</select></div>'+
+    '<div style="background:#f4f6f9;border-radius:6px;padding:10px 12px;font-size:13px;color:var(--muted);">Package on file: <strong style="color:#0d1a2b;">'+(PACKAGE_LABELS[pkg]||pkg)+'</strong> \u2014 if that\'s not right, add a note below and we\'ll sort it.</div>'+
     '<div><label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Notes (optional)</label>'+
     '<textarea id="sg-notes" rows="2" style="width:100%;padding:10px 12px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;"></textarea></div>'+
     '<button type="submit" id="sg-btn" style="align-self:flex-start;background:var(--maple);color:#0d1a2b;font-weight:700;padding:11px 26px;border:none;border-radius:8px;cursor:pointer;">Submit footage &rarr;</button>'+
@@ -1463,6 +1464,11 @@ async function handleSubmitGame(e){
   const teamKey=curTeam, teamLabel=TEAMS.find(x=>x.key===teamKey).full;
   const gameDate=document.getElementById('sg-date').value;
   const opp=document.getElementById('sg-opp').value;
+  let resolvedPkg=TEAM_PACKAGE;
+  if(!IS_COACH && typeof FAMILY_UNLOCKED_PID!=='undefined' && FAMILY_UNLOCKED_PID!=null && typeof FAMILY_CODES!=='undefined'){
+    const match=Object.values(FAMILY_CODES).find(v=>v.pid===FAMILY_UNLOCKED_PID);
+    if(match&&match.package)resolvedPkg=match.package;
+  }
   try{
     const isDup=await checkDuplicateSubmission(teamKey,gameDate,opp);
     const payload={
@@ -1472,7 +1478,7 @@ async function handleSubmitGame(e){
       submitter_role:IS_COACH?'coach':'family',
       game_date:gameDate, opposition:opp,
       footage_link:document.getElementById('sg-link').value,
-      package:document.getElementById('sg-package').value,
+      package:resolvedPkg,
       notes:document.getElementById('sg-notes').value||null,
       is_possible_duplicate:isDup
     };
