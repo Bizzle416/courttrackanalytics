@@ -298,11 +298,11 @@ function setMode(mode, e) {
 ============================================================= -->
 
 <div id="psOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:#fff; max-width:520px; width:92%; max-height:88vh; overflow-y:auto; border-radius:10px; padding:28px; position:relative; font-family:inherit;">
+  <div style="background:#fff; max-width:520px; width:92%; max-height:88vh; overflow-y:auto; border-radius:10px; padding:28px; position:relative; font-family:inherit; color:#1a1a2e;">
 
-    <button onclick="closeSignupForm()" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; line-height:1;">&times;</button>
+    <button onclick="closeSignupForm()" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; line-height:1; color:#1a1a2e;">&times;</button>
 
-    <h2 id="psTitle" style="margin-top:0;">Package Signup</h2>
+    <h2 id="psTitle" style="margin-top:0; color:#1a1a2e;">Package Signup</h2>
 
     <form id="psForm" onsubmit="return handleSignupSubmit(event)">
       <!-- Honeypot — must stay visually hidden, not display:none (bots check for that) -->
@@ -312,37 +312,37 @@ function setMode(mode, e) {
 
       <!-- PLAYER PACKAGE FIELDS -->
       <div id="psPlayerFields" style="display:none;">
-        <label style="display:block; margin-top:14px; font-weight:600;">Player name</label>
-        <input type="text" id="psPlayerName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Player name</label>
+        <input type="text" id="psPlayerName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
 
-        <label style="display:block; margin-top:14px; font-weight:600;">Parent email</label>
-        <input type="email" id="psParentEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Parent email</label>
+        <input type="email" id="psParentEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
       </div>
 
       <!-- TEAM / TEAM+ PACKAGE FIELDS -->
       <div id="psTeamFields" style="display:none;">
-        <label style="display:block; margin-top:14px; font-weight:600;">Team / Club name</label>
-        <input type="text" id="psTeamName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Team / Club name</label>
+        <input type="text" id="psTeamName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
 
-        <label style="display:block; margin-top:14px; font-weight:600;">Coach email</label>
-        <input type="email" id="psCoachEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Coach email</label>
+        <input type="email" id="psCoachEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
 
-        <label style="display:block; margin-top:18px; font-weight:600;">Players (add as many as you have — the rest can follow later)</label>
+        <label style="display:block; margin-top:18px; font-weight:600; color:#1a1a2e;">Players (add as many as you have — the rest can follow later)</label>
         <div id="psRosterRows"></div>
-        <button type="button" onclick="addRosterRow()" style="margin-top:8px; padding:6px 12px; cursor:pointer;">+ Add player</button>
+        <button type="button" onclick="addRosterRow()" style="margin-top:8px; padding:6px 12px; cursor:pointer; color:#1a1a2e; background:#f4f4f4; border:1px solid #ccc; border-radius:4px;">+ Add player</button>
       </div>
 
       <div id="psError" style="color:#b00020; margin-top:14px; display:none;"></div>
 
-      <button type="submit" id="psSubmitBtn" style="margin-top:22px; width:100%; padding:12px; font-weight:600; cursor:pointer;">
+      <button type="submit" id="psSubmitBtn" style="margin-top:22px; width:100%; padding:12px; font-weight:600; cursor:pointer; color:#fff; background:#1a1a2e; border:none; border-radius:6px;">
         Submit
       </button>
     </form>
 
     <div id="psSuccess" style="display:none; text-align:center; padding:20px 0;">
-      <p style="font-size:18px; font-weight:600;">Thanks — we've got your details.</p>
-      <p>We'll follow up shortly to confirm your package and send your invoice.</p>
-      <button onclick="closeSignupForm()" style="margin-top:10px; padding:10px 20px; cursor:pointer;">Close</button>
+      <p style="font-size:18px; font-weight:600; color:#1a1a2e; margin:0 0 8px 0;">Thanks — we've got your details.</p>
+      <p style="color:#333; margin:0;">We'll follow up shortly to confirm your package and send your invoice.</p>
+      <button onclick="closeSignupForm()" style="margin-top:16px; padding:10px 20px; cursor:pointer; color:#fff; background:#1a1a2e; border:none; border-radius:6px;">Close</button>
     </div>
 
   </div>
@@ -406,8 +406,8 @@ function addRosterRow() {
   row.className = 'ps-roster-row';
   row.style.cssText = 'display:flex; gap:8px; margin-top:8px;';
   row.innerHTML = `
-    <input type="text" placeholder="Player name" class="ps-roster-name" style="flex:1; padding:8px;">
-    <input type="email" placeholder="Parent email" class="ps-roster-email" style="flex:1; padding:8px;">
+    <input type="text" placeholder="Player name" class="ps-roster-name" style="flex:1; padding:8px; color:#1a1a2e; background:#fff;">
+    <input type="email" placeholder="Parent email" class="ps-roster-email" style="flex:1; padding:8px; color:#1a1a2e; background:#fff;">
   `;
   document.getElementById('psRosterRows').appendChild(row);
 }
