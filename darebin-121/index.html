@@ -1592,12 +1592,14 @@ const PACKAGE_LABELS = {
   team: 'Team \u2014 coach + all families',
   team_plus: 'Team+ \u2014 full service, written notes'
 };
-/* -- EmailJS: confirmation to uploader, BCC to CourtTrack is set
-   INSIDE the EmailJS template itself (Bcc field in the template editor),
-   not passed at send time. -- */
+/* -- EmailJS: confirmation to uploader (Footage_submission template) plus
+   a separate internal alert to enquiries@ (template_2jbxgqs, same template
+   used by the pricing signup form). Two distinct sends, not a Bcc field --
+   see handleSubmitGame() below. -- */
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
-const EMAILJS_TEMPLATE_ID_GAME = 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID';
+const EMAILJS_TEMPLATE_ID_GAME = 'Footage_submission';
+const EMAILJS_TEMPLATE_ID_INTERNAL_ALERT = 'template_2jbxgqs';
 if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
   emailjs.init(EMAILJS_PUBLIC_KEY);
 }
@@ -1676,20 +1678,46 @@ async function handleSubmitGame(e){
     },body:JSON.stringify(payload)});
     if(!res.ok)throw new Error('Insert failed');
 
+    // Internal alert — separate from the confirmation email below, always
+    // attempted regardless of whether the confirmation send succeeds.
+    // Uses the same internal alert template as the pricing signup form.
+    try {
+      const footageSummary = `Hi Team,
+
+A new footage submission has been received. Here are the details:
+
+- Team: ${payload.team_label}
+- Submitted by: ${payload.submitted_by} (${payload.submitter_role})
+- Contact email: ${payload.submitter_email}
+- Game date: ${payload.game_date}
+- Opposition: ${payload.opposition}
+- Footage link(s): ${payload.footage_link}
+- Package on file: ${payload.package || 'none'}
+- Notes: ${payload.notes || 'none'}
+- Possible duplicate: ${isDup ? 'Yes' : 'No'}
+- Submitted: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}`;
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_INTERNAL_ALERT, {
+        email: 'enquiries@courttrackanalytics.com.au',
+        alert_subject: `New Footage Submitted — ${payload.team_label}`,
+        next_step: isDup
+          ? 'Possible duplicate — review before starting analysis.'
+          : 'Review footage and begin analysis when ready.',
+        summary_text: footageSummary,
+      });
+    } catch (alertErr) {
+      console.error('Internal alert email failed (submission still saved):', alertErr);
+    }
+
     // Confirmation email is best-effort -- a failure here should not make
     // the uploader think their submission failed, since it's already saved
-    // in game_submissions. CourtTrack's copy arrives via the template's
-    // own Bcc field, so this one send covers both.
+    // in game_submissions.
     if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
       try {
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_GAME, {
-          to_email: payload.submitter_email,
-          submitter_name: payload.submitted_by,
-          team_label: payload.team_label,
-          game_date: payload.game_date,
-          opposition: payload.opposition,
-          footage_link: payload.footage_link,
-          is_duplicate: isDup ? 'Yes -- we already had one for this game' : 'No'
+          email: payload.submitter_email,
+          contact_name: payload.submitted_by,
+          team_full_name: payload.team_label
         });
       } catch (emailErr) {
         console.error('Confirmation email failed (submission still saved):', emailErr);
