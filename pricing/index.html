@@ -315,7 +315,13 @@ function setMode(mode, e) {
         <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Player name</label>
         <input type="text" id="psPlayerName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
 
-        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Parent email</label>
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Player club</label>
+        <input type="text" id="psPlayerClub" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
+
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Player team name</label>
+        <input type="text" id="psPlayerTeamName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
+
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Player or parent email</label>
         <input type="email" id="psParentEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
       </div>
 
@@ -434,13 +440,17 @@ async function handleSignupSubmit(event) {
 
   if (packageType === 'player') {
     const playerName = document.getElementById('psPlayerName').value.trim();
+    const playerClub = document.getElementById('psPlayerClub').value.trim();
+    const playerTeamName = document.getElementById('psPlayerTeamName').value.trim();
     const parentEmail = document.getElementById('psParentEmail').value.trim();
-    if (!playerName || !parentEmail) {
-      errorEl.textContent = 'Please fill in player name and parent email.';
+    if (!playerName || !playerClub || !playerTeamName || !parentEmail) {
+      errorEl.textContent = 'Please fill in player name, club, team name, and email.';
       errorEl.style.display = 'block';
       return false;
     }
     insertPayload.player_name = playerName;
+    insertPayload.player_club = playerClub;
+    insertPayload.player_team_name = playerTeamName;
     insertPayload.parent_email = parentEmail;
   } else {
     const teamName = document.getElementById('psTeamName').value.trim();
@@ -515,7 +525,9 @@ A new package signup has been received. Here are the details:
 
 - Package: Player
 - Player Name: ${payload.player_name}
-- Parent Email: ${payload.parent_email}
+- Club: ${payload.player_club}
+- Team Name: ${payload.player_team_name}
+- Email: ${payload.parent_email}
 - Submitted: ${timestamp}`;
   }
 
