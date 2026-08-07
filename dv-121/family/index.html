@@ -1404,12 +1404,14 @@ const PACKAGE_LABELS = {
   team: 'Team \u2014 coach + all families',
   team_plus: 'Team+ \u2014 full service, written notes'
 };
-/* -- EmailJS: confirmation to uploader, BCC to CourtTrack is set
-   INSIDE the EmailJS template itself (Bcc field in the template editor),
-   not passed at send time. -- */
+/* -- EmailJS: confirmation to uploader (Footage_submission template) plus
+   a separate internal alert to enquiries@ (template_2jbxgqs, same template
+   used by the pricing signup form). Two distinct sends, not a Bcc field --
+   see handleSubmitGame() below. -- */
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
-const EMAILJS_TEMPLATE_ID_GAME = 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID';
+const EMAILJS_TEMPLATE_ID_GAME = 'Footage_submission';
+const EMAILJS_TEMPLATE_ID_INTERNAL_ALERT = 'template_2jbxgqs';
 if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
   emailjs.init(EMAILJS_PUBLIC_KEY);
 }
@@ -1488,20 +1490,46 @@ async function handleSubmitGame(e){
     },body:JSON.stringify(payload)});
     if(!res.ok)throw new Error('Insert failed');
 
+    // Internal alert — separate from the confirmation email below, always
+    // attempted regardless of whether the confirmation send succeeds.
+    // Uses the same internal alert template as the pricing signup form.
+    try {
+      const footageSummary = `Hi Team,
+
+A new footage submission has been received. Here are the details:
+
+- Team: ${payload.team_label}
+- Submitted by: ${payload.submitted_by} (${payload.submitter_role})
+- Contact email: ${payload.submitter_email}
+- Game date: ${payload.game_date}
+- Opposition: ${payload.opposition}
+- Footage link(s): ${payload.footage_link}
+- Package on file: ${payload.package || 'none'}
+- Notes: ${payload.notes || 'none'}
+- Possible duplicate: ${isDup ? 'Yes' : 'No'}
+- Submitted: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}`;
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_INTERNAL_ALERT, {
+        email: 'enquiries@courttrackanalytics.com.au',
+        alert_subject: `New Footage Submitted — ${payload.team_label}`,
+        next_step: isDup
+          ? 'Possible duplicate — review before starting analysis.'
+          : 'Review footage and begin analysis when ready.',
+        summary_text: footageSummary,
+      });
+    } catch (alertErr) {
+      console.error('Internal alert email failed (submission still saved):', alertErr);
+    }
+
     // Confirmation email is best-effort -- a failure here should not make
     // the uploader think their submission failed, since it's already saved
-    // in game_submissions. CourtTrack's copy arrives via the template's
-    // own Bcc field, so this one send covers both.
+    // in game_submissions.
     if (window.emailjs && EMAILJS_TEMPLATE_ID_GAME !== 'REPLACE_WITH_NEW_GAME_RECEIPT_TEMPLATE_ID') {
       try {
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_GAME, {
-          to_email: payload.submitter_email,
-          submitter_name: payload.submitted_by,
-          team_label: payload.team_label,
-          game_date: payload.game_date,
-          opposition: payload.opposition,
-          footage_link: payload.footage_link,
-          is_duplicate: isDup ? 'Yes -- we already had one for this game' : 'No'
+          email: payload.submitter_email,
+          contact_name: payload.submitted_by,
+          team_full_name: payload.team_label
         });
       } catch (emailErr) {
         console.error('Confirmation email failed (submission still saved):', emailErr);
@@ -1558,16 +1586,16 @@ async function render(reload){
    isolation needs the Edge Function + RLS work, not yet deployed for this
    team. Codes are stored as SHA-256 hashes, never plaintext, in this file. */
 const FAMILY_CODES={
-  'bb6a6d4663e42a6da756aac31cb724936483ccd6756f7961618df375791bc7f9':{pid:19},
-  '9f6e6c5e8a00b88d13ff62435c80c427df1196b2bf7c560f298f6248783a894d':{pid:31},
-  '7a98cf84658b3d6c21adcb242c18bb994192e680e109046124495382d3f54104':{pid:41},
-  '305936777bdad72eaacf987a56693ae48d76d57625c01566c23b7366d3da7443':{pid:43},
-  '9bcc65f90e470ac39013b2ec754945d2ba617fdf39d1120539189722b8dad21c':{pid:45},
-  '2b3ba2b2b7c39b634dbafae379a6114cf641654e6d784ef24f32f616b67c727b':{pid:53},
-  '935b5d49a7ceb8eb4dbd3262fd615a085ec4883d176562414ff0c8cc44046473':{pid:55},
-  'cbcf3297c62617bf27acbc86effce50cd1b88a61052ec07646a19a3eb393715f':{pid:73},
-  '15d71b894aa40bf7b9a7f5299e3fd4c8e4f1e27d749f2449d4b94267951e9e6a':{pid:75},
-  '0870a8d99597e433f708283acdd6ee2714712cb7391f65b4251050f2350873c7':{pid:77}
+  'bb6a6d4663e42a6da756aac31cb724936483ccd6756f7961618df375791bc7f9':{pid:19,name:"Kaiah Black"},
+  '9f6e6c5e8a00b88d13ff62435c80c427df1196b2bf7c560f298f6248783a894d':{pid:31,name:"Scarlett Walters"},
+  '7a98cf84658b3d6c21adcb242c18bb994192e680e109046124495382d3f54104':{pid:41,name:"Harper Powell"},
+  '305936777bdad72eaacf987a56693ae48d76d57625c01566c23b7366d3da7443':{pid:43,name:"Harper Ritchie"},
+  '9bcc65f90e470ac39013b2ec754945d2ba617fdf39d1120539189722b8dad21c':{pid:45,name:"Mila Dixon"},
+  '2b3ba2b2b7c39b634dbafae379a6114cf641654e6d784ef24f32f616b67c727b':{pid:53,name:"Greta Morris"},
+  '935b5d49a7ceb8eb4dbd3262fd615a085ec4883d176562414ff0c8cc44046473':{pid:55,name:"Lara Shaw"},
+  'cbcf3297c62617bf27acbc86effce50cd1b88a61052ec07646a19a3eb393715f':{pid:73,name:"Mackenzie Haas-Baker"},
+  '15d71b894aa40bf7b9a7f5299e3fd4c8e4f1e27d749f2449d4b94267951e9e6a':{pid:75,name:"Taylah Wignell"},
+  '0870a8d99597e433f708283acdd6ee2714712cb7391f65b4251050f2350873c7':{pid:77,name:"Billie Burrell"}
 };
 const FAMILY_STORE_KEY='courttrack_family_dv121';
 let FAMILY_UNLOCKED_PID=null;
