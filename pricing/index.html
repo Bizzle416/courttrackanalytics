@@ -158,7 +158,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
         </li>
         <li>Season stats &amp; trends *</li>
       </ul>
-      <a class="card-btn ghost" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Player Plan">Buy now →</a>
+      <a class="card-btn ghost" href="javascript:void(0)" onclick="openSignupForm('player')">Buy now →</a>
     </div>
 
     <!-- TEAM -->
@@ -178,7 +178,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
         <li>Coach team dashboard</li>
         <li>Every player has their own stats view</li>
       </ul>
-      <a class="card-btn primary" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Team Plan">Buy now →</a>
+      <a class="card-btn primary" href="javascript:void(0)" onclick="openSignupForm('team')">Buy now →</a>
     </div>
 
     <!-- TEAM+ -->
@@ -199,7 +199,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
         <li>Opposition shot chart &amp; stats</li>
         <li><strong style="color:var(--chalk)">Written notes on every player</strong></li>
       </ul>
-      <a class="card-btn ghost" href="mailto:enquiries@courttrackanalytics.com.au?subject=Buy Now — Team+ Plan">Buy now →</a>
+      <a class="card-btn ghost" href="javascript:void(0)" onclick="openSignupForm('team_plus')">Buy now →</a>
     </div>
 
   </div>
@@ -276,5 +276,268 @@ function setMode(mode, e) {
   e.target.classList.add('active');
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<!-- PACKAGE SIGNUP FORM — see 02_pricing_signup_form.html for the source of this block -->
+<!-- ============================================================
+     PACKAGE SIGNUP FORM — tested and confirmed working (Player + Team
+     paths, both with and without roster rows). Config values are the
+     real live ones — do not edit the CONFIG block below.
+
+     This version matches pricing/index.html's three real tiers:
+     Player, Team, Team+ (package_type values: 'player', 'team',
+     'team_plus'). The Supabase check constraint was extended to
+     allow 'team_plus' — confirm that migration has been run before
+     testing Team+.
+
+     Buttons call openSignupForm('player'), openSignupForm('team'),
+     or openSignupForm('team_plus') — no team_key argument, since this
+     is a generic marketing page with no team context. Team/club name
+     is collected as free text in the form itself.
+============================================================= -->
+
+<div id="psOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; max-width:520px; width:92%; max-height:88vh; overflow-y:auto; border-radius:10px; padding:28px; position:relative; font-family:inherit;">
+
+    <button onclick="closeSignupForm()" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; line-height:1;">&times;</button>
+
+    <h2 id="psTitle" style="margin-top:0;">Package Signup</h2>
+
+    <form id="psForm" onsubmit="return handleSignupSubmit(event)">
+      <!-- Honeypot — must stay visually hidden, not display:none (bots check for that) -->
+      <input type="text" name="ps_website" id="ps_website" style="position:absolute; left:-9999px;" tabindex="-1" autocomplete="off">
+
+      <input type="hidden" id="psPackageType" value="">
+
+      <!-- PLAYER PACKAGE FIELDS -->
+      <div id="psPlayerFields" style="display:none;">
+        <label style="display:block; margin-top:14px; font-weight:600;">Player name</label>
+        <input type="text" id="psPlayerName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+
+        <label style="display:block; margin-top:14px; font-weight:600;">Parent email</label>
+        <input type="email" id="psParentEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+      </div>
+
+      <!-- TEAM / TEAM+ PACKAGE FIELDS -->
+      <div id="psTeamFields" style="display:none;">
+        <label style="display:block; margin-top:14px; font-weight:600;">Team / Club name</label>
+        <input type="text" id="psTeamName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+
+        <label style="display:block; margin-top:14px; font-weight:600;">Coach email</label>
+        <input type="email" id="psCoachEmail" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box;">
+
+        <label style="display:block; margin-top:18px; font-weight:600;">Players (add as many as you have — the rest can follow later)</label>
+        <div id="psRosterRows"></div>
+        <button type="button" onclick="addRosterRow()" style="margin-top:8px; padding:6px 12px; cursor:pointer;">+ Add player</button>
+      </div>
+
+      <div id="psError" style="color:#b00020; margin-top:14px; display:none;"></div>
+
+      <button type="submit" id="psSubmitBtn" style="margin-top:22px; width:100%; padding:12px; font-weight:600; cursor:pointer;">
+        Submit
+      </button>
+    </form>
+
+    <div id="psSuccess" style="display:none; text-align:center; padding:20px 0;">
+      <p style="font-size:18px; font-weight:600;">Thanks — we've got your details.</p>
+      <p>We'll follow up shortly to confirm your package and send your invoice.</p>
+      <button onclick="closeSignupForm()" style="margin-top:10px; padding:10px 20px; cursor:pointer;">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — fill these in from your existing free-trial/index.html
+// ============================================================
+const PS_SUPABASE_URL = 'https://uenxuzczcwtmiuzbnoxk.supabase.co';
+const PS_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
+const PS_EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
+const PS_EMAILJS_SERVICE_ID = 'service_nx9448n';
+const PS_EMAILJS_TEMPLATE_ID = 'template_2jbxgqs'; // internal alert template, confirmed built
+const PS_NOTIFY_EMAIL = 'enquiries@courttrackanalytics.com.au'; // where the invoicing alert goes
+
+const psClient = supabase.createClient(PS_SUPABASE_URL, PS_SUPABASE_ANON_KEY);
+emailjs.init(PS_EMAILJS_PUBLIC_KEY);
+
+let psRosterCount = 0;
+
+// crypto.randomUUID() requires a secure context (HTTPS). Your live site
+// will have this via SSL, but local file:// testing does not — this
+// fallback covers that gap so testing works the same as production.
+function psGenerateId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function openSignupForm(packageType) {
+  document.getElementById('psPackageType').value = packageType;
+  const titles = { player: 'Player Package Signup', team: 'Team Package Signup', team_plus: 'Team+ Package Signup' };
+  document.getElementById('psTitle').textContent = titles[packageType] || 'Package Signup';
+
+  const isTeamType = packageType === 'team' || packageType === 'team_plus';
+  document.getElementById('psPlayerFields').style.display = packageType === 'player' ? 'block' : 'none';
+  document.getElementById('psTeamFields').style.display = isTeamType ? 'block' : 'none';
+
+  document.getElementById('psForm').style.display = 'block';
+  document.getElementById('psSuccess').style.display = 'none';
+  document.getElementById('psError').style.display = 'none';
+  document.getElementById('psRosterRows').innerHTML = '';
+  psRosterCount = 0;
+
+  if (isTeamType) addRosterRow(); // start with one row, still optional to fill
+
+  document.getElementById('psOverlay').style.display = 'flex';
+}
+
+function closeSignupForm() {
+  document.getElementById('psOverlay').style.display = 'none';
+  document.getElementById('psForm').reset();
+}
+
+function addRosterRow() {
+  psRosterCount++;
+  const row = document.createElement('div');
+  row.className = 'ps-roster-row';
+  row.style.cssText = 'display:flex; gap:8px; margin-top:8px;';
+  row.innerHTML = `
+    <input type="text" placeholder="Player name" class="ps-roster-name" style="flex:1; padding:8px;">
+    <input type="email" placeholder="Parent email" class="ps-roster-email" style="flex:1; padding:8px;">
+  `;
+  document.getElementById('psRosterRows').appendChild(row);
+}
+
+async function handleSignupSubmit(event) {
+  event.preventDefault();
+  const errorEl = document.getElementById('psError');
+  const submitBtn = document.getElementById('psSubmitBtn');
+  errorEl.style.display = 'none';
+
+  // Honeypot check — silent drop, no error shown to the bot
+  if (document.getElementById('ps_website').value) {
+    document.getElementById('psForm').style.display = 'none';
+    document.getElementById('psSuccess').style.display = 'block';
+    return false;
+  }
+
+  const packageType = document.getElementById('psPackageType').value;
+  const isTeamType = packageType === 'team' || packageType === 'team_plus';
+
+  const signupId = psGenerateId();
+  let insertPayload = { id: signupId, package_type: packageType, team_key: null };
+  let rosterRows = [];
+
+  if (packageType === 'player') {
+    const playerName = document.getElementById('psPlayerName').value.trim();
+    const parentEmail = document.getElementById('psParentEmail').value.trim();
+    if (!playerName || !parentEmail) {
+      errorEl.textContent = 'Please fill in player name and parent email.';
+      errorEl.style.display = 'block';
+      return false;
+    }
+    insertPayload.player_name = playerName;
+    insertPayload.parent_email = parentEmail;
+  } else {
+    const teamName = document.getElementById('psTeamName').value.trim();
+    const coachEmail = document.getElementById('psCoachEmail').value.trim();
+    if (!teamName || !coachEmail) {
+      errorEl.textContent = 'Please provide your team/club name and a coach email.';
+      errorEl.style.display = 'block';
+      return false;
+    }
+    insertPayload.team_key = teamName;
+    insertPayload.coach_email = coachEmail;
+
+    document.querySelectorAll('.ps-roster-row').forEach(row => {
+      const name = row.querySelector('.ps-roster-name').value.trim();
+      const email = row.querySelector('.ps-roster-email').value.trim();
+      if (name && email) rosterRows.push({ player_name: name, parent_email: email });
+    });
+    // Zero rows is valid — do not block submission
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  try {
+    const { error: insertError } = await psClient
+      .from('package_signups')
+      .insert(insertPayload);
+
+    if (insertError) throw insertError;
+
+    if (isTeamType && rosterRows.length > 0) {
+      const rows = rosterRows.map(r => ({ ...r, signup_id: signupId }));
+      const { error: rosterError } = await psClient.from('roster_contacts').insert(rows);
+      if (rosterError) throw rosterError;
+    }
+
+    const summaryText = buildSummaryText(packageType, insertPayload, rosterRows);
+    const packageLabels = { player: 'Player', team: 'Team', team_plus: 'Team+' };
+    const alertSubject = packageType === 'player'
+      ? 'New Player Package Signup — Action Required (Invoice)'
+      : `New ${packageLabels[packageType]} Package Signup — ${insertPayload.team_key} — Action Required (Invoice)`;
+
+    await emailjs.send(PS_EMAILJS_SERVICE_ID, PS_EMAILJS_TEMPLATE_ID, {
+      email: PS_NOTIFY_EMAIL,
+      alert_subject: alertSubject,
+      next_step: 'Confirm the package with the family/coach and send the invoice.',
+      summary_text: summaryText,
+    });
+
+    document.getElementById('psForm').style.display = 'none';
+    document.getElementById('psSuccess').style.display = 'block';
+
+  } catch (err) {
+    console.error('Signup submission failed:', err);
+    errorEl.textContent = 'Something went wrong submitting your details. Please try again or contact us directly.';
+    errorEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit';
+  }
+
+  return false;
+}
+
+function buildSummaryText(packageType, payload, rosterRows) {
+  const timestamp = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' });
+
+  if (packageType === 'player') {
+    return `Hi Team,
+
+A new package signup has been received. Here are the details:
+
+- Package: Player
+- Player Name: ${payload.player_name}
+- Parent Email: ${payload.parent_email}
+- Submitted: ${timestamp}`;
+  }
+
+  const rosterLines = rosterRows.length
+    ? rosterRows.map(r => `  - ${r.player_name} / ${r.parent_email}`).join('\n')
+    : '  (none yet — follow up with coach for roster)';
+
+  const packageLabels = { team: 'Team', team_plus: 'Team+' };
+
+  return `Hi Team,
+
+A new package signup has been received. Here are the details:
+
+- Package: ${packageLabels[packageType] || packageType}
+- Team: ${payload.team_key}
+- Coach Email: ${payload.coach_email}
+- Players Provided (${rosterRows.length}):
+${rosterLines}
+- Submitted: ${timestamp}`;
+}
+</script>
+
+
 </body>
 </html>
