@@ -327,7 +327,10 @@ function setMode(mode, e) {
 
       <!-- TEAM / TEAM+ PACKAGE FIELDS -->
       <div id="psTeamFields" style="display:none;">
-        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Team / Club name</label>
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Club name</label>
+        <input type="text" id="psTeamClub" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
+
+        <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Team name</label>
         <input type="text" id="psTeamName" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
 
         <label style="display:block; margin-top:14px; font-weight:600; color:#1a1a2e;">Coach email</label>
@@ -453,14 +456,16 @@ async function handleSignupSubmit(event) {
     insertPayload.player_team_name = playerTeamName;
     insertPayload.parent_email = parentEmail;
   } else {
+    const teamClub = document.getElementById('psTeamClub').value.trim();
     const teamName = document.getElementById('psTeamName').value.trim();
     const coachEmail = document.getElementById('psCoachEmail').value.trim();
-    if (!teamName || !coachEmail) {
-      errorEl.textContent = 'Please provide your team/club name and a coach email.';
+    if (!teamClub || !teamName || !coachEmail) {
+      errorEl.textContent = 'Please provide your club name, team name, and a coach email.';
       errorEl.style.display = 'block';
       return false;
     }
-    insertPayload.team_key = teamName;
+    insertPayload.team_club = teamClub;
+    insertPayload.team_name = teamName;
     insertPayload.coach_email = coachEmail;
 
     document.querySelectorAll('.ps-roster-row').forEach(row => {
@@ -491,7 +496,7 @@ async function handleSignupSubmit(event) {
     const packageLabels = { player: 'Player', team: 'Team', team_plus: 'Team+' };
     const alertSubject = packageType === 'player'
       ? 'New Player Package Signup — Action Required (Invoice)'
-      : `New ${packageLabels[packageType]} Package Signup — ${insertPayload.team_key} — Action Required (Invoice)`;
+      : `New ${packageLabels[packageType]} Package Signup — ${insertPayload.team_name} — Action Required (Invoice)`;
 
     await emailjs.send(PS_EMAILJS_SERVICE_ID, PS_EMAILJS_TEMPLATE_ID, {
       email: PS_NOTIFY_EMAIL,
@@ -542,7 +547,8 @@ A new package signup has been received. Here are the details:
 A new package signup has been received. Here are the details:
 
 - Package: ${packageLabels[packageType] || packageType}
-- Team: ${payload.team_key}
+- Club: ${payload.team_club}
+- Team: ${payload.team_name}
 - Coach Email: ${payload.coach_email}
 - Players Provided (${rosterRows.length}):
 ${rosterLines}
