@@ -491,6 +491,48 @@ function trendBadge(vals){
   if(changePct<-0.12)return'<span class="trend-badge trend-down">▼ trending down</span>';
   return'<span class="trend-badge trend-flat">— steady</span>';
 }
+/* ── gated trend badges ──────────────────────────────────────────────
+   A stat only earns an arrow when the move is large relative to that
+   player's OWN game-to-game spread, and the stat has enough volume to
+   be worth testing. Everything else reads "steady" — never blank.
+   Thresholds are deliberate and applied identically to every player. */
+const BADGE_FLOOR={min:5.0,pts:1.5,reb:1.0,ast:1.0,tov:1.0};
+const BADGE_POLARITY={min:1,pts:1,reb:1,ast:1,tov:-1};  // -1 = up is bad
+const BADGE_Z_MIN=1.0;
+const RATIO_MIN_ATT={fg:12,fg3:6};
+const RATIO_MIN_PP=5;
+function statSD(vals){
+  if(!vals.length)return 0;
+  const m=vals.reduce((a,b)=>a+b,0)/vals.length;
+  return Math.sqrt(vals.reduce((s,x)=>s+(x-m)*(x-m),0)/vals.length);
+}
+function badgeHtml(state,txt){
+  const cls=state==='good'?'trend-up':state==='bad'?'trend-down':'trend-flat';
+  return'<span class="trend-badge '+cls+'">'+txt+'</span>';
+}
+function gatedBadge(key,vals){
+  if(vals.length<4)return badgeHtml('flat','· needs 4 games');
+  const ra=rollingAvg(vals,3),early=ra[2],late=ra[ra.length-1];
+  const delta=late-early;
+  const dir=delta>0.3?'up':delta<-0.3?'down':'flat';
+  if(dir==='flat')return badgeHtml('flat','— steady');
+  const m=vals.reduce((a,b)=>a+b,0)/vals.length, s=statSD(vals);
+  if(m<(BADGE_FLOOR[key]||0))return badgeHtml('flat','— steady');
+  if(!(s>0.01)||Math.abs(delta)/s<BADGE_Z_MIN)return badgeHtml('flat','— steady');
+  const good=(BADGE_POLARITY[key]||1)>0?dir==='up':dir==='down';
+  return badgeHtml(good?'good':'bad',(dir==='up'?'▲':'▼')+' trending '+dir);
+}
+function ratioBadge(key,makes,atts){
+  if(makes.length<4)return badgeHtml('flat','· needs 4 games');
+  const sm=(arr,from,to)=>arr.slice(from,to).reduce((a,b)=>a+b,0);
+  const eM=sm(makes,0,3),eA=sm(atts,0,3);
+  const lM=sm(makes,makes.length-3,makes.length),lA=sm(atts,atts.length-3,atts.length);
+  const need=RATIO_MIN_ATT[key]||0;
+  if(eA<need||lA<need)return badgeHtml('flat','· low attempts');
+  const pp=(lM/lA*100)-(eM/eA*100);
+  if(Math.abs(pp)<RATIO_MIN_PP)return badgeHtml('flat','— steady');
+  return badgeHtml(pp>0?'good':'bad',(pp>0?'▲':'▼')+' trending '+(pp>0?'up':'down'));
+}
 function playerSummary(a,allPlayers,data,pid){
   /* FAMILY COPY RULES
      - no peer ranking of any kind (scoring, rebounds, minutes, anything)
@@ -1017,8 +1059,20 @@ function playerPanelParent(d,pid){
   const rebPG=a.gp>0?((a.oreb+a.dreb)/a.gp).toFixed(1):'—';
   const ptsVals=d.games.map(g=>(g.summary.stats[pid]||{}).pts||0);
   const minVals=d.games.map(g=>+(g.summary.minutes[pid]||0).toFixed(1));
-  const ptsTrend=trendBadge(ptsVals);
-  const minTrend=trendBadge(minVals);
+  const rebVals=d.games.map(g=>{const s=g.summary.stats[pid]||{};return(s.oreb||0)+(s.dreb||0);});
+  const astVals=d.games.map(g=>(g.summary.stats[pid]||{}).ast||0);
+  const tovVals=d.games.map(g=>(g.summary.stats[pid]||{}).tov||0);
+  const fgmVals=d.games.map(g=>(g.summary.stats[pid]||{}).fgm||0);
+  const fgaVals=d.games.map(g=>(g.summary.stats[pid]||{}).fga||0);
+  const fg3mVals=d.games.map(g=>(g.summary.stats[pid]||{}).fgm3||0);
+  const fg3aVals=d.games.map(g=>(g.summary.stats[pid]||{}).fga3||0);
+  const minTrend=gatedBadge('min',minVals);
+  const ptsTrend=gatedBadge('pts',ptsVals);
+  const rebTrend=gatedBadge('reb',rebVals);
+  const astTrend=gatedBadge('ast',astVals);
+  const tovTrend=gatedBadge('tov',tovVals);
+  const fgTrend=ratioBadge('fg',fgmVals,fgaVals);
+  const fg3Trend=ratioBadge('fg3',fg3mVals,fg3aVals);
   const summary=playerSummary(a,allPlayers,d,pid);
   // d.games is pre-sorted by round at load time (see loadTeam)
   const sortedGames=d.games;
@@ -1036,11 +1090,11 @@ function playerPanelParent(d,pid){
   h+='<div class="p-tiles">';
   h+='<div class="p-tile hero"><div class="v disp">'+minPG+'</div><div class="l">Min / game '+minTrend+'</div></div>';
   h+='<div class="p-tile hero"><div class="v disp">'+ptsPG+'</div><div class="l">Points / game '+ptsTrend+'</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting %</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point %</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game</div></div>';
-  h+='<div class="p-tile t-amber"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game</div></div>';
+  h+='<div class="p-tile"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game '+rebTrend+'</div></div>';
+  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting % '+fgTrend+'</div></div>';
+  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
+  h+='<div class="p-tile"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
+  h+='<div class="p-tile t-amber"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
   h+='</div>';
   // Season development — 6 charts in round order
   h+='<div class="card"><div class="sec-h">Season development</div>';
