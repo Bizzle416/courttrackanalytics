@@ -175,6 +175,10 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .p-tile.hero{background:var(--winbg);border-color:rgba(26,158,114,.25);}
 .p-tile.hero .v{color:var(--windk);}
 .p-tile.t-amber .v{color:var(--amber);}
+.p-tile.t-up{background:var(--winbg);border-color:rgba(26,158,114,.30);}
+.p-tile.t-up .v{color:var(--windk);}
+.p-tile.t-down{background:var(--lossbg);border-color:rgba(217,65,63,.30);}
+.p-tile.t-down .v{color:var(--lossdk);}
 .trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;}
 .trend-up{background:#eaf7f1;color:var(--windk);}
 .trend-down{background:#fdeeee;color:var(--lossdk);}
@@ -532,6 +536,13 @@ function ratioBadge(key,makes,atts){
   const pp=(lM/lA*100)-(eM/eA*100);
   if(Math.abs(pp)<RATIO_MIN_PP)return badgeHtml('flat','— steady');
   return badgeHtml(pp>0?'good':'bad',(pp>0?'▲':'▼')+' trending '+(pp>0?'up':'down'));
+}
+/* Tile fill follows the badge: green when the badge is green, red when red,
+   plain white for steady / needs-4-games / low-attempts. */
+function tileCls(b){
+  if(b.indexOf('trend-up')>-1)return' t-up';
+  if(b.indexOf('trend-down')>-1)return' t-down';
+  return'';
 }
 function playerSummary(a,allPlayers,data,pid){
   /* FAMILY COPY RULES
@@ -1088,13 +1099,13 @@ function playerPanelParent(d,pid){
   h+='<div class="p-summary">'+summary+'</div>';
   h+='</div>';
   h+='<div class="p-tiles">';
-  h+='<div class="p-tile hero"><div class="v disp">'+minPG+'</div><div class="l">Min / game '+minTrend+'</div></div>';
-  h+='<div class="p-tile hero"><div class="v disp">'+ptsPG+'</div><div class="l">Points / game '+ptsTrend+'</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game '+rebTrend+'</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting % '+fgTrend+'</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
-  h+='<div class="p-tile"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
-  h+='<div class="p-tile t-amber"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(minTrend)+'"><div class="v disp">'+minPG+'</div><div class="l">Min / game '+minTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(ptsTrend)+'"><div class="v disp">'+ptsPG+'</div><div class="l">Points / game '+ptsTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(rebTrend)+'"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game '+rebTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(fgTrend)+'"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting % '+fgTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(fg3Trend)+'"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(astTrend)+'"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
+  h+='<div class="p-tile t-amber'+tileCls(tovTrend)+'"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
   h+='</div>';
   // Season development — 6 charts in round order
   h+='<div class="card"><div class="sec-h">Season development</div>';
