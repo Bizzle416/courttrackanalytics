@@ -513,7 +513,7 @@ function playerSummary(a,allPlayers,data,pid){
   const n=allPlayers.length||1;
   const sorted=(stat)=>allPlayers.slice().sort((x,y)=>y[stat]-x[stat]);
   const ptsRank=sorted('pts').findIndex(p=>p.pid===a.pid)+1;
-  const rebRank=sorted(p=>p.oreb+p.dreb).findIndex(p=>p.pid===a.pid)+1;
+  const rebRank=allPlayers.slice().sort((x,y)=>(y.oreb+y.dreb)-(x.oreb+x.dreb)).findIndex(p=>p.pid===a.pid)+1;
   const astRank=sorted('ast').findIndex(p=>p.pid===a.pid)+1;
   const stlRank=sorted('stl').findIndex(p=>p.pid===a.pid)+1;
   const ordinal=r=>r===1?'1st':r===2?'2nd':r===3?'3rd':r+'th';
