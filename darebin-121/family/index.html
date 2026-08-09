@@ -179,6 +179,10 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .p-tile.t-up .v{color:var(--windk);}
 .p-tile.t-down{background:var(--lossbg);border-color:rgba(217,65,63,.30);}
 .p-tile.t-down .v{color:var(--lossdk);}
+.p-tile.t-pm-pos{background:var(--winbg);border-color:rgba(26,158,114,.30);}
+.p-tile.t-pm-pos .v{color:var(--windk);}
+.p-tile.t-pm-neg{background:var(--lossbg);border-color:rgba(217,65,63,.30);}
+.p-tile.t-pm-neg .v{color:var(--lossdk);}
 .trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;}
 .trend-up{background:#eaf7f1;color:var(--windk);}
 .trend-down{background:#fdeeee;color:var(--lossdk);}
@@ -583,6 +587,29 @@ function qstrip(g){
 }
 
 /* ── bar charts ── */
+/* Per-game plus/minus bar chart: green bars above zero, red below */
+function pmChart(games,pid){
+  const W=280,H=140,P=8,n=games.length;
+  if(!n)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No data yet</div>';
+  const vals=games.map(g=>(g.summary.plusMinus||{})[pid]||0);
+  const absMax=Math.max(...vals.map(Math.abs),1);
+  const bw=Math.min(24,(W-2*P)/n/1.4);
+  const midY=H/2;
+  let s='<svg viewBox="0 0 '+W+' '+(H+28)+'" style="width:100%;">';
+  s+='<line x1="'+P+'" y1="'+midY+'" x2="'+(W-P)+'" y2="'+midY+'" stroke="#e8e6e1" stroke-width="1"/>';
+  games.forEach((g,i)=>{
+    const v=vals[i];
+    const gx=P+(W-2*P)*(i+0.5)/n;
+    const h=Math.max(2,Math.abs(v)/absMax*(midY-10));
+    const y=v>=0?midY-h:midY;
+    const col=v>0?'#1a9e72':v<0?'#d9413f':'#b0b8c4';
+    s+='<rect x="'+(gx-bw/2)+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="3" fill="'+col+'"><title>'+gLabel(g)+': '+(v>0?'+':'')+v+'</title></rect>';
+    s+='<text x="'+gx+'" y="'+(v>=0?midY-h-4:midY+h+12)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#5a6472">'+(v>0?'+':'')+v+'</text>';
+    const lbl=g.round?('R'+g.round):(g.opponent||'?').substring(0,4);
+    s+='<text x="'+gx+'" y="'+(H+16)+'" text-anchor="middle" font-size="8" fill="#9aa4b2">'+lbl+'</text>';
+  });
+  return s+'</svg>';
+}
 function barChart(games,fn,fn2,c1,c2,fmt){
   const W=280,H=140,P=8,n=games.length;
   if(!n)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No data yet</div>';
@@ -1084,6 +1111,7 @@ function playerPanelParent(d,pid){
   const tovTrend=gatedBadge('tov',tovVals);
   const fgTrend=ratioBadge('fg',fgmVals,fgaVals);
   const fg3Trend=ratioBadge('fg3',fg3mVals,fg3aVals);
+  const pmVals=d.games.map(g=>(g.summary.plusMinus||{})[pid]||0);
   const summary=playerSummary(a,allPlayers,d,pid);
   // d.games is pre-sorted by round at load time (see loadTeam)
   const sortedGames=d.games;
@@ -1106,6 +1134,9 @@ function playerPanelParent(d,pid){
   h+='<div class="p-tile'+tileCls(fg3Trend)+'"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
   h+='<div class="p-tile'+tileCls(astTrend)+'"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
   h+='<div class="p-tile t-amber'+tileCls(tovTrend)+'"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
+  const pmCls=a.pm>0?' t-pm-pos':a.pm<0?' t-pm-neg':'';
+  h+='<div class="p-tile'+pmCls+'"><div class="v disp">'+(a.pm>0?'+':'')+a.pm+'</div><div class="l">Plus / minus</div></div>';
+  if(a.fta>0)h+='<div class="p-tile"><div class="v disp">'+a.ftm+'/'+a.fta+'</div><div class="l">Free throws</div></div>';
   h+='</div>';
   // Season development — 6 charts in round order
   h+='<div class="card"><div class="sec-h">Season development</div>';
@@ -1115,6 +1146,7 @@ function playerPanelParent(d,pid){
   h+='<div class="chart-card"><h4>Rebounds per game</h4>'+barChart(sortedGames,g=>{const ss=g.summary.stats[pid]||{};return(ss.oreb||0)+(ss.dreb||0);},null,'#2d6fb5')+'</div>';
   h+='<div class="chart-card"><h4>Assists per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).ast||0,null,'#7c4dcc')+'</div>';
   h+='<div class="chart-card"><h4>Turnovers per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).tov||0,null,'#c87d1a')+'</div>';
+  h+='<div class="chart-card"><h4>Plus / minus</h4>'+pmChart(sortedGames,pid)+'</div>';
   h+='<div class="chart-card"><h4>Fouls per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).foul||0,null,'#d9413f')+'</div>';
   h+='</div></div>';
   // Game by game — sorted by round, expandable rows
