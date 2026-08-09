@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourtTrack Analytics — Eltham 12.1 (Coach)</title>
+<title>CourtTrack Analytics — Diamond Valley 12.1 (Coach)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -251,7 +251,7 @@ window.__ADMIN_BYPASS__ = true;
 <div id="coach-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
   <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
     <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
-    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Eltham Wildcats 12.1 &middot; Coach access</div>
+    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Diamond Valley U12.1 &middot; Coach access</div>
     <div style="font-size:13px;color:#344152;margin-bottom:14px;">Enter the coach passcode to view full team analytics.</div>
     <input id="coach-code-input" type="text" placeholder="Coach passcode" autocapitalize="characters" autocomplete="off"
       style="width:100%;padding:12px 14px;border:1.5px solid #e8e6e1;border-radius:8px;font-size:15px;text-align:center;letter-spacing:.05em;text-transform:uppercase;font-family:'Inter',monospace;outline:none;margin-bottom:12px;box-sizing:border-box;">
@@ -265,11 +265,11 @@ window.__ADMIN_BYPASS__ = true;
     <div class="hd-top">
       <div>
         <div class="hd-logo">Court<span>Track</span> Analytics</div>
-        <div class="hd-tag">Eltham Wildcats 12.1 &middot; live from the event log</div>
+        <div class="hd-tag">Diamond Valley U12.1 &middot; live from the event log</div>
       </div>
       <div class="team-switcher" id="team-switcher">
         <span class="team-btn" id="team-btn" style="cursor:default;">
-          <span id="team-btn-label">Eltham 12.1</span>
+          <span id="team-btn-label">Diamond Valley</span>
         </span>
       </div>
     </div>
@@ -277,17 +277,17 @@ window.__ADMIN_BYPASS__ = true;
   </div>
 </header>
 <main id="main"><div class="loading">Loading season data&hellip;</div></main>
-<footer id="footer">CourtTrack Analytics &middot; Eltham Wildcats 12.1 &middot; figures live from the event log</footer>
+<footer id="footer">CourtTrack Analytics &middot; Diamond Valley U12.1 &middot; figures live from the event log</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-/* BUILD:ANALYTICS_CONFIG — ELTHAM 12.1 SINGLE-TEAM COACH BUILD, DO NOT ADD OTHER TEAMS HERE */
+/* BUILD:ANALYTICS_CONFIG — DIAMOND VALLEY 12.1 SINGLE-TEAM COACH BUILD, DO NOT ADD OTHER TEAMS HERE */
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
-  {key:'eltham_u12_girls1',aliases:[],label:'Eltham 12.1',full:'Eltham Wildcats U12 Girls 1',comp:'VC Reserve · 7-min stop clock',gameLenMin:28,
-   roster:{5:{num:'#5',name:'Chloe Connelley'},6:{num:'#6',name:'Lily Collett'},9:{num:'#9',name:'Indiana Sage'},11:{num:'#11',name:'Imogen Wynd'},12:{num:'#12',name:'Kiara Carlson'},14:{num:'#14',name:'Holly Bannister'},18:{num:'#18',name:'Annabelle Liu'},24:{num:'#24',name:'Olivia Oppedisano'},41:{num:'#41',name:'Samantha Neal'},43:{num:'#43',name:'Annabella Buncic'}}}
+  {key:'dv_u12_girls1',aliases:[],label:'Diamond Valley',full:'Diamond Valley U12 Girls 1',comp:'VC Reserve · 7-min stop clock',gameLenMin:28,
+   roster:{19:{num:'#19',name:'Kaiah Black'},31:{num:'#31',name:'Scarlett Walters'},41:{num:'#41',name:'Harper Powell'},43:{num:'#43',name:'Harper Ritchie'},45:{num:'#45',name:'Mila Dixon'},53:{num:'#53',name:'Greta Morris'},55:{num:'#55',name:'Lara Shaw'},73:{num:'#73',name:'Mackenzie Haas-Baker'},75:{num:'#75',name:'Taylah Wignell'},77:{num:'#77',name:'Billie Burrell'}}}
 ];
 /* BUILD:ANALYTICS_CONFIG_END */
 
@@ -1374,208 +1374,60 @@ function vProgressionCoach(d){
   });
   h2+='</div></div>';
   h+=h2;
-  // ── PLAYER MOVEMENT v2.0 — four-bucket model (coach only) ──────────────────
-  // Config: Eltham 12.1 · 7-min stop-clock × 4Q = 28 min available
-  // All thresholds dimensionless (% of team avg / available min).
-  // Same parameters auto-calibrate to any VJBL team via TEAM_CFG values.
-  const PM_CFG={
-    quarterLenSec:420, clockMode:'stopped', quarters:4, equalTimeRule:false,
-    minGames:4,
-    bandPct:0.15,          // 15% of player's own baseline
-    floorPct:{pts:0.04, reb:0.04, ast:0.06, tov:0.04, mins:0.07},
-    gMinPct:0.25,          // contribution gate: 25% of available min
-    gImpPct:0.08,          // contribution gate: 8% of team impact
-    minBase:1.0,           // suppress metric if player baseline below this
-    cBand:2                // "within N pts" consistency label
-  };
-  const PM_AVAIL_MIN=(PM_CFG.quarterLenSec*PM_CFG.quarters)/60;
-
-  // Derive team averages from filtered games
-  function pmTeamAvg(games,key){
-    if(!games.length)return 1;
-    const totals=games.map(g=>{
-      let t=0;
-      Object.keys(g.summary.stats||{}).forEach(pid=>{
-        const s=g.summary.stats[pid]||{};
-        if(key==='reb') t+=(s.oreb||0)+(s.dreb||0);
-        else if(key==='mins') t+=g.summary.minutes[pid]||0;
-        else t+=s[key]||0;
+  // player movement — dual window (3g + 5g)
+  const sp=seasonPlayers(d).filter(a=>{
+    // count games played within the filtered set
+    const pgInFilter=gs.filter(g=>g.summary&&g.summary.minutes&&(g.summary.minutes[a.pid]||0)>0).length;
+    return pgInFilter>=4;
+  });
+  if(sp.length){
+    // Build per-player signal using filtered games
+    const entries=[];
+    sp.forEach(a=>{
+      const pid=a.pid;
+      const ptsVals=gs.map(g=>(g.summary.stats[pid]||{}).pts||0);
+      const minVals=gs.map(g=>+(g.summary.minutes[pid]||0).toFixed(1));
+      const tovVals=gs.map(g=>(g.summary.stats[pid]||{}).tov||0);
+      const rebVals=gs.map(g=>{const s=g.summary.stats[pid]||{};return(s.oreb||0)+(s.dreb||0);});
+      const astVals=gs.map(g=>(g.summary.stats[pid]||{}).ast||0);
+      const signals=[];
+      // pts
+      const pts3=metricArc(ptsVals,3),pts5=metricArc(ptsVals,5);
+      if(pts3&&pts3.dir!=='flat'){const conf=pts5&&pts5.dir===pts3.dir;signals.push({cat:pts3.dir==='up'?'up':'down',text:'scoring '+(pts3.dir==='up'?'up':'down')+' '+pts3.early+'→'+pts3.late+(conf?' ✓':''),conf});}
+      // minutes
+      const min3=metricArc(minVals,3),min5=metricArc(minVals,5);
+      if(min3&&min3.dir!=='flat'){const conf=min5&&min5.dir===min3.dir;signals.push({cat:min3.dir==='up'?'up':'down',text:'minutes '+(min3.dir==='up'?'climbing':'dipping')+(conf?' ✓':''),conf});}
+      // turnovers (down = good)
+      const tov3=metricArc(tovVals,3),tov5=metricArc(tovVals,5);
+      if(tov3&&tov3.dir!=='flat'){const good=tov3.dir==='down';const conf=tov5&&tov5.dir===tov3.dir;signals.push({cat:good?'up':'down',text:good?'turnovers down '+tov3.early+'→'+tov3.late+(conf?' ✓':''):'turnover rate up '+tov3.early+'→'+tov3.late+(conf?' ✓':''),conf});}
+      // assists
+      const ast3=metricArc(astVals,3),ast5=metricArc(astVals,5);
+      if(ast3&&ast3.dir!=='flat'){const conf=ast5&&ast5.dir===ast3.dir;signals.push({cat:ast3.dir==='up'?'up':'down',text:'assists '+(ast3.dir==='up'?'up '+ast3.early+'→'+ast3.late:'down '+ast3.early+'→'+ast3.late)+(conf?' ✓':''),conf});}
+      entries.push({name:pnum(d.names,pid)+' '+pname(d.names,pid),signals,pid});
+    });
+    const rising=entries.filter(e=>e.signals.some(s=>s.cat==='up'));
+    const monitor=entries.filter(e=>e.signals.some(s=>s.cat==='down'));
+    h+='<div class="card"><div class="sec-h">Player movement &nbsp;·&nbsp; <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted);">3g + 5g rolling windows · ✓ = confirmed across both · players with 4+ games in this filter</span></div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+    h+='<div><div style="font-size:12px;font-weight:700;color:var(--windk);margin-bottom:8px;">▲ Moving forward</div>';
+    if(rising.length){
+      rising.forEach(r=>{
+        const ups=r.signals.filter(s=>s.cat==='up');
+        h+='<div style="font-size:12.5px;color:var(--ink2);margin-bottom:8px;"><strong>'+r.name+'</strong><br><span style="font-size:11.5px;">'+ups.map(s=>'<span style="color:'+(s.conf?'var(--windk)':'var(--ink2)')+';">'+s.text+'</span>').join(' · ')+'</span></div>';
       });
-      return t;
-    });
-    return totals.reduce((a,v)=>a+v,0)/totals.length||1;
-  }
-
-  // Split-half windows (non-overlapping, correct for <=8 games)
-  function pmWindows(n){
-    const half=Math.floor(n/2);
-    return{base:[...Array(half).keys()], rec:[...Array(n).keys()].slice(-half)};
-  }
-
-  function pmMean(arr){ return arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:0; }
-  function pmR1(n){ const v=Math.round(n*10)/10; return Number.isInteger(v)?v.toFixed(0):v.toFixed(1); }
-
-  function pmClassify(pid, games, teamAvg, teamImpactPG){
-    const n=games.length;
-    if(n<PM_CFG.minGames) return{bucket:'unclassified',n,signals:[],strength:0,impact:0,impShare:0,minShare:0,inBand:0};
-
-    const w=pmWindows(n);
-    const METRICS=[
-      {k:'pts', dir:+1, vals:games.map(g=>(g.summary.stats[pid]||{}).pts||0), tavgKey:'pts'},
-      {k:'reb', dir:+1, vals:games.map(g=>{const s=g.summary.stats[pid]||{};return(s.oreb||0)+(s.dreb||0);}), tavgKey:'reb'},
-      {k:'ast', dir:+1, vals:games.map(g=>(g.summary.stats[pid]||{}).ast||0), tavgKey:'ast'},
-      {k:'tov', dir:-1, vals:games.map(g=>(g.summary.stats[pid]||{}).tov||0), tavgKey:'tov'},
-      {k:'mins',dir:+1, vals:games.map(g=>g.summary.minutes[pid]||0), tavgKey:'mins'}
-    ];
-
-    let gains=0, losses=0;
-    const signals=[];
-
-    METRICS.forEach(m=>{
-      const base=pmMean(w.base.map(i=>m.vals[i]));
-      const rec =pmMean(w.rec.map(i=>m.vals[i]));
-      const delta=rec-base;
-      const absFloor=(m.tavgKey==='mins'?PM_AVAIL_MIN:teamAvg[m.tavgKey])*PM_CFG.floorPct[m.k];
-      const relFloor=base*PM_CFG.bandPct;
-      const thr=Math.max(absFloor,relFloor,0.01);
-      const suppressed=base<PM_CFG.minBase;
-      const material=!suppressed&&Math.abs(delta)>=thr;
-      const good=m.dir>0?delta>0:delta<0;
-      signals.push({k:m.k,base,rec,delta,thr,material,good,suppressed,label:{pts:'scoring',reb:'rebounds',ast:'assists',tov:'turnovers',mins:'minutes'}[m.k]});
-      if(material){ good?gains++:losses++; }
-    });
-
-    const allAvg={};
-    METRICS.forEach(m=>allAvg[m.k]=pmMean(m.vals));
-    const impact=allAvg.pts+0.7*allAvg.reb+1.5*allAvg.ast-0.5*allAvg.tov;
-    const impShare=teamImpactPG>0?(impact/teamImpactPG*100):0;
-    const minShare=(allAvg.mins/PM_AVAIL_MIN)*100;
-    const ptsAll=METRICS.find(m=>m.k==='pts').vals;
-    const inBand=ptsAll.filter(v=>Math.abs(v-allAvg.pts)<=PM_CFG.cBand).length;
-    const mixed=gains>0&&losses>0;
-
-    let bucket;
-    if     (gains>0&&losses===0) bucket='fwd';
-    else if(losses>0&&gains===0) bucket='mon';
-    else if(mixed)               bucket='mon';
-    else bucket=(minShare>=PM_CFG.gMinPct*100&&impShare>=PM_CFG.gImpPct*100)?'hold':'low';
-
-    const strength=signals.filter(s=>s.material).reduce((t,s)=>t+Math.abs(s.delta)/Math.max(s.thr,0.01),0);
-    return{bucket,n,signals,gains,losses,mixed,strength,impact,impShare,minShare,inBand,allAvg};
-  }
-
-  // Build four-bucket panel
-  const PM_ROSTER=Object.keys(d.team.roster||{}).map(Number);
-  const pmGames=gs; // filtered games already in scope
-  const pmN=pmGames.length;
-
-  if(pmN>=2){
-    // Team averages
-    const pmTA={
-      pts:pmTeamAvg(pmGames,'pts'), reb:pmTeamAvg(pmGames,'reb'),
-      ast:pmTeamAvg(pmGames,'ast'), tov:pmTeamAvg(pmGames,'tov'),
-      mins:PM_AVAIL_MIN
-    };
-    // Team impact per game
-    let pmTIpg=0;
-    pmGames.forEach(g=>{
-      let gi=0;
-      Object.keys(g.summary.stats||{}).forEach(pid=>{
-        const s=g.summary.stats[pid]||{};
-        gi+=(s.pts||0)+0.7*((s.oreb||0)+(s.dreb||0))+1.5*(s.ast||0)-0.5*(s.tov||0);
-      });
-      pmTIpg+=gi;
-    });
-    pmTIpg=pmTIpg/pmGames.length||1;
-
-    // Classify every rostered player
-    const pmResults=[];
-    const allPids=new Set([
-      ...PM_ROSTER,
-      ...pmGames.flatMap(g=>Object.keys(g.summary.stats||{}).map(Number))
-    ]);
-    allPids.forEach(pid=>{
-      const gamesPlayed=pmGames.filter(g=>(g.summary.minutes[pid]||0)>0).length;
-      if(gamesPlayed===0) return; // never appeared
-      const res=pmClassify(pid,pmGames,pmTA,pmTIpg);
-      res.pid=pid;
-      res.displayName=pnum(d.names,pid)+' '+pname(d.names,pid);
-      res.gamesPlayed=gamesPlayed;
-      pmResults.push(res);
-    });
-
-    // Coverage assertion (logged to console, not shown to coach)
-    const classified=pmResults.filter(r=>r.bucket!=='unclassified');
-    const unclassified=pmResults.filter(r=>r.bucket==='unclassified');
-    const counts={fwd:0,hold:0,mon:0,low:0};
-    classified.forEach(r=>counts[r.bucket]++);
-    const coverageOk=classified.length===(counts.fwd+counts.hold+counts.mon+counts.low);
-    if(!coverageOk) console.warn('[PM v2] Coverage assertion failed — check pmClassify');
-
-    // Signal text for a player
-    function pmSignalLine(res){
-      const matSigs=res.signals.filter(s=>s.material);
-      if(!matSigs.length){
-        return'within '+PM_CFG.cBand+' pts of avg in '+res.inBand+'/'+res.n+' games · '+pmR1(res.allAvg.mins)+'min/g';
-      }
-      return matSigs.map(s=>{
-        const arrow=s.delta>0?'up':'down';
-        const goodCol=s.good?'var(--windk)':'var(--lossdk)';
-        return'<span style="color:'+goodCol+';font-weight:600;">'+s.label+' '+arrow+' '+pmR1(s.base)+'→'+pmR1(s.rec)+'</span>';
-      }).join(' · ')+(res.mixed?' <span style="font-size:10px;font-weight:700;background:var(--lossbg);color:var(--lossdk);padding:1px 5px;border-radius:3px;margin-left:4px;">MIXED</span>':'');
-    }
-
-    // Render player card
-    function pmCard(res){
-      return'<div style="padding:9px 12px;border-bottom:1px solid var(--line2);">'+
-        '<div style="font-weight:700;font-size:13px;">'+res.displayName+'</div>'+
-        '<div style="font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.5;">'+pmSignalLine(res)+'</div>'+
-        '</div>';
-    }
-
-    // Column definition
-    const PM_COLS=[
-      {k:'fwd',  color:'var(--windk)',   bg:'var(--winbg)',   brd:'rgba(26,158,114,.25)', ttl:'▲ Moving forward',   desc:'Material gains, no material declines.'},
-      {k:'hold', color:'var(--vjbl)',    bg:'var(--vjblbg)',  brd:'rgba(45,111,181,.2)',  ttl:'● Holding standard', desc:'Steady at level — reliable, coachable.'},
-      {k:'mon',  color:'var(--lossdk)', bg:'var(--lossbg)',  brd:'rgba(217,65,63,.2)',   ttl:'▼ Monitor closely',  desc:'Material declines or conflicting signals.'},
-      {k:'low',  color:'var(--amber)',  bg:'var(--amberbg)', brd:'rgba(200,125,26,.2)',  ttl:'◆ Steady and low',   desc:'Below contribution gate — rotation flag.'}
-    ];
-
-    h+='<div class="card">';
-    h+='<div class="sec-h">Player movement &nbsp;·&nbsp; <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted);">v2.0 · split-half (G1–'+Math.floor(pmN/2)+' vs G'+(pmN-Math.floor(pmN/2)+1)+'–'+pmN+') · one verdict per player · 4+ games required</span></div>';
-
-    // Four columns
-    h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:14px;">';
-    PM_COLS.forEach(col=>{
-      const list=classified.filter(r=>r.bucket===col.k)
-                           .sort((a,b)=>b.strength-a.strength||b.impact-a.impact);
-      h+='<div style="border:1px solid '+col.brd+';border-radius:8px;overflow:hidden;background:#fff;">';
-      h+='<div style="padding:9px 12px;background:'+col.bg+';border-bottom:1px solid '+col.brd+';">';
-      h+='<div style="font-size:13px;font-weight:700;color:'+col.color+';display:flex;justify-content:space-between;align-items:center;">';
-      h+=col.ttl+'<span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:9px;background:rgba(0,0,0,.06);color:'+col.color+';">'+list.length+'</span></div>';
-      h+='<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+col.desc+'</div>';
-      h+='</div>';
-      if(list.length){
-        list.forEach(res=>{ h+=pmCard(res); });
-      }else{
-        h+='<div style="padding:12px;font-size:12px;color:var(--muted);font-style:italic;">No players at current thresholds.</div>';
-      }
-      h+='</div>';
-    });
+    }else h+='<div style="color:var(--muted);font-size:12px;">No clear upward movers in this window.</div>';
     h+='</div>';
-
-    // Unclassified row
-    if(unclassified.length){
-      h+='<div style="font-size:11.5px;color:var(--muted);padding:8px 2px;border-top:1px solid var(--line2);">';
-      h+='<strong style="color:var(--ink2);">Not yet classified</strong> (fewer than '+PM_CFG.minGames+' games): ';
-      h+=unclassified.map(r=>r.displayName+' ('+r.gamesPlayed+'g)').join(', ')+'.';
-      h+='</div>';
-    }
-
-    h+='<div style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid var(--line2);">One verdict per player · signals must clear a 15% relative band and a team-normalised floor · minutes gate: '+pmR1(PM_AVAIL_MIN*PM_CFG.gMinPct)+'min avg · impact gate: '+pmR1(PM_CFG.gImpPct*100)+'% team share</div>';
+    h+='<div><div style="font-size:12px;font-weight:700;color:var(--lossdk);margin-bottom:8px;">▼ Monitor closely</div>';
+    if(monitor.length){
+      monitor.forEach(r=>{
+        const downs=r.signals.filter(s=>s.cat==='down');
+        h+='<div style="font-size:12.5px;color:var(--ink2);margin-bottom:8px;"><strong>'+r.name+'</strong><br><span style="font-size:11.5px;">'+downs.map(s=>'<span style="color:'+(s.conf?'var(--lossdk)':'var(--ink2)')+';">'+s.text+'</span>').join(' · ')+'</span></div>';
+      });
+    }else h+='<div style="color:var(--muted);font-size:12px;">Nothing flagged — group holding steady.</div>';
+    h+='</div></div>';
+    h+='<div style="font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--line2);">Signal, not verdict. Small samples move fast. Cross-check minutes played and matchup strength before acting on single-window flags.</div>';
     h+='</div>';
   }
-
   return h;
 }
 
@@ -1920,8 +1772,8 @@ async function render(reload){
    into this page's memory regardless of this gate — real protection needs
    the Edge Function + RLS work, not yet deployed for this team. The code
    is stored as a SHA-256 hash, never plaintext, in this file. */
-const COACH_CODE_HASH='7aafd8aac0f9d3e1ec0461ab438e2530aff38dd4946cc6b1b2973a5ec23fd96d';
-const COACH_STORE_KEY='courttrack_coach_elt121';
+const COACH_CODE_HASH='90ce1546e1b9960c3cc6ac122e789207045b915a5fe5b252490c3d643246b297';
+const COACH_STORE_KEY='courttrack_coach_dv121';
 function showCoachApp(){
   document.getElementById('coach-gate').style.display='none';
   document.getElementById('app-root').style.display='';
