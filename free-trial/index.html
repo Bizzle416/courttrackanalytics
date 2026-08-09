@@ -117,6 +117,18 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     </div>
 
     <div>
+      <!-- T&C acceptance — mandatory gate -->
+      <div class="grp" style="display:flex;align-items:flex-start;gap:10px;margin-top:4px;">
+        <input type="checkbox" id="t-tc" style="margin-top:3px;flex-shrink:0;width:16px;height:16px;accent-color:var(--maple);cursor:pointer;">
+        <label for="t-tc" style="font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;line-height:1.5;">
+          I have read and agree to the
+          <a href="/terms/" target="_blank" style="color:var(--maple);text-decoration:underline;">Terms &amp; Conditions</a>
+        </label>
+      </div>
+      <div id="tc-error" style="display:none;font-family:'IBM Plex Mono';font-size:11px;color:var(--err);letter-spacing:.08em;text-transform:uppercase;margin-top:4px;">
+        You must accept the Terms &amp; Conditions to continue.
+      </div>
+
       <button type="submit" class="btn" id="submitBtn">Submit for free trial →</button>
       <p class="foot-note">You'll get an automatic confirmation email the moment this is submitted.</p>
     </div>
@@ -137,6 +149,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
 const EMAILJS_TEMPLATE_ID = 'template_c8242oc';
+const TC_VERSION = '2026-08-09-v1';
 // --------------------------------------------------
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -146,6 +159,16 @@ if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'REPLACE_EMAILJS_PUBLIC_KEY') {
 
 async function handleTrial(e){
   e.preventDefault();
+
+  // T&C gate — must be checked before anything else fires
+  const tcBox = document.getElementById('t-tc');
+  const tcErr = document.getElementById('tc-error');
+  if (!tcBox.checked) {
+    tcErr.style.display = 'block';
+    tcBox.focus();
+    return;
+  }
+  tcErr.style.display = 'none';
 
   const successEl = document.getElementById('success');
   const errorEl = document.getElementById('error');
@@ -174,10 +197,29 @@ async function handleTrial(e){
         email: email,
         footage_link: link,
         notes: notes || null,
-        package_interest: pkg
+        package_interest: pkg,
+        tc_accepted: true,
+        tc_version: TC_VERSION,
+        tc_accepted_at: new Date().toISOString()
       });
 
     if (dbError) throw dbError;
+
+    // Record T&C acceptance in audit log (best-effort — don't block on failure)
+    try {
+      await supabaseClient.from('terms_acceptances').insert({
+        tc_version: TC_VERSION,
+        form_source: 'free_trial',
+        contact_name: name,
+        email: email,
+        club_name: club,
+        team_name: team,
+        source_table: 'trial_submissions',
+        user_agent: navigator.userAgent
+      });
+    } catch (tcLogErr) {
+      console.warn('T&C acceptance log failed (submission still saved):', tcLogErr);
+    }
 
     // Confirmation email is best-effort — a failure here should not make
     // the user think their submission failed, since it's already saved.
