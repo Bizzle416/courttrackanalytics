@@ -522,8 +522,8 @@ function trendBadge(vals){
    player's OWN game-to-game spread, and the stat has enough volume to
    be worth testing. Everything else reads "steady" — never blank.
    Thresholds are deliberate and applied identically to every player. */
-const BADGE_FLOOR={min:5.0,pts:1.5,reb:1.0,ast:1.0,tov:1.0};
-const BADGE_POLARITY={min:1,pts:1,reb:1,ast:1,tov:-1};  // -1 = up is bad
+const BADGE_FLOOR={min:5.0,pts:1.5,reb:1.0,ast:1.0,tov:1.0,stl:0.5,blk:0.3};
+const BADGE_POLARITY={min:1,pts:1,reb:1,ast:1,tov:-1,stl:1,blk:1};  // -1 = up is bad
 const BADGE_Z_MIN=1.0;
 const RATIO_MIN_ATT={fg:12,fg3:6};
 const RATIO_MIN_PP=5;
@@ -605,6 +605,41 @@ function qstrip(g){
 }
 
 /* ── bar charts ── */
+/* Quarter scoring chart: cumulative season points by period */
+function qScoringChart(games,pid){
+  const W=280,H=140,P=24;
+  const QCOLS=['#1a9e72','#2d6fb5','#7c4dcc','#c87d1a'];
+  const isTH=games.some(g=>isTwoHalf(g));
+  const maxPer=isTH?2:4;
+  const periods=Array.from({length:maxPer},(_,i)=>i+1);
+  const totals=periods.map(()=>0);
+  games.forEach(g=>{
+    homeShots(g).filter(s=>s.player_id===+pid&&s.made).forEach(s=>{
+      const qi=(s.period||1)-1;
+      if(qi>=0&&qi<maxPer){const pts=s.is3||s.shotType==='3pt'?3:s.shotType==='ft'?1:2;totals[qi]+=pts;}
+    });
+  });
+  const total=totals.reduce((a,b)=>a+b,0);
+  if(!total)return'<div style="color:var(--muted);font-size:12px;padding:8px 0;">No shot data recorded yet.</div>';
+  const maxVal=Math.max(...totals,1);
+  const bw=Math.min(48,(W-2*P)/maxPer/1.5);
+  const spacing=(W-2*P)/maxPer;
+  let s='<svg viewBox="0 0 '+W+' '+(H+36)+'" style="width:100%;">';
+  totals.forEach((v,qi)=>{
+    const gx=P+spacing*(qi+0.5);
+    const bh=Math.max(v?4:0,v/maxVal*(H-24));
+    const by=H-8-bh;
+    const pct=total?Math.round(v/total*100):0;
+    s+='<rect x="'+(gx-bw/2)+'" y="'+by+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+QCOLS[qi]+'"/>';
+    if(v>0){
+      s+='<text x="'+gx+'" y="'+(by-6)+'" text-anchor="middle" font-size="13" font-weight="700" fill="'+QCOLS[qi]+'">'+v+'</text>';
+      s+='<text x="'+gx+'" y="'+(by-19)+'" text-anchor="middle" font-size="10" fill="#9aa4b2">'+pct+'%</text>';
+    }
+    s+='<text x="'+gx+'" y="'+(H+8)+'" text-anchor="middle" font-size="11" font-weight="600" fill="#7c8698">'+(isTH?'H':'Q')+(qi+1)+'</text>';
+  });
+  s+='<text x="'+W+'" y="'+(H+22)+'" text-anchor="end" font-size="9" fill="#b0b8c4">'+total+' pts total · '+games.length+' games</text>';
+  return s+'</svg>';
+}
 /* Per-game plus/minus bar chart: green bars above zero, red below */
 function pmChart(games,pid){
   const W=280,H=140,P=8,n=games.length;
@@ -1130,6 +1165,10 @@ function playerPanelParent(d,pid){
   const fgTrend=ratioBadge('fg',fgmVals,fgaVals);
   const fg3Trend=ratioBadge('fg3',fg3mVals,fg3aVals);
   const pmVals=d.games.map(g=>(g.summary.plusMinus||{})[pid]||0);
+  const stlVals=d.games.map(g=>(g.summary.stats[pid]||{}).stl||0);
+  const blkVals=d.games.map(g=>(g.summary.stats[pid]||{}).blk||0);
+  const stlTrend=a.stl>=10?gatedBadge('stl',stlVals):'';
+  const blkTrend=a.blk>=5?gatedBadge('blk',blkVals):'';
   const summary=playerSummary(a,allPlayers,d,pid);
   // d.games is pre-sorted by round at load time (see loadTeam)
   const sortedGames=d.games;
@@ -1154,7 +1193,9 @@ function playerPanelParent(d,pid){
   h+='<div class="p-tile t-amber'+tileCls(tovTrend)+'"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
   const pmCls=a.pm>0?' t-pm-pos':a.pm<0?' t-pm-neg':'';
   h+='<div class="p-tile'+pmCls+'"><div class="v disp">'+(a.pm>0?'+':'')+a.pm+'</div><div class="l">Plus / minus</div></div>';
-  if(a.fta>0)h+='<div class="p-tile"><div class="v disp">'+a.ftm+'/'+a.fta+'</div><div class="l">Free throws</div></div>';
+  if(a.fta>0){const ftDisp=a.fta>=8?Math.round(a.ftm/a.fta*100)+'%':a.ftm+'/'+a.fta;h+='<div class="p-tile"><div class="v disp">'+ftDisp+'</div><div class="l">Free throws</div></div>';}
+  if(a.stl>=10){const stlCls=tileCls(stlTrend);h+='<div class="p-tile'+stlCls+'"><div class="v disp">'+(a.gp>0?(a.stl/a.gp).toFixed(1):'—')+'</div><div class="l">Steals / game '+stlTrend+'</div></div>';}
+  if(a.blk>=5){const blkCls=tileCls(blkTrend);h+='<div class="p-tile'+blkCls+'"><div class="v disp">'+(a.gp>0?(a.blk/a.gp).toFixed(1):'—')+'</div><div class="l">Blocks / game '+blkTrend+'</div></div>';}
   h+='</div>';
   // Season development — 6 charts in round order
   h+='<div class="card"><div class="sec-h">Season development</div>';
@@ -1164,7 +1205,8 @@ function playerPanelParent(d,pid){
   h+='<div class="chart-card"><h4>Rebounds per game</h4>'+barChart(sortedGames,g=>{const ss=g.summary.stats[pid]||{};return(ss.oreb||0)+(ss.dreb||0);},null,'#2d6fb5')+'</div>';
   h+='<div class="chart-card"><h4>Assists per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).ast||0,null,'#7c4dcc')+'</div>';
   h+='<div class="chart-card"><h4>Turnovers per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).tov||0,null,'#c87d1a')+'</div>';
-  h+='<div class="chart-card"><h4>Plus / minus</h4>'+pmChart(sortedGames,pid)+'</div>';
+  h+='<div class="chart-card"><h4>Scoring by quarter</h4>'+qScoringChart(sortedGames,pid)+'</div>';
+  h+='<div class="chart-card"><h4>Steals &amp; blocks</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).stl||0,g=>(g.summary.stats[pid]||{}).blk||0,'#0d9488','#c87d1a')+'<div class="legend"><span><i style="background:#0d9488;"></i>Steals</span><span><i style="background:#c87d1a;"></i>Blocks</span></div></div>';
   h+='<div class="chart-card"><h4>Fouls per game</h4>'+barChart(sortedGames,g=>(g.summary.stats[pid]||{}).foul||0,null,'#d9413f')+'</div>';
   h+='</div></div>';
   // Game by game — sorted by round, expandable rows
@@ -1241,6 +1283,25 @@ function parentGameExpand(d,pid,g){
   h+='</div>';
   const gamePid=+pid;
   const gameShots=homeShots(g).filter(s=>s.player_id===gamePid);
+  // Quarter scoring for this game
+  const maxPer=isTwoHalf(g)?2:4;
+  const qPts=Array.from({length:maxPer},()=>0);
+  gameShots.filter(s=>s.made).forEach(s=>{
+    const qi=(s.period||1)-1;
+    if(qi>=0&&qi<maxPer){const pts=s.is3||s.shotType==='3pt'?3:s.shotType==='ft'?1:2;qPts[qi]+=pts;}
+  });
+  if(qPts.some(v=>v>0)){
+    h+='<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 8px;">Scoring by quarter</div>';
+    h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">';
+    const QCOLS=['#1a9e72','#2d6fb5','#7c4dcc','#c87d1a'];
+    qPts.forEach((v,qi)=>{
+      h+='<div style="background:#f5f4f0;border-radius:8px;padding:10px 16px;text-align:center;min-width:56px;">';
+      h+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:26px;font-weight:700;color:'+(v>0?QCOLS[qi]:'var(--subtle)')+';line-height:1;">'+v+'</div>';
+      h+='<div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">'+(isTwoHalf(g)?'H':'Q')+(qi+1)+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
   if(gameShots.length){
     h+='<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 10px;">Shot chart — this game</div>';
     h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">';
