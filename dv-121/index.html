@@ -45,6 +45,54 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:100;box-s
 .team-option:hover,.team-option.active{background:rgba(255,255,255,.08);color:#fff;}
 .team-option .team-opt-sub{font-family:'Inter';font-size:11px;font-weight:400;color:#6a82a0;display:block;text-transform:none;letter-spacing:0;margin-top:1px;}
 .view-nav{display:flex;gap:2px;padding:10px 0 0;overflow-x:auto;scrollbar-width:none;}
+/* ===== MOBILE NAV OVERHAUL (<=700px) — added by patch_dv121_mobile.py ===== */
+.sub-nav{display:none;}
+.tabbar{display:none;}
+@media(max-width:700px){
+  /* --- header compression --- */
+  .hd-inner{padding:0 14px;}
+  .hd-top{padding:10px 0 0;}
+  .hd-logo{font-size:19px;}
+  .hd-logo .hd-long{display:none;}
+  .hd-tag{display:none;}
+  .mode-badge{margin-left:7px;font-size:9px;padding:2px 7px;}
+  .team-btn{font-size:12px;padding:6px 10px;background:none;border:none;
+            color:#7e93ad;letter-spacing:.03em;}
+  .admin-hub-link{font-size:11px;padding:6px 9px;}
+
+  /* top tab strip is replaced by the bottom bar */
+  .view-nav{display:none;}
+
+  /* --- sub-segment bar (inside grouped tabs) --- */
+  .sub-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+           padding:0 0 14px;margin:-4px 0 0;}
+  .sub-nav::-webkit-scrollbar{display:none;}
+  .sub-tab{flex:none;background:var(--card);border:1px solid var(--line);
+           color:var(--muted);font-family:'Inter';font-size:12.5px;font-weight:600;
+           padding:8px 15px;border-radius:20px;cursor:pointer;white-space:nowrap;}
+  .sub-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+  /* --- bottom tab bar --- */
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;
+          background:rgba(255,255,255,.95);
+          -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+          border-top:1px solid var(--line);
+          padding:6px 2px calc(6px + env(safe-area-inset-bottom));}
+  .tabbar-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+              background:none;border:none;cursor:pointer;padding:5px 2px;
+              font-family:'Inter';font-size:9.5px;font-weight:600;
+              color:#9aa3b1;letter-spacing:.01em;min-height:46px;}
+  .tabbar-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;
+                  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+  .tabbar-btn.active{color:var(--navy);}
+  .tabbar{box-shadow:0 -1px 0 rgba(16,31,55,.06),0 -8px 24px rgba(16,31,55,.05);}
+  .tabbar-btn.active svg{stroke-width:2.4;}
+
+  /* clear the fixed bar */
+  main{padding:18px 14px 96px;}
+  footer{padding-bottom:80px;}
+}
+
 .view-nav::-webkit-scrollbar{display:none;}
 .view-tab{background:none;border:none;color:#6a82a0;font-family:'Inter';font-size:13px;font-weight:500;padding:9px 16px 10px;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:color .15s;}
 .view-tab:hover{color:#a8bcce;}
@@ -130,7 +178,7 @@ tfoot td{background:var(--card2);font-weight:600;border-top:1px solid var(--line
 .badge.w{background:var(--winbg);color:var(--windk);}
 .badge.l{background:var(--lossbg);color:var(--lossdk);}
 .badge.d{background:#eef0f3;color:#5a6472;}
-.tbl-wrap{overflow-x:auto;}
+.tbl-wrap{overflow-x:auto;min-width:0;-webkit-overflow-scrolling:touch;background:linear-gradient(90deg,var(--card) 30%,rgba(255,255,255,0)) left/28px 100% no-repeat,linear-gradient(90deg,rgba(255,255,255,0),var(--card) 70%) right/28px 100% no-repeat,radial-gradient(farthest-side at 0 50%,rgba(16,31,55,.13),transparent) left/12px 100% no-repeat,radial-gradient(farthest-side at 100% 50%,rgba(16,31,55,.13),transparent) right/12px 100% no-repeat;background-attachment:local,local,scroll,scroll;}
 .gt-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
 .gt-vjbl{background:var(--vjblbg);color:var(--vjbldk);}
 .gt-dom{background:var(--dombg);color:var(--domdk);}
@@ -264,7 +312,7 @@ window.__ADMIN_BYPASS__ = true;
   <div class="hd-inner">
     <div class="hd-top">
       <div>
-        <div class="hd-logo">Court<span>Track</span> Analytics</div>
+        <div class="hd-logo">Court<span>Track</span><span class="hd-long"> Analytics</span></div>
         <div class="hd-tag">Diamond Valley U12.1 &middot; live from the event log</div>
       </div>
       <div class="team-switcher" id="team-switcher">
@@ -314,6 +362,41 @@ const PARENT_VIEWS=[
   {id:'progression',label:'Progression'}
 ];
 const VIEWS=IS_COACH?COACH_VIEWS:PARENT_VIEWS;
+
+/* ── MOBILE TAB GROUPS ──
+   Nine coach views do not fit a 430px strip; four of them were unreachable.
+   Grouped into five bottom-bar entries, each expanding to sub-segments.
+   Desktop still renders the flat nine-tab strip from VIEWS. */
+const COACH_GROUPS=[
+  {id:'team',    label:'Team',     views:['overview','analytics','progression'],
+   icon:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'},
+  {id:'gamesg',  label:'Games',    views:['games','opposition'],
+   icon:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>'},
+  {id:'playersg',label:'Players',  views:['players','rotation'],
+   icon:'<circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.3 3-5.4 6.5-5.4s6.5 2.1 6.5 5.4"/><path d="M17 9.5h5M19.5 7v5"/>'},
+  {id:'shootg',  label:'Shooting', views:['shooting'],
+   icon:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"/>'},
+  {id:'submitg', label:'Submit',   views:['submit'],
+   icon:'<path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/><path d="M12 16V3M7 8l5-5 5 5"/>'}
+];
+const PARENT_GROUPS=[
+  {id:'mine',    label:'My Player', views:['players'],
+   icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>'},
+  {id:'team',    label:'Team',      views:['overview','progression'],
+   icon:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'},
+  {id:'gamesg',  label:'Results',   views:['games'],
+   icon:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>'}
+];
+const GROUPS=IS_COACH?COACH_GROUPS:PARENT_GROUPS;
+function groupOf(viewId){
+  const g=GROUPS.find(g=>g.views.indexOf(viewId)>=0);
+  return g||GROUPS[0];
+}
+function viewLabel(viewId){
+  const v=VIEWS.find(v=>v.id===viewId);
+  return v?v.label:viewId;
+}
+
 
 /* stamp header */
 document.querySelector('.hd-logo').insertAdjacentHTML('afterend',
@@ -1697,10 +1780,46 @@ function progressionPickerParent(d){
 /* ── shell ── */
 function renderTabs(){
   renderTeamDropdown();
+  /* desktop: flat strip of every view */
   document.getElementById('view-tabs').innerHTML=VIEWS.map(v=>{
     const active=v.id===curView?' active':'';
-    return '<button class="view-tab'+active+'" onclick="switchView(\'' +v.id+ '\')">'+ v.label+'</button>';
+    return '<button class="view-tab'+active+'" onclick="switchView(\''+v.id+'\')">'+v.label+'</button>';
   }).join('');
+  renderTabBar();
+}
+
+/* mobile: fixed bottom bar of five groups */
+function renderTabBar(){
+  let bar=document.getElementById('tabbar');
+  if(!bar){
+    bar=document.createElement('nav');
+    bar.id='tabbar';
+    bar.className='tabbar';
+    document.body.appendChild(bar);
+  }
+  const active=groupOf(curView).id;
+  bar.innerHTML=GROUPS.map(g=>{
+    const on=g.id===active?' active':'';
+    return '<button class="tabbar-btn'+on+'" onclick="switchGroup(\''+g.id+'\')" '+
+           'aria-label="'+g.label+'"><svg viewBox="0 0 24 24">'+g.icon+'</svg>'+g.label+'</button>';
+  }).join('');
+}
+
+/* mobile: pill row for the current group, only when it holds >1 view */
+function subNavHtml(){
+  const g=groupOf(curView);
+  if(g.views.length<2)return '';
+  return '<div class="sub-nav">'+g.views.map(vid=>{
+    const on=vid===curView?' active':'';
+    return '<button class="sub-tab'+on+'" onclick="switchView(\''+vid+'\')">'+viewLabel(vid)+'</button>';
+  }).join('')+'</div>';
+}
+
+function switchGroup(gid){
+  const g=GROUPS.find(x=>x.id===gid);
+  if(!g)return;
+  if(g.views.indexOf(curView)>=0)return;   /* already inside: no-op */
+  switchView(g.views[0]);
 }
 function switchTeam(k){
   /* Single-team build — unreachable from the UI, left intact as a safe no-op. */
@@ -1875,6 +1994,7 @@ async function render(reload){
     const d=await loadTeam(curTeam);
     const t=d.team;
     let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
+    h=subNavHtml()+h;
     if(IS_COACH){
       if(curView==='overview')h+=vOverview(d);
       else if(curView==='games')h+=vGames(d);
