@@ -347,7 +347,6 @@ const COACH_VIEWS=[
 const PARENT_VIEWS=[
   {id:'players',label:'My Player'},
   {id:'overview',label:'Team Season'},
-  {id:'games',label:'Results'},
   {id:'progression',label:'Progression'},
   {id:'submit',label:'Submit Game'}
 ];
@@ -359,8 +358,6 @@ const PARENT_GROUPS=[
    icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>'},
   {id:'teamg',  label:'Team',      views:['overview'],
    icon:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'},
-  {id:'gamesg', label:'Results',   views:['games'],
-   icon:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>'},
   {id:'submitg',label:'Submit',    views:['submit'],
    icon:'<path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/><path d="M12 16V3M7 8l5-5 5 5"/>'}
 ];
@@ -1859,7 +1856,7 @@ async function render(reload){
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
       else if(curView==='submit')h+=vSubmit(d);
-      else h+=vGames(d);
+      else h+=vOverview(d);
     }
     mainEl.innerHTML=h;
   }catch(e){

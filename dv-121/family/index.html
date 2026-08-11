@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourtTrack Analytics — Diamond Valley U12.1 (Family)</title>
+<title>CourtTrack Analytics — Darebin 12.1 Girls (Family)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -45,53 +45,6 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:100;box-s
 .team-option:hover,.team-option.active{background:rgba(255,255,255,.08);color:#fff;}
 .team-option .team-opt-sub{font-family:'Inter';font-size:11px;font-weight:400;color:#6a82a0;display:block;text-transform:none;letter-spacing:0;margin-top:1px;}
 .view-nav{display:flex;gap:2px;padding:10px 0 0;overflow-x:auto;scrollbar-width:none;}
-/* ===== MOBILE OVERHAUL (<=700px) — patch_dv121_family_mobile.py ===== */
-.sub-nav{display:none;}
-.tabbar{display:none;}
-@media(max-width:700px){
-  /* --- header compression --- */
-  .hd-inner{padding:0 14px;}
-  .hd-top{padding:10px 0 0;}
-  .hd-logo{font-size:19px;}
-  .hd-logo .hd-long{display:none;}
-  .hd-tag{display:none;}
-  .mode-badge{margin-left:7px;font-size:9px;padding:2px 7px;}
-  /* team name already appears in the page heading — drop the duplicate
-     header chip so it cannot collide with the fixed switch-player button */
-  .team-switcher{display:none;}
-  .switch-player-btn{top:11px;right:12px;font-size:11.5px;padding:6px 11px;}
-
-  .view-nav{display:none;}
-
-  /* --- sub-segment pills --- */
-  .sub-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
-           padding:0 0 14px;margin:-4px 0 0;}
-  .sub-nav::-webkit-scrollbar{display:none;}
-  .sub-tab{flex:none;background:var(--card);border:1px solid var(--line);
-           color:var(--muted);font-family:'Inter';font-size:12.5px;font-weight:600;
-           padding:8px 15px;border-radius:20px;cursor:pointer;white-space:nowrap;}
-  .sub-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
-
-  /* --- bottom tab bar --- */
-  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;
-          background:rgba(255,255,255,.95);
-          -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-          border-top:1px solid var(--line);
-          box-shadow:0 -1px 0 rgba(16,31,55,.06),0 -8px 24px rgba(16,31,55,.05);
-          padding:6px 2px calc(6px + env(safe-area-inset-bottom));}
-  .tabbar-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-              background:none;border:none;cursor:pointer;padding:5px 2px;
-              font-family:'Inter';font-size:9.5px;font-weight:600;
-              color:#9aa3b1;letter-spacing:.01em;min-height:46px;}
-  .tabbar-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;
-                  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-  .tabbar-btn.active{color:var(--navy);}
-  .tabbar-btn.active svg{stroke-width:2.4;}
-
-  main{padding:18px 14px 96px;}
-  footer{padding-bottom:80px;}
-}
-
 .view-nav::-webkit-scrollbar{display:none;}
 .view-tab{background:none;border:none;color:#6a82a0;font-family:'Inter';font-size:13px;font-weight:500;padding:9px 16px 10px;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:color .15s;}
 .view-tab:hover{color:#a8bcce;}
@@ -177,10 +130,7 @@ tfoot td{background:var(--card2);font-weight:600;border-top:1px solid var(--line
 .badge.w{background:var(--winbg);color:var(--windk);}
 .badge.l{background:var(--lossbg);color:var(--lossdk);}
 .badge.d{background:#eef0f3;color:#5a6472;}
-.p-tile.t-neutral{background:var(--card)!important;border-color:var(--line)!important;}
-.p-tile .v.dim{color:#b7bfcb;}
-.tile-note{font-weight:500;color:#9aa3b1;font-size:.92em;}
-.tbl-wrap{overflow-x:auto;min-width:0;-webkit-overflow-scrolling:touch;background:linear-gradient(90deg,var(--card) 30%,rgba(255,255,255,0)) left/28px 100% no-repeat,linear-gradient(90deg,rgba(255,255,255,0),var(--card) 70%) right/28px 100% no-repeat,radial-gradient(farthest-side at 0 50%,rgba(16,31,55,.13),transparent) left/12px 100% no-repeat,radial-gradient(farthest-side at 100% 50%,rgba(16,31,55,.13),transparent) right/12px 100% no-repeat;background-attachment:local,local,scroll,scroll;}
+.tbl-wrap{overflow-x:auto;}
 .gt-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
 .gt-vjbl{background:var(--vjblbg);color:var(--vjbldk);}
 .gt-dom{background:var(--dombg);color:var(--domdk);}
@@ -232,10 +182,6 @@ label.flt{font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-di
 .p-tile.t-pm-pos .v{color:var(--windk);}
 .p-tile.t-pm-neg{background:var(--lossbg);border-color:rgba(217,65,63,.30);}
 .p-tile.t-pm-neg .v{color:var(--lossdk);}
-.p-tile.t-up{background:var(--winbg);border-color:rgba(26,158,114,.30);}
-.p-tile.t-up .v{color:var(--windk);}
-.p-tile.t-down{background:var(--lossbg);border-color:rgba(217,65,63,.30);}
-.p-tile.t-down .v{color:var(--lossdk);}
 .trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;}
 .trend-up{background:#eaf7f1;color:var(--windk);}
 .trend-down{background:#fdeeee;color:var(--lossdk);}
@@ -296,7 +242,7 @@ window.__ADMIN_BYPASS__ = true;
 <div id="family-gate" style="position:fixed;inset:0;background:#101d31;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9999;font-family:'Inter',-apple-system,sans-serif;">
   <div style="background:#fff;border-radius:14px;padding:36px 30px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);">
     <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:#101d31;margin-bottom:4px;">Court<span style="color:#d9a05b;">Track</span></div>
-    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Diamond Valley U12.1 &middot; Family access</div>
+    <div style="font-size:13px;color:#7c8698;margin-bottom:22px;">Darebin 12.1 Girls &middot; Family access</div>
     <div style="font-size:13px;color:#344152;margin-bottom:14px;">Enter the access code shared with your family to see your player's stats.</div>
     <input id="family-code-input" type="text" placeholder="e.g. CODE-XXXX" autocapitalize="characters" autocomplete="off"
       style="width:100%;padding:12px 14px;border:1.5px solid #e8e6e1;border-radius:8px;font-size:15px;text-align:center;letter-spacing:.05em;text-transform:uppercase;font-family:'Inter',monospace;outline:none;margin-bottom:12px;box-sizing:border-box;">
@@ -309,12 +255,12 @@ window.__ADMIN_BYPASS__ = true;
   <div class="hd-inner">
     <div class="hd-top">
       <div>
-        <div class="hd-logo">Court<span>Track</span><span class="hd-long"> Analytics</span></div>
-        <div class="hd-tag">Diamond Valley U12.1 &middot; Family view</div>
+        <div class="hd-logo">Court<span>Track</span> Analytics</div>
+        <div class="hd-tag">Darebin 12.1 Girls &middot; Family view</div>
       </div>
       <div class="team-switcher" id="team-switcher">
         <span class="team-btn" id="team-btn" style="cursor:default;">
-          <span id="team-btn-label">Diamond Valley</span>
+          <span id="team-btn-label">Darebin 12.1</span>
         </span>
       </div>
     </div>
@@ -322,17 +268,17 @@ window.__ADMIN_BYPASS__ = true;
   </div>
 </header>
 <main id="main"><div class="loading">Loading season data&hellip;</div></main>
-<footer id="footer">CourtTrack Analytics &middot; Diamond Valley U12.1 &middot; figures live from the event log</footer>
+<footer id="footer">CourtTrack Analytics &middot; Darebin 12.1 Girls &middot; figures live from the event log</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-/* BUILD:ANALYTICS_CONFIG — DIAMOND VALLEY U12.1 SINGLE-TEAM FAMILY BUILD, DO NOT ADD OTHER TEAMS HERE */
+/* BUILD:ANALYTICS_CONFIG — DAREBIN 12.1 GIRLS SINGLE-TEAM FAMILY BUILD, DO NOT ADD OTHER TEAMS HERE */
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
-  {key:'dv_u12_girls1',aliases:[],label:'Diamond Valley',compLabel:'Competition',full:'Diamond Valley U12 Girls 1',comp:'VC Reserve · 7-min stop clock',
-   roster:{19:{num:'#19',name:'Kaiah Black'},31:{num:'#31',name:'Scarlett Walters'},41:{num:'#41',name:'Harper Powell'},43:{num:'#43',name:'Harper Ritchie'},45:{num:'#45',name:'Mila Dixon'},53:{num:'#53',name:'Greta Morris'},55:{num:'#55',name:'Lara Shaw'},73:{num:'#73',name:'Mackenzie Haas-Baker'},75:{num:'#75',name:'Taylah Wignell'},77:{num:'#77',name:'Billie Burrell'}}}
+  {key:'darebin_u12_girls1',aliases:[],label:'Darebin',compLabel:'Competition',full:'Darebin 12.1 Girls',comp:'VC Reserve · 7-min stop clock',
+   roster:{1:{num:'#1',name:'Zoe Panagiotopoulos'},2:{num:'#2',name:'Matea Fakalata'},3:{num:'#3',name:'Lola Muscat'},4:{num:'#5',name:'Selena Torres'},5:{num:'#11',name:'Alice Ngo'},6:{num:'#13',name:'Zoe Pulsford'},7:{num:'#21',name:"Georgia D'Errico"},8:{num:'#23',name:'Raya Raymond'},9:{num:'#75',name:'Isabelle Kelton'},10:{num:'#90',name:'Scout Austin'}}}
 ];
 /* BUILD:ANALYTICS_CONFIG_END */
 const COMP_LABEL=TEAMS[0].compLabel||'VJBL';
@@ -354,33 +300,10 @@ const COACH_VIEWS=[
 const PARENT_VIEWS=[
   {id:'players',label:'My Player'},
   {id:'overview',label:'Team Season'},
-  {id:'games',label:'Results'},
   {id:'progression',label:'Progression'},
   {id:'submit',label:'Submit Game'}
 ];
 const VIEWS=IS_COACH?COACH_VIEWS:PARENT_VIEWS;
-
-/* ── MOBILE TAB GROUPS (family) ── */
-const PARENT_GROUPS=[
-  {id:'mine',   label:'My Player', views:['players','progression'],
-   icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>'},
-  {id:'teamg',  label:'Team',      views:['overview'],
-   icon:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'},
-  {id:'gamesg', label:'Results',   views:['games'],
-   icon:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>'},
-  {id:'submitg',label:'Submit',    views:['submit'],
-   icon:'<path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/><path d="M12 16V3M7 8l5-5 5 5"/>'}
-];
-const GROUPS=PARENT_GROUPS;
-function groupOf(viewId){
-  const g=GROUPS.find(g=>g.views.indexOf(viewId)>=0);
-  return g||GROUPS[0];
-}
-function viewLabel(viewId){
-  const v=VIEWS.find(v=>v.id===viewId);
-  return v?v.label:viewId;
-}
-
 
 /* stamp header */
 document.querySelector('.hd-logo').insertAdjacentHTML('afterend',
@@ -521,31 +444,6 @@ function seasonPlayers(data){
 }
 function fmtMin(m){return(Math.round(m*10)/10).toFixed(1);}
 function pct(m,a){return a?Math.round(m/a*100)+'%':'—';}
-/* ── FAMILY RATE-STAT FLOORS ──
-   A percentage is only meaningful once the sample supports it. Below the
-   floor the tile shows an em dash and says so, rather than rendering a
-   small-sample 0% or 14% at full size next to a child's name. */
-const RATE_MIN_ATT={fg:15,fg3:5,ft:5};
-function rateTile(key,makes,atts,label,badge){
-  const need=RATE_MIN_ATT[key]||0;
-  const neutral=' t-neutral';
-  if(!atts||atts<need){
-    return '<div class="p-tile'+neutral+'"><div class="v disp dim">—</div>'+
-           '<div class="l">'+label+' <span class="tile-note">not enough attempts yet</span></div></div>';
-  }
-  const p=Math.round(makes/atts*100)+'%';
-  return '<div class="p-tile'+neutral+'"><div class="v disp">'+p+'</div>'+
-         '<div class="l">'+label+' <span class="tile-note">'+makes+'/'+atts+'</span> '+
-         neutralBadge(badge)+'</div></div>';
-}
-/* Strips good/bad colour from a badge while keeping its direction text.
-   Used on stats where a red card next to a junior player's name is a
-   judgement rather than a report. */
-function neutralBadge(b){
-  /* the negative lookahead matters: without it, "trend-bad" matches inside
-     "trend-badge" and corrupts the wrapper class */
-  return String(b||'').replace(/trend-(good|bad|up|down)(?![a-z-])/g,'trend-flat');
-}
 function per40(v,min){return min>0.5?(v*28/min).toFixed(1):'—';}
 function resBadge(g){const d=(g.scoreHome||0)-(g.scoreAway||0);return d>0?'<span class="badge w">W '+g.scoreHome+'–'+g.scoreAway+'</span>':d<0?'<span class="badge l">L '+g.scoreHome+'–'+g.scoreAway+'</span>':'<span class="badge d">D '+g.scoreHome+'–'+g.scoreAway+'</span>';}
 function gLabel(g){return(g.round?'R'+g.round+' ':'')+'vs '+(g.opponent||'?');}
@@ -600,7 +498,7 @@ function trendBadge(vals){
   if(changePct<-0.12)return'<span class="trend-badge trend-down">▼ trending down</span>';
   return'<span class="trend-badge trend-flat">— steady</span>';
 }
-/* ── gated trend badges ──────────────────────────────────────────────
+/* ── gated trend badges ───────────────────────────────────
    A stat only earns an arrow when the move is large relative to that
    player's OWN game-to-game spread, and the stat has enough volume to
    be worth testing. Everything else reads "steady" — never blank.
@@ -1271,13 +1169,13 @@ function playerPanelParent(d,pid){
   h+='<div class="p-tile'+tileCls(minTrend)+'"><div class="v disp">'+minPG+'</div><div class="l">Min / game '+minTrend+'</div></div>';
   h+='<div class="p-tile'+tileCls(ptsTrend)+'"><div class="v disp">'+ptsPG+'</div><div class="l">Points / game '+ptsTrend+'</div></div>';
   h+='<div class="p-tile'+tileCls(rebTrend)+'"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game '+rebTrend+'</div></div>';
-  h+=rateTile('fg',a.fgm,a.fga,'Shooting %',fgTrend);
-  h+=rateTile('fg3',a.fgm3,a.fga3,'3-point %',fg3Trend);
+  h+='<div class="p-tile'+tileCls(fgTrend)+'"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting % '+fgTrend+'</div></div>';
+  h+='<div class="p-tile'+tileCls(fg3Trend)+'"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
   h+='<div class="p-tile'+tileCls(astTrend)+'"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
-  h+='<div class="p-tile t-neutral"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+neutralBadge(tovTrend)+'</div></div>';
+  h+='<div class="p-tile t-amber'+tileCls(tovTrend)+'"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
   const pmCls=a.pm>0?' t-pm-pos':a.pm<0?' t-pm-neg':'';
   h+='<div class="p-tile'+pmCls+'"><div class="v disp">'+(a.pm>0?'+':'')+a.pm+'</div><div class="l">Plus / minus</div></div>';
-  h+=rateTile('ft',a.ftm,a.fta,'Free throws','');
+  if(a.fta>0){const ftDisp=a.fta>=8?Math.round(a.ftm/a.fta*100)+'%':a.ftm+'/'+a.fta;h+='<div class="p-tile"><div class="v disp">'+ftDisp+'</div><div class="l">Free throws</div></div>';}
   if(a.stl>=10){const stlCls=tileCls(stlTrend);h+='<div class="p-tile'+stlCls+'"><div class="v disp">'+(a.gp>0?(a.stl/a.gp).toFixed(1):'—')+'</div><div class="l">Steals / game '+stlTrend+'</div></div>';}
   if(a.blk>=5){const blkCls=tileCls(blkTrend);h+='<div class="p-tile'+blkCls+'"><div class="v disp">'+(a.gp>0?(a.blk/a.gp).toFixed(1):'—')+'</div><div class="l">Blocks / game '+blkTrend+'</div></div>';}
   h+='</div>';
@@ -1628,41 +1526,8 @@ function renderTabs(){
   renderTeamDropdown();
   document.getElementById('view-tabs').innerHTML=VIEWS.map(v=>{
     const active=v.id===curView?' active':'';
-    return '<button class="view-tab'+active+'" onclick="switchView(\''+v.id+'\')">'+v.label+'</button>';
+    return '<button class="view-tab'+active+'" onclick="switchView(\'' +v.id+ '\')">'+ v.label+'</button>';
   }).join('');
-  renderTabBar();
-}
-
-function renderTabBar(){
-  let bar=document.getElementById('tabbar');
-  if(!bar){
-    bar=document.createElement('nav');
-    bar.id='tabbar';
-    bar.className='tabbar';
-    document.body.appendChild(bar);
-  }
-  const active=groupOf(curView).id;
-  bar.innerHTML=GROUPS.map(g=>{
-    const on=g.id===active?' active':'';
-    return '<button class="tabbar-btn'+on+'" onclick="switchGroup(\''+g.id+'\')" '+
-           'aria-label="'+g.label+'"><svg viewBox="0 0 24 24">'+g.icon+'</svg>'+g.label+'</button>';
-  }).join('');
-}
-
-function subNavHtml(){
-  const g=groupOf(curView);
-  if(g.views.length<2)return '';
-  return '<div class="sub-nav">'+g.views.map(vid=>{
-    const on=vid===curView?' active':'';
-    return '<button class="sub-tab'+on+'" onclick="switchView(\''+vid+'\')">'+viewLabel(vid)+'</button>';
-  }).join('')+'</div>';
-}
-
-function switchGroup(gid){
-  const g=GROUPS.find(x=>x.id===gid);
-  if(!g)return;
-  if(g.views.indexOf(curView)>=0)return;
-  switchView(g.views[0]);
 }
 function switchTeam(k){
   curTeam=k;selPlayer=null;expandedGame=null;expandedOppGame=null;expandedParentGame=null;
@@ -1836,22 +1701,6 @@ async function render(reload){
     const d=await loadTeam(curTeam);
     const t=d.team;
     let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
-    h=subNavHtml()+h;
-    /* footer freshness stamp - answers "is this current?" without a support email */
-    try{
-      const gsAll=(d.games||[]).slice().sort((x,y)=>String(x.date||'').localeCompare(String(y.date||'')));
-      const last=gsAll.length?gsAll[gsAll.length-1].date:null;
-      if(last){
-        const dt=new Date(last);
-        if(!isNaN(dt)){
-          const f=dt.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
-          const ft=document.getElementById('footer');
-          if(ft&&ft.textContent.indexOf('Latest game')<0){
-            ft.textContent=ft.textContent+' · Latest game '+f;
-          }
-        }
-      }
-    }catch(e){}
     if(IS_COACH){
       if(curView==='overview')h+=vOverview(d);
       else if(curView==='games')h+=vGames(d);
@@ -1866,7 +1715,7 @@ async function render(reload){
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
       else if(curView==='submit')h+=vSubmit(d);
-      else h+=vGames(d);
+      else h+=vOverview(d);
     }
     mainEl.innerHTML=h;
   }catch(e){
@@ -1881,18 +1730,18 @@ async function render(reload){
    isolation needs the Edge Function + RLS work, not yet deployed for this
    team. Codes are stored as SHA-256 hashes, never plaintext, in this file. */
 const FAMILY_CODES={
-  'bb6a6d4663e42a6da756aac31cb724936483ccd6756f7961618df375791bc7f9':{pid:19,name:"Kaiah Black"},
-  '9f6e6c5e8a00b88d13ff62435c80c427df1196b2bf7c560f298f6248783a894d':{pid:31,name:"Scarlett Walters"},
-  '7a98cf84658b3d6c21adcb242c18bb994192e680e109046124495382d3f54104':{pid:41,name:"Harper Powell"},
-  '305936777bdad72eaacf987a56693ae48d76d57625c01566c23b7366d3da7443':{pid:43,name:"Harper Ritchie"},
-  '9bcc65f90e470ac39013b2ec754945d2ba617fdf39d1120539189722b8dad21c':{pid:45,name:"Mila Dixon"},
-  '2b3ba2b2b7c39b634dbafae379a6114cf641654e6d784ef24f32f616b67c727b':{pid:53,name:"Greta Morris"},
-  '935b5d49a7ceb8eb4dbd3262fd615a085ec4883d176562414ff0c8cc44046473':{pid:55,name:"Lara Shaw"},
-  'cbcf3297c62617bf27acbc86effce50cd1b88a61052ec07646a19a3eb393715f':{pid:73,name:"Mackenzie Haas-Baker"},
-  '15d71b894aa40bf7b9a7f5299e3fd4c8e4f1e27d749f2449d4b94267951e9e6a':{pid:75,name:"Taylah Wignell"},
-  '0870a8d99597e433f708283acdd6ee2714712cb7391f65b4251050f2350873c7':{pid:77,name:"Billie Burrell"}
+  '6900e32b44fbb6445321c768fe2350773517391e43a5f2feb310c7b6d4d7c619':{pid:1,name:"Zoe Panagiotopoulos"},
+  '2da83343600aa0550e83f5ef97c95b52ebe0e7ba3af60b4509099c19b8cb08e4':{pid:2,name:"Matea Fakalata"},
+  'cad6e013ebbeee1fc3bb2a88b6b6fb6e6ab4a0e3c865f174c62d21058c9fa0a7':{pid:3,name:"Lola Muscat"},
+  'e209a1d9af6a921b8484670d3f483c2f10c1079d80f56f90077768644a35236b':{pid:4,name:"Selena Torres"},
+  '937485124ec5d3df491c14ffadd1b07fb79115078bf2396e670b7dec7d77ae40':{pid:5,name:"Alice Ngo"},
+  '3a6d1fd88939550a6f47e5ab1f0edd17fa0191d07596f9387dafd58414051d19':{pid:6,name:"Zoe Pulsford"},
+  '61217c5bab71d75de6be037446980913576af877c4fc7df8bc5a4b7f79e4beca':{pid:7,name:"Georgia D'Errico"},
+  '7f171a71aa7260d8b8e8a45eb6c72052ffa29cf22fcdd9372da821a54d6eaa4a':{pid:8,name:"Raya Raymond"},
+  'f0c858c9d3032a15df1caefa02c055064b86ac5629b32c6f34aeb809514c95f9':{pid:9,name:"Isabelle Kelton"},
+  'bef60b397aa3b84a43dbd78b7bf943d0d70e25b363814094ad75f5efd83f2d73':{pid:10,name:"Scout Austin"}
 };
-const FAMILY_STORE_KEY='courttrack_family_dv121';
+const FAMILY_STORE_KEY='courttrack_family_dar121';
 let FAMILY_UNLOCKED_PID=null;
 async function sha256Hex(str){
   const enc=new TextEncoder().encode(str.trim().toUpperCase());
@@ -1921,13 +1770,13 @@ async function attemptFamilyUnlock(){
 function switchPlayer(){
   if(window.__ADMIN_BYPASS__){
     // Admin session: never reload (reload loses the bypass flag and the
-    // one-time ?bypass= URL param is already stripped) -- just drop back
+    // one-time ?bypass= URL param is already stripped) — just drop back
     // to the player picker client-side, same as the in-panel back button.
     selPlayer=null;
     render();
     return;
   }
-  try{localStorage.removeItem('courttrack_family_dv121');}catch(e){}
+  try{localStorage.removeItem(FAMILY_STORE_KEY);}catch(e){}
   location.reload();
 }
 document.getElementById('family-unlock-btn').addEventListener('click',attemptFamilyUnlock);
@@ -1942,10 +1791,12 @@ async function checkStoredFamilyUnlock(){
     window.history.replaceState(null,'',window.location.pathname);
   }
 
-  // Admin bypass — skip gate entirely and render the app straight away
+  // Admin bypass — skip gate entirely and render the app straight away.
+  // Switch-player button stays visible: switchPlayer() now checks this same
+  // flag and never reloads under bypass, so admins can move between players
+  // without hitting the code gate again.
   if(window.__ADMIN_BYPASS__){
     document.getElementById('family-gate').style.display='none';
-    document.getElementById('switch-player-btn').style.display='none';
     showFamilyApp();
     render(true);
     return true;
