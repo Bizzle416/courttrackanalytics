@@ -746,7 +746,8 @@ function vOverview(d){
     h+='</div>';
   }
   if(!gs.length){h+='<div class="card" style="text-align:center;padding:40px;color:var(--muted);">No '+filterLabel+' recorded yet.</div>';return h;}
-  const periodHeader=gs.some(g=>isTwoHalf(g))?'H1 · H2 / Q1–Q4':'Q1 · Q2 · Q3 · Q4';
+  const periodLabels=gs.some(g=>isTwoHalf(g))?['H1','H2']:['Q1','Q2','Q3','Q4'];
+  const periodHeader='<span class="qstrip" style="pointer-events:none;">'+periodLabels.map(l=>'<span class="qcell" style="background:#e2e8f0;color:#64748b;font-size:11px;height:22px;min-width:38px;">'+l+'</span>').join('')+'</span>';
   h+='<div class="card"><div class="sec-h">Period momentum &nbsp;&mdash;&nbsp; '+filterLabel+'</div>';
   h+='<div class="tbl-wrap"><table class="momentum-table"><thead><tr><th style="min-width:180px;">Game</th><th>Type</th><th>Result</th><th>'+periodHeader+'</th></tr></thead><tbody>';
   gs.forEach(g=>{
