@@ -1750,7 +1750,6 @@ async function sha256Hex(str){
 }
 function showFamilyApp(){
   document.getElementById('family-gate').style.display='none';
-  document.getElementById('switch-player-btn').style.display='block';
   document.getElementById('app-root').style.display='';
 }
 async function attemptFamilyUnlock(){
@@ -1813,14 +1812,13 @@ async function checkStoredFamilyUnlock(){
       selPlayer=FAMILY_UNLOCKED_PID;
       window.history.replaceState(null,'',window.location.pathname);
       showFamilyApp();
-      document.getElementById('switch-player-btn').style.display='block';
       render(true);
       return true;
     }
   }
 
   const saved=JSON.parse(localStorage.getItem(FAMILY_STORE_KEY)||'null');
-  if(saved){document.getElementById('switch-player-btn').style.display='block';}
+  if(saved){}
     if(saved&&saved.h&&FAMILY_CODES[saved.h]){
       FAMILY_UNLOCKED_PID=FAMILY_CODES[saved.h].pid;
       selPlayer=FAMILY_UNLOCKED_PID;
