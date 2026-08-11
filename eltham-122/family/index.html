@@ -318,7 +318,6 @@ const COACH_VIEWS=[
 const PARENT_VIEWS=[
   {id:'players',label:'My Player'},
   {id:'overview',label:'Team Season'},
-  {id:'games',label:'Results'},
   {id:'progression',label:'Progression'},
   {id:'submit',label:'Submit Game'}
 ];
@@ -1716,7 +1715,7 @@ async function render(reload){
       else if(curView==='overview')h+=vOverview(d);
       else if(curView==='progression')h+=vProgressionParent(d);
       else if(curView==='submit')h+=vSubmit(d);
-      else h+=vGames(d);
+      else h+=vOverview(d);
     }
     mainEl.innerHTML=h;
   }catch(e){
