@@ -178,6 +178,9 @@ tfoot td{background:var(--card2);font-weight:600;border-top:1px solid var(--line
 .badge.w{background:var(--winbg);color:var(--windk);}
 .badge.l{background:var(--lossbg);color:var(--lossdk);}
 .badge.d{background:#eef0f3;color:#5a6472;}
+.p-tile.t-neutral{background:var(--card)!important;border-color:var(--line)!important;}
+.p-tile .v.dim{color:#b7bfcb;}
+.tile-note{font-weight:500;color:#9aa3b1;font-size:.92em;}
 .tbl-wrap{overflow-x:auto;min-width:0;-webkit-overflow-scrolling:touch;background:linear-gradient(90deg,var(--card) 30%,rgba(255,255,255,0)) left/28px 100% no-repeat,linear-gradient(90deg,rgba(255,255,255,0),var(--card) 70%) right/28px 100% no-repeat,radial-gradient(farthest-side at 0 50%,rgba(16,31,55,.13),transparent) left/12px 100% no-repeat,radial-gradient(farthest-side at 100% 50%,rgba(16,31,55,.13),transparent) right/12px 100% no-repeat;background-attachment:local,local,scroll,scroll;}
 .gt-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
 .gt-vjbl{background:var(--vjblbg);color:var(--vjbldk);}
@@ -518,6 +521,31 @@ function seasonPlayers(data){
 }
 function fmtMin(m){return(Math.round(m*10)/10).toFixed(1);}
 function pct(m,a){return a?Math.round(m/a*100)+'%':'—';}
+/* ── FAMILY RATE-STAT FLOORS ──
+   A percentage is only meaningful once the sample supports it. Below the
+   floor the tile shows an em dash and says so, rather than rendering a
+   small-sample 0% or 14% at full size next to a child's name. */
+const RATE_MIN_ATT={fg:15,fg3:5,ft:5};
+function rateTile(key,makes,atts,label,badge){
+  const need=RATE_MIN_ATT[key]||0;
+  const neutral=' t-neutral';
+  if(!atts||atts<need){
+    return '<div class="p-tile'+neutral+'"><div class="v disp dim">—</div>'+
+           '<div class="l">'+label+' <span class="tile-note">not enough attempts yet</span></div></div>';
+  }
+  const p=Math.round(makes/atts*100)+'%';
+  return '<div class="p-tile'+neutral+'"><div class="v disp">'+p+'</div>'+
+         '<div class="l">'+label+' <span class="tile-note">'+makes+'/'+atts+'</span> '+
+         neutralBadge(badge)+'</div></div>';
+}
+/* Strips good/bad colour from a badge while keeping its direction text.
+   Used on stats where a red card next to a junior player's name is a
+   judgement rather than a report. */
+function neutralBadge(b){
+  /* the negative lookahead matters: without it, "trend-bad" matches inside
+     "trend-badge" and corrupts the wrapper class */
+  return String(b||'').replace(/trend-(good|bad|up|down)(?![a-z-])/g,'trend-flat');
+}
 function per40(v,min){return min>0.5?(v*40/min).toFixed(1):'—';}
 function resBadge(g){const d=(g.scoreHome||0)-(g.scoreAway||0);return d>0?'<span class="badge w">W '+g.scoreHome+'–'+g.scoreAway+'</span>':d<0?'<span class="badge l">L '+g.scoreHome+'–'+g.scoreAway+'</span>':'<span class="badge d">D '+g.scoreHome+'–'+g.scoreAway+'</span>';}
 function gLabel(g){return(g.round?'R'+g.round+' ':'')+'vs '+(g.opponent||'?');}
@@ -1242,13 +1270,13 @@ function playerPanelParent(d,pid){
   h+='<div class="p-tile'+tileCls(minTrend)+'"><div class="v disp">'+minPG+'</div><div class="l">Min / game '+minTrend+'</div></div>';
   h+='<div class="p-tile'+tileCls(ptsTrend)+'"><div class="v disp">'+ptsPG+'</div><div class="l">Points / game '+ptsTrend+'</div></div>';
   h+='<div class="p-tile'+tileCls(rebTrend)+'"><div class="v disp">'+rebPG+'</div><div class="l">Rebounds / game '+rebTrend+'</div></div>';
-  h+='<div class="p-tile'+tileCls(fgTrend)+'"><div class="v disp">'+pct(a.fgm,a.fga)+'</div><div class="l">Shooting % '+fgTrend+'</div></div>';
-  h+='<div class="p-tile'+tileCls(fg3Trend)+'"><div class="v disp">'+pct(a.fgm3,a.fga3)+'</div><div class="l">3-point % '+fg3Trend+'</div></div>';
+  h+=rateTile('fg',a.fgm,a.fga,'Shooting %',fgTrend);
+  h+=rateTile('fg3',a.fgm3,a.fga3,'3-point %',fg3Trend);
   h+='<div class="p-tile'+tileCls(astTrend)+'"><div class="v disp">'+(a.gp>0?(a.ast/a.gp).toFixed(1):'—')+'</div><div class="l">Assists / game '+astTrend+'</div></div>';
-  h+='<div class="p-tile t-amber'+tileCls(tovTrend)+'"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+tovTrend+'</div></div>';
+  h+='<div class="p-tile t-neutral"><div class="v disp">'+(a.gp>0?(a.tov/a.gp).toFixed(1):'—')+'</div><div class="l">Turnovers / game '+neutralBadge(tovTrend)+'</div></div>';
   const pmCls=a.pm>0?' t-pm-pos':a.pm<0?' t-pm-neg':'';
   h+='<div class="p-tile'+pmCls+'"><div class="v disp">'+(a.pm>0?'+':'')+a.pm+'</div><div class="l">Plus / minus</div></div>';
-  if(a.fta>0){const ftDisp=a.fta>=8?Math.round(a.ftm/a.fta*100)+'%':a.ftm+'/'+a.fta;h+='<div class="p-tile"><div class="v disp">'+ftDisp+'</div><div class="l">Free throws</div></div>';}
+  h+=rateTile('ft',a.ftm,a.fta,'Free throws','');
   if(a.stl>=10){const stlCls=tileCls(stlTrend);h+='<div class="p-tile'+stlCls+'"><div class="v disp">'+(a.gp>0?(a.stl/a.gp).toFixed(1):'—')+'</div><div class="l">Steals / game '+stlTrend+'</div></div>';}
   if(a.blk>=5){const blkCls=tileCls(blkTrend);h+='<div class="p-tile'+blkCls+'"><div class="v disp">'+(a.gp>0?(a.blk/a.gp).toFixed(1):'—')+'</div><div class="l">Blocks / game '+blkTrend+'</div></div>';}
   h+='</div>';
@@ -1808,6 +1836,21 @@ async function render(reload){
     const t=d.team;
     let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
     h=subNavHtml()+h;
+    /* footer freshness stamp - answers "is this current?" without a support email */
+    try{
+      const gsAll=(d.games||[]).slice().sort((x,y)=>String(x.date||'').localeCompare(String(y.date||'')));
+      const last=gsAll.length?gsAll[gsAll.length-1].date:null;
+      if(last){
+        const dt=new Date(last);
+        if(!isNaN(dt)){
+          const f=dt.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+          const ft=document.getElementById('footer');
+          if(ft&&ft.textContent.indexOf('Latest game')<0){
+            ft.textContent=ft.textContent+' · Latest game '+f;
+          }
+        }
+      }
+    }catch(e){}
     if(IS_COACH){
       if(curView==='overview')h+=vOverview(d);
       else if(curView==='games')h+=vGames(d);
