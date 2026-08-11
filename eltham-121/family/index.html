@@ -146,7 +146,7 @@ main{max-width:1140px;margin:0 auto;padding:28px 24px 80px;}
 .tc-tour .type-card-bar-fill{background:var(--tour);}
 .momentum-table{width:100%;border-collapse:collapse;}
 .momentum-table th{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 10px 10px;text-align:left;border-bottom:1px solid var(--line);}
-.momentum-table td{padding:10px 10px;border-bottom:1px solid var(--line2);vertical-align:middle;}
+.momentum-table td{padding:10px 10px;border-bottom:1px solid var(--line2);vertical-align:middle;white-space:nowrap;}
 .momentum-table tr:last-child td{border-bottom:none;}
 .momentum-table .gname{font-size:14px;font-weight:500;color:var(--ink);}
 .momentum-table .gdate{font-size:12px;color:var(--muted);margin-top:1px;}
@@ -923,7 +923,7 @@ function vOverview(d){
   const periodLabels=gs.some(g=>isTwoHalf(g))?['H1','H2']:['Q1','Q2','Q3','Q4'];
   const periodHeader='<span class="qstrip" style="pointer-events:none;">'+periodLabels.map(l=>'<span class="qcell" style="background:#e2e8f0;color:#64748b;font-size:11px;height:22px;min-width:38px;">'+l+'</span>').join('')+'</span>';
   h+='<div class="card"><div class="sec-h">Period momentum &nbsp;&mdash;&nbsp; '+filterLabel+'</div>';
-  h+='<div class="tbl-wrap"><table class="momentum-table"><thead><tr><th style="min-width:180px;">Game</th><th>Type</th><th>Result</th><th>'+periodHeader+'</th></tr></thead><tbody>';
+  h+='<div class="tbl-wrap"><table class="momentum-table"><thead><tr><th style="min-width:180px;">Game</th><th>Type</th><th>Result</th><th style="text-align:left;white-space:nowrap;">'+periodHeader+'</th></tr></thead><tbody>';
   gs.forEach(g=>{
     h+='<tr><td><div class="gname">'+gLabel(g)+'</div><div class="gdate">'+(g.date||'')+'</div></td><td>'+gtBadge(g)+'</td><td>'+resBadge(g)+'</td><td>'+qstrip(g)+'</td></tr>';
   });
