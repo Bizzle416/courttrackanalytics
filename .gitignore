@@ -1,4 +1,4 @@
 
 *.bak
 
-patch_*.py
+patch*.py
