@@ -2,3 +2,5 @@
 *.bak
 
 patch*.py
+
+*.preview
