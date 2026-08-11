@@ -286,10 +286,12 @@ window.__ADMIN_BYPASS__ = true;
 const SB_URL='https://uenxuzczcwtmiuzbnoxk.supabase.co';
 const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnh1emN6Y3d0bWl1emJub3hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTkwMzUsImV4cCI6MjA5OTI5NTAzNX0.rsSJOZDPI7gBw6FeC7WPLwUeIZue2OD8yy8pZvz6xdY';
 const TEAMS=[
-  {key:'darebin_u12_girls1',aliases:[],label:'Darebin',full:'Darebin 12.1 Girls',comp:'VC Reserve · 7-min stop clock',gameLenMin:28,
+  {key:'darebin_u12_girls1',aliases:[],label:'Darebin',compLabel:'Competition',full:'Darebin 12.1 Girls',comp:'VC Reserve · 7-min stop clock',gameLenMin:28,
    roster:{1:{num:'#1',name:'Zoe Panagiotopoulos'},2:{num:'#2',name:'Matea Fakalata'},3:{num:'#3',name:'Lola Muscat'},4:{num:'#5',name:'Selena Torres'},5:{num:'#11',name:'Alice Ngo'},6:{num:'#13',name:'Zoe Pulsford'},7:{num:'#21',name:"Georgia D'Errico"},8:{num:'#23',name:'Raya Raymond'},9:{num:'#75',name:'Isabelle Kelton'},10:{num:'#90',name:'Scout Austin'}}}
 ];
 /* BUILD:ANALYTICS_CONFIG_END */
+const COMP_LABEL=TEAMS[0].compLabel||'VJBL';
+
 
 /* ── MODE DETECTION ──
    Hardcoded true, not URL-param driven — this file is a link handed straight
@@ -462,7 +464,7 @@ function resBadge(g){const d=(g.scoreHome||0)-(g.scoreAway||0);return d>0?'<span
 function gLabel(g){return(g.round?'R'+g.round+' ':'')+'vs '+(g.opponent||'?');}
 function gtBadge(g){
   const t=g.gameType||'vjbl';
-  const map={vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'};
+  const map={vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'};
   const cls={vjbl:'gt-vjbl',domestic:'gt-dom',tournament:'gt-tour'};
   return'<span class="gt-badge '+(cls[t]||'gt-vjbl')+'">'+(map[t]||t)+'</span>';
 }
@@ -684,7 +686,7 @@ function vOverview(d){
   const allGs=d.games;
   if(!allGs.length)return'<div class="card"><div class="loading">No completed games recorded for this team yet.</div></div>';
   const types=['vjbl','domestic','tournament'];
-  const typeLabels={vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'};
+  const typeLabels={vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'};
   const byType={};
   types.forEach(t=>{byType[t]=allGs.filter(g=>(g.gameType||'vjbl')===t);});
   const hasTypes=types.filter(t=>byType[t].length>0);
@@ -773,7 +775,7 @@ function vGames(d){
   const allGsV=d.games;
   if(!allGsV.length)return'<div class="card"><div class="loading">No completed games recorded yet.</div></div>';
   const gf=window.gamesTypeFilter||'all';
-  const gTypeLbls={all:'All types',vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'};
+  const gTypeLbls={all:'All types',vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'};
   const gs=gf==='all'?allGsV:allGsV.filter(g=>(g.gameType||'vjbl')===gf);
   let h='<div class="card"><div class="sec-h">Results</div>';
   if(IS_COACH){
@@ -843,10 +845,10 @@ function vPlayersCoach(d){
   if(selPlayer!=null)return playerPanelCoach(d,selPlayer);
   const gs=filteredGames(d.games);
   const rows=seasonPlayersFiltered(d,gs);
-  const filterLabel=activeGameType==='all'?'all games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  const filterLabel=activeGameType==='all'?'all games':{vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(d.games);
   if(!rows.length)return h+'<div class="card"><div class="loading">No player data for '+filterLabel+'.</div></div>';
-  h+='<div class="card"><div class="sec-h">Player stats — '+filterLabel+' ('+gs.length+' game'+(gs.length===1?'':'s')+') · click a player for detail</div><div class="tbl-wrap"><table><thead><tr><th>Player</th><th>GP</th><th>Min</th><th>PTS</th><th>FG</th><th>FG%</th><th>3P</th><th>FT</th><th>OREB</th><th>DREB</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>VIOL</th><th>F</th><th>+/−</th><th>Pts/28</th></tr></thead><tbody>';
+  h+='<div class="card"><div class="sec-h">Player stats — '+filterLabel+' ('+gs.length+' game'+(gs.length===1?'':'s')+') · click a player for detail</div><div class="bd-sub" style="margin-bottom:14px;">Min shown from data sync &mdash; see <strong>Rotation</strong> tab for event-log derived minutes (authoritative)</div><div class="tbl-wrap"><table><thead><tr><th>Player</th><th>GP</th><th>Min</th><th>PTS</th><th>FG</th><th>FG%</th><th>3P</th><th>FT</th><th>OREB</th><th>DREB</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>VIOL</th><th>F</th><th>+/−</th><th>Pts/28</th></tr></thead><tbody>';
   rows.forEach(a=>{
     h+='<tr class="clickable" onclick="openPlayer('+a.pid+')"><td>'+pnum(d.names,a.pid)+' '+pname(d.names,a.pid)+'</td><td>'+a.gp+'</td><td>'+fmtMin(a.min)+'</td><td><strong>'+a.pts+'</strong></td><td>'+a.fgm+'/'+a.fga+'</td><td>'+pct(a.fgm,a.fga)+'</td><td>'+(a.fga3?a.fgm3+'/'+a.fga3:'—')+'</td><td>'+(a.fta?a.ftm+'/'+a.fta:'—')+'</td><td>'+a.oreb+'</td><td>'+a.dreb+'</td><td>'+(a.oreb+a.dreb)+'</td><td>'+a.ast+'</td><td>'+a.stl+'</td><td>'+a.blk+'</td><td>'+a.tov+'</td><td>'+a.viol+'</td><td>'+a.foul+'</td><td><span class="'+(a.pm>0?'pos':a.pm<0?'neg':'')+'">'+(a.pm>0?'+':'')+a.pm+'</span></td><td>'+per40(a.pts,a.min)+'</td></tr>';
   });
@@ -901,7 +903,7 @@ function vShooting(d){
     if(s.player_id!=null){const k=String(s.player_id);if(!playerSet.has(k))playerSet.set(k,s.player_id);}
   });
   const players=[...playerSet.values()];
-  const filterLabel=activeGameType==='all'?'all games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  const filterLabel=activeGameType==='all'?'all games':{vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(d.games);
   h+='<div class="card"><div class="sec-h">Shot chart — '+filterLabel+'</div><div class="filters">';
   h+='<label class="flt">Game<select onchange="shootFilters.game=this.value;render();"><option value="all"'+(f.game==='all'?' selected':'')+'>All games</option>'+gsForShooting.map(g=>'<option value="'+g.id+'"'+(f.game===String(g.id)?' selected':'')+'>'+gLabel(g)+'</option>').join('')+'</select></label>';
@@ -936,7 +938,7 @@ function vRotation(d){
   const allGs=d.games;
   if(!allGs.length)return'<div class="card"><div class="loading">No completed games recorded for this team yet.</div></div>';
   const gs=filteredGames(allGs);
-  const filterLabel=activeGameType==='all'?'All games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  const filterLabel=activeGameType==='all'?'All games':{vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(allGs);
   if(!gs.length)return h+'<div class="card"><div class="loading">No '+filterLabel.toLowerCase()+' logged yet.</div></div>';
   const{rows,secsCache}=rotationPlayerAgg(gs);
@@ -1148,7 +1150,7 @@ function toggleOppGame(gid){expandedOppGame=expandedOppGame===gid?null:gid;rende
 /* ── game type filter bar for tabs that need it ── */
 function gameTypeFilterBar(allGs){
   const types=['all','vjbl','domestic','tournament'];
-  const labels={all:'All games',vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'};
+  const labels={all:'All games',vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'};
   const activeCls={all:'active-all',vjbl:'active-vjbl',domestic:'active-dom',tournament:'active-tour'};
   const counts={all:allGs.length};
   ['vjbl','domestic','tournament'].forEach(t=>{counts[t]=allGs.filter(g=>(g.gameType||'vjbl')===t).length;});
@@ -1165,7 +1167,7 @@ function gameTypeFilterBar(allGs){
 function vAnalytics(d){
   const allGsV=d.games;
   const gs=filteredGames(allGsV);
-  const filterLabel=activeGameType==='all'?'All games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  const filterLabel=activeGameType==='all'?'All games':{vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(allGsV);
   if(!gs.length)return h+'<div class="card"><div class="loading">No '+filterLabel.toLowerCase()+' logged yet.</div></div>';
   h+='<div class="card"><div class="sec-h">Season trends — '+filterLabel+' ('+gs.length+' game'+(gs.length===1?'':'s')+')</div><div class="charts">';
@@ -1350,7 +1352,7 @@ function toggleAdv(btn){
 function vProgressionCoach(d){
   const allGsV=d.games;
   const gs=filteredGames(allGsV);
-  const flabel=activeGameType==='all'?'all games':{vjbl:'VJBL',domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
+  const flabel=activeGameType==='all'?'all games':{vjbl:COMP_LABEL,domestic:'Domestic',tournament:'Tournament'}[activeGameType]+' games';
   let h=gameTypeFilterBar(allGsV);
   if(gs.length<2)return h+'<div class="card"><div class="sec-h">Season progression</div><div style="color:var(--muted);font-size:13px;padding:6px 0;">Need at least 2 '+flabel+' synced'+(gs.length===1?' — only 1 logged so far':'')+'. Trend reads unlock at 4 games.</div></div>';
   // cumulative record arc
