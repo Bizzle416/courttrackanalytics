@@ -749,9 +749,9 @@ function vOverview(d){
   const periodLabels=gs.some(g=>isTwoHalf(g))?['H1','H2']:['Q1','Q2','Q3','Q4'];
   const periodHeader='<span class="qstrip" style="pointer-events:none;">'+periodLabels.map(l=>'<span class="qcell" style="background:#e2e8f0;color:#64748b;font-size:11px;height:22px;min-width:38px;">'+l+'</span>').join('')+'</span>';
   h+='<div class="card"><div class="sec-h">Period momentum &nbsp;&mdash;&nbsp; '+filterLabel+'</div>';
-  h+='<div class="tbl-wrap"><table class="momentum-table"><thead><tr><th style="min-width:180px;">Game</th><th>Type</th><th>Result</th><th>'+periodHeader+'</th></tr></thead><tbody>';
+  h+='<div class="tbl-wrap"><table class="momentum-table"><thead><tr><th style="min-width:180px;">Game</th><th>Type</th><th>Result</th><th style="text-align:right;">'+periodHeader+'</th></tr></thead><tbody>';
   gs.forEach(g=>{
-    h+='<tr><td><div class="gname">'+gLabel(g)+'</div><div class="gdate">'+(g.date||'')+'</div></td><td>'+gtBadge(g)+'</td><td>'+resBadge(g)+'</td><td>'+qstrip(g)+'</td></tr>';
+    h+='<tr><td><div class="gname">'+gLabel(g)+'</div><div class="gdate">'+(g.date||'')+'</div></td><td>'+gtBadge(g)+'</td><td>'+resBadge(g)+'</td><td style="text-align:right;">'+qstrip(g)+'</td></tr>';
   });
   h+='</tbody></table></div>';
   h+='<div class="mom-legend"><div class="mom-legend-item"><span class="mom-dot" style="background:var(--win);"></span>Won period</div><div class="mom-legend-item"><span class="mom-dot" style="background:var(--loss);"></span>Lost period</div><div class="mom-legend-item"><span class="mom-dot" style="background:#9aa4b2;"></span>Level</div></div></div>';
