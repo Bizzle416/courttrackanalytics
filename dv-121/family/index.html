@@ -546,7 +546,7 @@ function neutralBadge(b){
      "trend-badge" and corrupts the wrapper class */
   return String(b||'').replace(/trend-(good|bad|up|down)(?![a-z-])/g,'trend-flat');
 }
-function per40(v,min){return min>0.5?(v*40/min).toFixed(1):'—';}
+function per40(v,min){return min>0.5?(v*28/min).toFixed(1):'—';}
 function resBadge(g){const d=(g.scoreHome||0)-(g.scoreAway||0);return d>0?'<span class="badge w">W '+g.scoreHome+'–'+g.scoreAway+'</span>':d<0?'<span class="badge l">L '+g.scoreHome+'–'+g.scoreAway+'</span>':'<span class="badge d">D '+g.scoreHome+'–'+g.scoreAway+'</span>';}
 function gLabel(g){return(g.round?'R'+g.round+' ':'')+'vs '+(g.opponent||'?');}
 function gtBadge(g){
@@ -1056,7 +1056,7 @@ function playerPanelCoach(d,pid){
     +'<div class="tile t-amber"><div class="v disp">'+a.tov+'</div><div class="l">Turnovers</div></div>'
     +'<div class="tile"><div class="v disp '+(a.pm>0?'pos':a.pm<0?'neg':'')+'">'+(a.pm>0?'+':'')+a.pm+'</div><div class="l">Plus / minus</div></div>'
     +'</div>';
-  h+='<div class="sec-h" style="margin-top:10px;">Per-40 rates</div>';
+  h+='<div class="sec-h" style="margin-top:10px;">Per-28 rates</div>';
   h+='<div style="font-size:13px;color:var(--ink2);">Pts '+per40(a.pts,a.min)+' &nbsp;·&nbsp; Reb '+per40(a.oreb+a.dreb,a.min)+' &nbsp;·&nbsp; Ast '+per40(a.ast,a.min)+' &nbsp;·&nbsp; Stl '+per40(a.stl,a.min)+' &nbsp;·&nbsp; TOV '+per40(a.tov,a.min)+' <span style="color:var(--muted);"> ('+fmtMin(a.min)+' total min)</span></div></div>';
   h+='<div class="pp-grid">';
   h+='<div class="chart-card"><h4>Points by game</h4>'+barChart(d.games,g=>((g.summary.stats[pid]||{}).pts)||0,null,'#1a9e72')+'</div>';
@@ -1331,7 +1331,7 @@ function playerPanelParent(d,pid){
   h+='<button class="adv-toggle" onclick="toggleAdv(this)">Advanced stats <span>▼ Show</span></button>';
   h+='<div class="adv-content">';
   h+='<div style="font-size:13px;color:var(--ink2);margin-top:8px;margin-bottom:12px;">';
-  h+='Per-40 min rates  ·  Pts '+per40(a.pts,a.min);
+  h+='Per-28 min rates  ·  Pts '+per40(a.pts,a.min);
   h+=' · Reb '+per40(a.oreb+a.dreb,a.min);
   h+=' · Ast '+per40(a.ast,a.min);
   h+=' · Stl '+per40(a.stl,a.min);
