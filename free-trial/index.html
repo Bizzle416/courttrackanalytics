@@ -56,6 +56,7 @@ h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px)
 .error{background:rgba(217,100,91,.1);border:1px solid rgba(217,100,91,.3);color:var(--err);}
 .success.show,.error.show{display:block;}
 footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM Plex Mono';font-size:11.5px;color:var(--faint);text-align:center;}
+.ft-insta{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.04em;color:var(--maple);text-decoration:none;transition:opacity .15s;}.ft-insta:hover{opacity:.7;}.ft-insta svg{flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -137,7 +138,9 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   </form>
 </div>
 
-<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia · <a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a> · <a href="https://instagram.com/courttrack" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;text-underline-offset:3px;display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@courttrack</a></footer>
+<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia · <a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a>
+<a class="ft-insta" href="https://instagram.com/courttrack" target="_blank" rel="noopener"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Follow @courttrack</a>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
