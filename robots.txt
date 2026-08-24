@@ -1,0 +1,18 @@
+# CourtTrack Analytics — courttrackanalytics.com.au
+# Last updated: 2026-08-24
+
+User-agent: *
+Allow: /
+
+# Team dashboards (passcode-gated, not for indexing)
+Disallow: /dv-121/
+Disallow: /eltham-121/
+Disallow: /eltham-122/
+Disallow: /darebin-121/
+
+# Internal pages
+Disallow: /admin/
+Disallow: /submit/
+Disallow: /analytics/
+
+Sitemap: https://courttrackanalytics.com.au/sitemap.xml
