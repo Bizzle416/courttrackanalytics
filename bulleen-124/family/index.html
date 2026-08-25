@@ -224,17 +224,17 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 }
 </style>
 <script>
-// ── ADMIN BYPASS ──────────────────────────────────────────────────────────
+// ── ADMIN SESSION UNLOCK ────────────────────────────────────────────────
+// No static bypass secret in this file. If this browser tab already
+// logged into /admin this session (server-validated via validate-code),
+// sessionStorage carries that flag here automatically — one login covers
+// every team.
 (function(){
-  const p = new URLSearchParams(window.location.search);
-  if(p.get('bypass') === '7e8c42f6-38b3-4769-81da-c947842a84d5' /* BUILD:BYPASS_TOKEN -- MUST match the token used in this team's coach file. NEVER reuse a token from another team. */){
-    // Valid admin bypass — remove token from URL cleanly then continue
-    const clean = window.location.pathname;
-    window.history.replaceState(null,'',clean);
-    window.__ADMIN_BYPASS__ = true;
-  }
+if(sessionStorage.getItem('ct_admin') === '1'){
+window.__ADMIN_BYPASS__ = true;
+}
 })();
-// ──────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────
 </script>
 </head>
 <body>
@@ -1630,9 +1630,9 @@ async function attemptFamilyUnlock(){
 
 function switchPlayer(){
   if(window.__ADMIN_BYPASS__){
-    // Admin session: never reload (reload loses the bypass flag and the
-    // one-time ?bypass= URL param is already stripped) — just drop back
-    // to the player picker client-side, same as the in-panel back button.
+    // Admin session: never reload (reload loses the sessionStorage-based
+    // admin flag context) — just drop back to the player picker
+    // client-side, same as the in-panel back button.
     selPlayer=null;
     render();
     return;
