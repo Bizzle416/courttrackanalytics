@@ -111,6 +111,11 @@ async function tryLogin(){
       window.location.href = '/admin';
       return;
     }
+    if(res.ok && data.redirect === '__ADMIN_ELTHAM__'){
+      sessionStorage.setItem('ct_admin_eltham', '1');
+      window.location.href = '/admin-eltham';
+      return;
+    }
     if(res.ok && data.redirect){
       const url = data.redirect.includes('/family') ? data.redirect + '?fresh=1' : data.redirect;
       window.location.href = url;
