@@ -93,6 +93,27 @@ tbody td:first-child{color:var(--chalk);font-weight:500;}
 .sub-bullets li::before{content:'';width:4px;height:4px;background:var(--muted);border-radius:50%;flex-shrink:0;margin-top:6px;}
 footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);text-align:center;margin-top:80px;}
 .ft-insta{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.04em;color:var(--maple);text-decoration:none;transition:opacity .15s;}.ft-insta:hover{opacity:.7;}.ft-insta svg{flex-shrink:0;}
+
+/* ── PROMO CODE ── */
+.promo-section{margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,0,0,.1);}
+.promo-label{display:block;font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:6px;}
+.promo-label span{font-weight:400;color:#888;font-size:12px;}
+.promo-row{display:flex;gap:8px;align-items:stretch;}
+.promo-input{flex:1;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase;background:#fff;border:1px solid #ccc;border-radius:4px;color:#1a1a2e;outline:none;transition:border-color .15s;}
+.promo-input:focus{border-color:#1a1a2e;}
+.promo-input::placeholder{text-transform:none;letter-spacing:normal;font-family:'Inter',sans-serif;font-size:13px;color:#aaa;}
+.promo-input.promo-valid{border-color:#1a9e72;}
+.promo-input.promo-invalid{border-color:#c0392b;}
+.promo-input[readonly]{background:#f9f9f9;color:#555;}
+.promo-apply-btn{padding:8px 16px;font-size:13px;font-weight:600;background:#f4f4f4;color:#1a1a2e;border:1px solid #ccc;border-radius:4px;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.promo-apply-btn:hover:not(:disabled){background:#e8e8e8;}
+.promo-apply-btn:disabled{opacity:.45;cursor:not-allowed;}
+.promo-feedback{margin-top:6px;font-size:12px;line-height:1.4;min-height:16px;}
+.promo-feedback.promo-success{color:#1a9e72;}
+.promo-feedback.promo-error{color:#c0392b;}
+.promo-partner-tag{display:inline-block;font-size:11px;font-family:'IBM Plex Mono',monospace;background:rgba(26,158,114,.1);color:#1a9e72;border:1px solid rgba(26,158,114,.3);padding:1px 7px;border-radius:3px;margin-left:6px;letter-spacing:.04em;}
+.promo-clear-btn{background:none;border:none;color:#888;font-size:11px;cursor:pointer;text-decoration:underline;margin-left:8px;padding:0;}
+.promo-clear-btn:hover{color:#1a1a2e;}
 </style>
 </head>
 <body>
@@ -344,6 +365,16 @@ function setMode(mode, e) {
         <button type="button" onclick="addRosterRow()" style="margin-top:8px; padding:6px 12px; cursor:pointer; color:#1a1a2e; background:#f4f4f4; border:1px solid #ccc; border-radius:4px;">+ Add player</button>
       </div>
 
+      <!-- PROMO CODE -->
+      <div class="promo-section">
+        <label class="promo-label" for="psPromoInput">Promo code <span>(optional)</span></label>
+        <div class="promo-row">
+          <input type="text" id="psPromoInput" class="promo-input" placeholder="e.g. PROPRECISION20" maxlength="30" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromoCode();}">
+          <button type="button" id="psPromoApplyBtn" class="promo-apply-btn" onclick="applyPromoCode()">Apply</button>
+        </div>
+        <div id="psPromoFeedback" class="promo-feedback"></div>
+      </div>
+
       <!-- T&C acceptance — mandatory gate -->
       <div style="display:flex;align-items:flex-start;gap:10px;margin-top:18px;">
         <input type="checkbox" id="ps-tc" style="margin-top:3px;flex-shrink:0;width:16px;height:16px;cursor:pointer;">
@@ -417,6 +448,7 @@ function openSignupForm(packageType) {
 
   if (isTeamType) addRosterRow(); // start with one row, still optional to fill
 
+  clearPromoCode();
   document.getElementById('psOverlay').style.display = 'flex';
 }
 
@@ -503,6 +535,14 @@ async function handleSignupSubmit(event) {
     // Zero rows is valid — do not block submission
   }
 
+  // Attach validated promo code if one was applied
+  if (validatedPromo) {
+    insertPayload.promo_code = validatedPromo.code;
+    insertPayload.promo_partner = validatedPromo.partner_name;
+    insertPayload.promo_discount_type = validatedPromo.discount_type;
+    insertPayload.promo_discount_value = validatedPromo.discount_value;
+  }
+
   const tcAcceptedAt = new Date().toISOString();
   insertPayload.tc_accepted = true;
   insertPayload.tc_version = TC_VERSION;
@@ -552,11 +592,18 @@ async function handleSignupSubmit(event) {
       ? 'New Player Package Signup — Action Required (Invoice)'
       : `New ${packageLabels[packageType]} Package Signup — ${insertPayload.team_name} — Action Required (Invoice)`;
 
+    const promoLine = validatedPromo
+      ? (validatedPromo.discount_type === 'percentage'
+          ? `${validatedPromo.discount_value}% off (${validatedPromo.partner_name}) — code: ${validatedPromo.code}`
+          : `$${validatedPromo.discount_value} off (${validatedPromo.partner_name}) — code: ${validatedPromo.code}`)
+      : 'None';
+
     await emailjs.send(PS_EMAILJS_SERVICE_ID, PS_EMAILJS_TEMPLATE_ID, {
       email: PS_NOTIFY_EMAIL,
       alert_subject: alertSubject,
       next_step: 'Confirm the package with the family/coach and send the invoice.',
       summary_text: summaryText,
+      promo_discount: promoLine,
     });
 
     document.getElementById('psForm').style.display = 'none';
@@ -574,8 +621,104 @@ async function handleSignupSubmit(event) {
   return false;
 }
 
+// ── PROMO CODE ──────────────────────────────────────────────
+const PROMO_VALIDATE_URL = 'https://uenxuzczcwtmiuzbnoxk.supabase.co/functions/v1/validate-promo';
+let validatedPromo = null; // { code, partner_name, discount_type, discount_value }
+
+async function applyPromoCode() {
+  const input    = document.getElementById('psPromoInput');
+  const feedback = document.getElementById('psPromoFeedback');
+  const btn      = document.getElementById('psPromoApplyBtn');
+  const code     = input.value.trim();
+
+  if (!code) {
+    feedback.className = 'promo-feedback promo-error';
+    feedback.textContent = 'Enter a promo code first.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  feedback.className = 'promo-feedback';
+  feedback.textContent = '';
+
+  try {
+    const res  = await fetch(PROMO_VALIDATE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+
+    if (data.valid) {
+      validatedPromo = {
+        code:           data.code,
+        partner_name:   data.partner_name,
+        discount_type:  data.discount_type,
+        discount_value: data.discount_value
+      };
+      input.classList.remove('promo-invalid');
+      input.classList.add('promo-valid');
+      input.readOnly = true;
+      btn.textContent = 'Applied ✓';
+
+      const discountLabel = data.discount_type === 'percentage'
+        ? `${data.discount_value}% off`
+        : `$${data.discount_value} off`;
+
+      feedback.className = 'promo-feedback promo-success';
+      feedback.innerHTML =
+        `${discountLabel} applied` +
+        `<span class="promo-partner-tag">${data.partner_name}</span>` +
+        `<button type="button" class="promo-clear-btn" onclick="clearPromoCode()">Remove</button>`;
+    } else {
+      validatedPromo = null;
+      input.classList.remove('promo-valid');
+      input.classList.add('promo-invalid');
+      btn.textContent = 'Apply';
+      btn.disabled = false;
+      const reasons = {
+        invalid:   'Code not recognised.',
+        inactive:  'This code is no longer active.',
+        expired:   'This code has expired.',
+        exhausted: 'This code has reached its usage limit.'
+      };
+      feedback.className = 'promo-feedback promo-error';
+      feedback.textContent = reasons[data.reason] || 'Code not recognised.';
+    }
+  } catch (err) {
+    console.error('Promo validation error:', err);
+    feedback.className = 'promo-feedback promo-error';
+    feedback.textContent = 'Could not verify code — please try again.';
+    btn.textContent = 'Apply';
+    btn.disabled = false;
+  }
+}
+
+function clearPromoCode() {
+  validatedPromo = null;
+  const input    = document.getElementById('psPromoInput');
+  const feedback = document.getElementById('psPromoFeedback');
+  const btn      = document.getElementById('psPromoApplyBtn');
+  if (!input) return; // guard: modal not yet in DOM
+  input.value = '';
+  input.readOnly = false;
+  input.classList.remove('promo-valid', 'promo-invalid');
+  feedback.className = 'promo-feedback';
+  feedback.innerHTML = '';
+  btn.textContent = 'Apply';
+  btn.disabled = false;
+}
+// ────────────────────────────────────────────────────────────
+
 function buildSummaryText(packageType, payload, rosterRows) {
   const timestamp = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' });
+
+  const promoSummary = validatedPromo
+    ? (validatedPromo.discount_type === 'percentage'
+        ? `${validatedPromo.discount_value}% off — ${validatedPromo.partner_name} (${validatedPromo.code})`
+        : `$${validatedPromo.discount_value} off — ${validatedPromo.partner_name} (${validatedPromo.code})`)
+    : 'None';
 
   if (packageType === 'player') {
     return `Hi Team,
@@ -587,6 +730,7 @@ A new package signup has been received. Here are the details:
 - Club: ${payload.player_club}
 - Team Name: ${payload.player_team_name}
 - Email: ${payload.parent_email}
+- Promo Code: ${promoSummary}
 - Submitted: ${timestamp}`;
   }
 
@@ -606,6 +750,7 @@ A new package signup has been received. Here are the details:
 - Coach Email: ${payload.coach_email}
 - Players Provided (${rosterRows.length}):
 ${rosterLines}
+- Promo Code: ${promoSummary}
 - Submitted: ${timestamp}`;
 }
 </script>
