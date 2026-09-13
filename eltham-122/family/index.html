@@ -229,7 +229,7 @@ footer{max-width:1140px;margin:0 auto;padding:0 24px 40px;font-size:12px;color:v
 // sessionStorage carries that flag here automatically — one login covers
 // every team.
 (function(){
-if(sessionStorage.getItem('ct_admin') === '1'){
+if(sessionStorage.getItem('ct_admin') === '1' || sessionStorage.getItem('ct_admin_eltham') === '1'){
 window.__ADMIN_BYPASS__ = true;
 }
 })();
