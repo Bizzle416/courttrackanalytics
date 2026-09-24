@@ -1,6 +1,6 @@
-
 *.bak
-
-patch*.py
-
 *.preview
+*.py
+supabase/
+.env
+.env.*
