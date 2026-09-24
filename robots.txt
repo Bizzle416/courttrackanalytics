@@ -8,10 +8,10 @@ Allow: /
 Disallow: /dv-121/
 Disallow: /eltham-121/
 Disallow: /eltham-122/
-Disallow: /darebin-121/
 
 # Internal pages
 Disallow: /admin/
+Disallow: /admin-eltham/
 Disallow: /submit/
 Disallow: /analytics/
 
