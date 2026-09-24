@@ -100,7 +100,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
     <div class="page-inner">
       <p class="kicker">Legal</p>
       <h1>Privacy Statement</h1>
-      <p class="updated">Last updated: 9 August 2026</p>
+      <p class="updated">Last updated: 24 September 2026</p>
 
       <div class="prose">
         <p>CourtTrack Analytics ("CourtTrack", "we", "us") provides basketball analytics packs to junior basketball clubs, coaches, and families. This statement explains what information we collect, how we use it, and how we protect it.</p>
@@ -125,7 +125,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
             <li>Game date, opponent, and result</li>
             <li>A link to game footage (hosted by you on a platform of your choosing — Google Drive, YouTube, Dropbox, etc.)</li>
             <li>Any notes you choose to include (e.g. player numbers, matchup information)</li>
-            <li>Payment and package status, recorded manually against your club/team record</li>
+            <li>Payment and package status for your club or team</li>
           </ul>
 
           <p class="sub-label">About players, as part of the analytics service itself:</p>
@@ -133,6 +133,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
             <li>Player names and jersey numbers, as provided by the club/coach or visible in game footage</li>
             <li>In-game statistics (points, rebounds, assists, shooting locations, minutes played, and similar performance data)</li>
             <li>Team results and season records</li>
+            <li>A CourtTrack player identifier, so that a player's statistics can continue to build across the teams and seasons in which their team uses CourtTrack (for example, when a player moves to a new team the following season)</li>
           </ul>
 
           <p>This player and performance data is compiled by CourtTrack directly from game footage and public competition results, at the direction of the coach or club engaging our service. We do not collect this information directly from children, and we do not require players themselves to provide any information to us.</p>
@@ -144,8 +145,19 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
           <p class="sub-label">Access credentials:</p>
           <p>Coach and family dashboards are protected by a passcode issued to your club or family group, not by an individual account or login. We do not collect usernames, passwords, or other account credentials tied to an individual person.</p>
 
+          <p class="sub-label">How the dashboards are used:</p>
+          <p>To understand which parts of the coach and family dashboards are useful, we record how they are used. For each dashboard visit this includes:</p>
+          <ul class="prose-list">
+            <li>Which team dashboard was opened, and whether it was the coach or family view</li>
+            <li>Whether an access code was entered successfully or unsuccessfully (never the code itself)</li>
+            <li>Which sections and tabs were viewed, which player panel was opened (recorded by jersey number, not name), which game was expanded, and which filters were applied</li>
+            <li>How long each section was viewed, and the general type of device (mobile, tablet or desktop)</li>
+            <li>A random visit identifier that lasts only until the browser tab is closed</li>
+          </ul>
+          <p>These usage records do not include names, access codes or IP addresses, and they are not used to identify or profile any individual. We also use Cloudflare Web Analytics to count page visits in aggregate (for example, visits per page, general location by country, and device type). Cloudflare Web Analytics does not use cookies.</p>
+
           <p class="sub-label">What we don't collect:</p>
-          <p>We don't currently use tracking cookies, analytics scripts, or advertising trackers on courttrackanalytics.com.au. If this changes — for example, if we introduce aggregate, non-identifying usage analytics to understand how clubs use their dashboards — we will update this statement before doing so.</p>
+          <p>We don't use cookies for tracking, and we don't use advertising trackers or sell usage information. Usage records are used to improve CourtTrack. We may share overall totals with your club (for example, how many times the team's dashboards were opened), but never records about an individual visit, and never with advertisers or other third parties.</p>
         </div>
       </div>
 
@@ -158,7 +170,8 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
             <li>Operate team dashboards showing season and player statistics</li>
             <li>Confirm receipt of submitted game footage and communicate about turnaround</li>
             <li>Manage billing and package status for your club or team</li>
-            <li>Improve the accuracy and usefulness of our analytics service over time</li>
+            <li>Improve the accuracy and usefulness of our analytics service over time, including by understanding which parts of the dashboards are used</li>
+            <li>Keep a player's statistics together across teams and seasons when their team uses CourtTrack</li>
           </ul>
           <p>We do not use player or family information for advertising, and we do not sell, rent, or trade any information to third parties.</p>
         </div>
@@ -169,14 +182,15 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
         <div class="prose">
           <p>We use the following third-party services to operate CourtTrack Analytics. Each only receives the information necessary to perform its function:</p>
           <ul class="prose-list">
-            <li><strong style="color:var(--chalk);">Supabase</strong> — hosts the database that powers team dashboards (game statistics, footage submission records)</li>
+            <li><strong style="color:var(--chalk);">Supabase</strong> — hosts the database that powers team dashboards (game statistics, footage submission records, dashboard usage records)</li>
             <li><strong style="color:var(--chalk);">EmailJS</strong> — sends confirmation emails related to footage submissions</li>
             <li><strong style="color:var(--chalk);">GitHub Pages</strong> — hosts the public website and dashboards</li>
+            <li><strong style="color:var(--chalk);">Cloudflare</strong> — Cloudflare Web Analytics counts page visits in aggregate, without cookies</li>
             <li><strong style="color:var(--chalk);">GoDaddy</strong> — manages our domain registration</li>
           </ul>
           <p>We do not host game footage ourselves. When you submit a footage link, the video remains hosted on the platform you chose (e.g. Google Drive, YouTube), and you control the sharing permissions on that platform.</p>
           <div class="callout">
-            <p><strong style="color:var(--chalk);">Overseas storage and processing:</strong> Some of the providers listed above (including Supabase, EmailJS, and GitHub Pages) may store or process data on servers located outside Australia, as a standard feature of how those services operate. Where a provider stores or processes data overseas, we take reasonable steps to satisfy ourselves that the provider maintains privacy and security standards comparable to those expected under Australian law, including safeguards such as encryption, access controls, and contractual confidentiality commitments. We do not otherwise share player, coach, or family information with any organisation beyond the providers listed above.</p>
+            <p><strong style="color:var(--chalk);">Overseas storage and processing:</strong> Some of the providers listed above (including Supabase, EmailJS, GitHub Pages and Cloudflare) may store or process data on servers located outside Australia, as a standard feature of how those services operate. Where a provider stores or processes data overseas, we take reasonable steps to satisfy ourselves that the provider maintains privacy and security standards comparable to those expected under Australian law, including safeguards such as encryption, access controls, and contractual confidentiality commitments. We do not otherwise share player, coach, or family information with any organisation beyond the providers listed above.</p>
           </div>
         </div>
       </div>
@@ -206,6 +220,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0 34px;}
         <h2 class="section-title"><span class="section-num">7.</span>How long we keep information</h2>
         <div class="prose">
           <p>We retain game footage submission records, analytics data, and season history for as long as your team is an active client, and for a further period of up to 3 years afterward as a historical record (for example, where a club wants access to prior seasons, or where data supports club history). Where information relates to a player under 18, we apply the same retention approach rather than an extended child-specific period, because our records are compiled from footage and competition results rather than from health or treatment information. If you'd like your team's data removed sooner, contact us and we'll action it, except where we are required to keep it for a longer period by law.</p>
+          <p>A player's CourtTrack identifier and statistics history are kept while the player is on any team using CourtTrack, and for up to 3 years after the last season in which they were tracked, on the same basis as above. Dashboard usage records are kept for up to 2 years and then deleted.</p>
         </div>
       </div>
 
