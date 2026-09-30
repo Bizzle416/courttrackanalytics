@@ -144,7 +144,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <div class="wrap">
   <div class="page-hero">
     <h1>Simple, transparent pricing</h1>
-    <p>First game free. No lock-in contracts. <span>Pay per game or save with a VJBL pack — add domestic games and tournaments any time.</span></p>
+    <p>First game free. No lock-in contracts. <span>Pay per game or save with a VJBL pack.</span></p>
   </div>
 
   <!-- TOGGLE -->
@@ -232,7 +232,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   <p class="asterisk-note">15-game packs and the VJBL season pass cover VJBL games: grading, regular season and finals. The VJBL season pass covers grading and all 18 regular-season rounds, with finals included at no extra cost.</p>
 
   <!-- ADD-ONS: DOMESTIC & TOURNAMENTS -->
-  <div class="compare" id="addons">
+  <div class="compare" id="addons" style="display:none"><!-- ADD-ONS HIDDEN until tracker multi-format ships: delete style="display:none" to show -->
     <h2>Domestic &amp; tournament add-ons</h2>
     <p style="color:var(--muted);font-size:15px;margin:-8px 0 20px;line-height:1.6;">Every plan covers VJBL games. Domestic games and tournaments are optional add-ons for any game where filming has taken place — add them whenever your team plays them.</p>
     <div class="table-wrap">
@@ -400,10 +400,11 @@ function setMode(mode, e) {
         <option value="vjbl_season">VJBL season pass (finals included)</option>
       </select>
 
-      <!-- ADD-ON INTEREST -->
+      <!-- ADD-ON INTEREST (hidden until add-ons launch) --><div style="display:none">
       <label style="display:block; margin-top:18px; font-weight:600; color:#1a1a2e;">Optional add-ons <span style="font-weight:400;color:#666;">(tick any your team may play — charged only when footage is submitted)</span></label>
       <label style="display:flex; gap:8px; align-items:center; margin-top:6px; color:#1a1a2e; font-size:14px;"><input type="checkbox" id="psAddonDomestic"> Domestic games</label>
       <label style="display:flex; gap:8px; align-items:center; margin-top:6px; color:#1a1a2e; font-size:14px;"><input type="checkbox" id="psAddonTournament"> Tournaments</label>
+      </div>
 
       <!-- PROMO CODE -->
       <div class="promo-section">
