@@ -64,7 +64,7 @@ footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size
 <div class="box">
 <div class="kicker">Team access</div>
 <h1>Enter your<br>access code</h1>
-<p class="sub">Your access code was sent to you by your team manager. Enter it below to view your dashboard.</p>
+<p class="sub">Your access code is issued directly by CourtTrack Analytics. Enter it below to view your dashboard.</p>
 <div class="field-wrap">
 <input class="code-input" id="code" type="password" placeholder="Enter your access code" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" oninput="clearError()" onkeydown="if(event.key==='Enter')tryLogin()">
 <button class="toggle-vis" onclick="toggleVis()" aria-label="Show/hide code" tabindex="-1">
@@ -74,7 +74,7 @@ footer{padding:20px 24px;text-align:center;font-family:'IBM Plex Mono';font-size
 <div class="error-msg" id="err"></div>
 <button class="login-btn" id="login-btn" onclick="tryLogin()">Access dashboard →</button>
 <div class="divider"><span>need help?</span></div>
-<p class="help">Contact your team manager or reach us at<br><a href="mailto:enquiries@courttrackanalytics.com.au">enquiries@courttrackanalytics.com.au</a></p>
+<p class="help">Haven't received your code? Reach us at<br><a href="mailto:enquiries@courttrackanalytics.com.au">enquiries@courttrackanalytics.com.au</a></p>
 <p class="trial-link">Not a member yet? <a href="/free-trial">Start a free trial →</a></p>
 </div>
 </main>
@@ -146,5 +146,7 @@ function toggleVis(){
   inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 </script>
+<!-- Cloudflare Web Analytics (cookieless page counts) -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5f7221fcad5d40dfba7194728746bf76"}'></script>
 </body>
 </html>

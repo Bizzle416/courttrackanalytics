@@ -1,18 +1,20 @@
 # CourtTrack Analytics — courttrackanalytics.com.au
-# Last updated: 2026-08-24
+# Last updated: 2026-09-29
 
 User-agent: *
 Allow: /
 
-# Team dashboards (passcode-gated, not for indexing)
+# Team dashboards also carry <meta name="robots" content="noindex">.
+# Legacy/demo team folders (remove each line once that folder is archived):
 Disallow: /dv-121/
 Disallow: /eltham-121/
 Disallow: /eltham-122/
+Disallow: /bulleen-124/
+Disallow: /darebin-121/
 
 # Internal pages
 Disallow: /admin/
 Disallow: /admin-eltham/
 Disallow: /submit/
-Disallow: /analytics/
 
 Sitemap: https://courttrackanalytics.com.au/sitemap.xml

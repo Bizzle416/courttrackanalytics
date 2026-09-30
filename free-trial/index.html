@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="description" content="Get your first game analysed free — delivered as a full Team+ analytics pack. No commitment.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Trial — CourtTrack Analytics</title>
 <style>
@@ -41,6 +42,8 @@ h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px)
 .grp input::placeholder,.grp textarea::placeholder{color:var(--faint);}
 .grp input:focus,.grp textarea:focus{border-color:var(--maple);}
 .grp input:invalid:not(:placeholder-shown){border-color:var(--err);}
+/* date/time inputs have no placeholder, so only flag them after the user has touched them */
+.grp input[type=date]:invalid:not(:focus):not(.touched),.grp input[type=time]:invalid:not(:focus):not(.touched){border-color:rgba(255,255,255,.12);}
 .link-box{background:rgba(217,160,91,.06);border:1px solid rgba(217,160,91,.25);border-radius:8px;padding:24px;}
 .link-box .lb-title{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--maple);margin-bottom:8px;}
 .link-box .lb-note{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.55;}
@@ -76,11 +79,11 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <div class="wrap">
   <div class="kicker">No commitment · One game · Full pack</div>
   <h1>Start your<br>free trial</h1>
-  <p class="intro">Send us one game and we'll deliver a <strong>complete post-game analytics pack</strong> — playing time, shot charts, season trends and written player notes — at no cost. If you love it, we'll talk about covering your season.</p>
+  <p class="intro">Send us one game and we'll deliver a <strong>complete post-game analytics pack</strong> — playing time, shot charts, rotations, opposition breakdown and written player notes — at no cost. Your free game is delivered as a full Team+ pack, so you can see everything before choosing a plan. If you love it, we'll talk about a package that's right for you.</p>
 
   <div class="promise">
     <div class="promise-item"><div class="pi-label">What you send</div><p>A shareable link to your game footage. Any platform, any format.</p></div>
-    <div class="promise-item"><div class="pi-label">What you get</div><p>Full analytics pack for coaches + a family view for every player.</p></div>
+    <div class="promise-item"><div class="pi-label">What you get</div><p>A full Team+ pack: the coach dashboard plus a player view for every player.</p></div>
   </div>
 
   <form class="form" id="trialForm" onsubmit="handleTrial(event)">
@@ -95,10 +98,45 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="grp"><label>Which plan are you interested in?</label>
       <select id="t-package" required>
         <option value="">Select a plan...</option>
-        <option value="Player">Player — family view only</option>
-        <option value="Team">Team — coach + all families</option>
+        <option value="Player">Player — player view only</option>
+        <option value="Team">Team — coach + every player view</option>
         <option value="Team+">Team+ — full service, written notes</option>
         <option value="Not sure yet">Not sure yet</option>
+      </select>
+    </div>
+
+    <div class="divider">game details</div>
+
+    <div class="form-row">
+      <div class="grp"><label>Competition</label>
+        <select id="t-comp" required onchange="document.getElementById('t-event-grp').style.display=this.value==='tournament'?'block':'none';document.getElementById('t-event').required=this.value==='tournament';">
+          <option value="vjbl" selected>VJBL</option>
+          <option value="domestic">Domestic</option>
+          <option value="tournament">Tournament</option>
+        </select>
+      </div>
+      <div class="grp" id="t-event-grp" style="display:none;"><label>Tournament name</label><input type="text" id="t-event" placeholder="e.g. Kilsyth Cobras Classic"></div>
+    </div>
+    <div class="form-row">
+      <div class="grp"><label>Game date</label><input type="date" id="t-date" required onblur="this.classList.add('touched')"></div>
+      <div class="grp"><label>Game time <span class="hint">Tip-off</span></label><input type="time" id="t-time" required onblur="this.classList.add('touched')"></div>
+    </div>
+    <div class="grp"><label>Opposition</label><input type="text" id="t-opp" placeholder="e.g. Diamond Valley U12 Girls 1" required></div>
+    <div class="form-row">
+      <div class="grp"><label>Game format</label>
+        <select id="t-periods" required>
+          <option value="4" selected>4 quarters</option>
+          <option value="2">2 halves</option>
+        </select>
+      </div>
+      <div class="grp"><label>Minutes per quarter / half</label><input type="number" id="t-period-mins" min="1" max="40" step="1" placeholder="e.g. 10" required></div>
+    </div>
+    <div class="grp"><label>Clock</label>
+      <select id="t-clock" required>
+        <option value="">Select...</option>
+        <option value="stop">Stop clock</option>
+        <option value="running">Running clock</option>
+        <option value="unsure">Not sure</option>
       </select>
     </div>
 
@@ -110,7 +148,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
       <div class="grp"><input type="url" id="t-link" placeholder="https://drive.google.com/file/..." required></div>
     </div>
 
-    <div class="grp"><label>Notes <span class="hint">Optional — game date, opposition, player numbers, anything useful</span></label><textarea id="t-notes" rows="3" placeholder="e.g. Round 4 vs Diamond Valley, 12 Jul. #10 is our point guard..."></textarea></div>
+    <div class="grp"><label>Notes <span class="hint">Optional — player numbers, key matchups, anything useful</span></label><textarea id="t-notes" rows="3" placeholder="e.g. #10 is our point guard, #4 missed the second half..."></textarea></div>
 
     <!-- honeypot: real users never see or fill this -->
     <div style="position:absolute;left:-9999px;" aria-hidden="true">
@@ -152,7 +190,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
 const EMAILJS_TEMPLATE_ID = 'template_c8242oc';
-const TC_VERSION = '2026-08-09-v1';
+const TC_VERSION = '2026-09-29-v2';
 // --------------------------------------------------
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -185,6 +223,9 @@ async function handleTrial(e){
   const club = v('t-club'), team = v('t-team'), name = v('t-name'),
         email = v('t-email'), link = v('t-link'), notes = v('t-notes'),
         pkg = v('t-package');
+  const comp = v('t-comp'), eventName = v('t-event'), gameDate = v('t-date'),
+        gameTime = v('t-time'), opp = v('t-opp'), periods = parseInt(v('t-periods'), 10),
+        periodMins = parseFloat(v('t-period-mins')), clock = v('t-clock');
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -201,6 +242,14 @@ async function handleTrial(e){
         footage_link: link,
         notes: notes || null,
         package_interest: pkg,
+        competition: comp,
+        event_name: comp === 'tournament' ? eventName : null,
+        game_date: gameDate,
+        game_time: gameTime,
+        opposition: opp,
+        period_count: periods,
+        period_mins: periodMins,
+        clock_mode: clock,
         tc_accepted: true,
         tc_version: TC_VERSION,
         tc_accepted_at: new Date().toISOString()
@@ -233,16 +282,18 @@ async function handleTrial(e){
           contact_name: name,
           club_name: club,
           team_name: team,
-          package_interest: pkg
+          package_interest: pkg,
+          competition: comp === 'tournament' ? `Tournament — ${eventName}` : (comp === 'domestic' ? 'Domestic' : 'VJBL'),
+          game_date: gameDate,
+          game_time: gameTime,
+          opposition: opp
         });
       } catch (emailErr) {
         console.error('Confirmation email failed (submission still saved):', emailErr);
       }
     }
 
-    const pkgLine = pkg && pkg !== 'Not sure yet'
-      ? ` We'll set you up with the ${pkg} plan for your trial game.`
-      : ' We\'ll help you find the right plan once we see your footage.';
+    const pkgLine = ' Your free game comes as a full Team+ pack, so you can see everything before choosing a plan.';
     successEl.textContent = `✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll be in touch to talk through your footage.${pkgLine}`;
     successEl.classList.add('show');
     document.getElementById('trialForm').reset();
@@ -255,5 +306,7 @@ async function handleTrial(e){
   }
 }
 </script>
+<!-- Cloudflare Web Analytics (cookieless page counts) -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5f7221fcad5d40dfba7194728746bf76"}'></script>
 </body>
 </html>

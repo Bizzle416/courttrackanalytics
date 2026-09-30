@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="description" content="Per game, 15-game pack or VJBL season pass for Player, Team and Team+ — plus domestic and tournament add-ons. First game free.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — CourtTrack Analytics</title>
 <style>
@@ -143,7 +144,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <div class="wrap">
   <div class="page-hero">
     <h1>Simple, transparent pricing</h1>
-    <p>First game free. No lock-in contracts. <span>Pay per game or save with a season pass.</span></p>
+    <p>First game free. No lock-in contracts. <span>Pay per game or save with a VJBL pack — add domestic games and tournaments any time.</span></p>
   </div>
 
   <!-- TOGGLE -->
@@ -151,7 +152,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="toggle">
       <button class="tog-btn active" onclick="setMode('game', event)">Per Game</button>
       <button class="tog-btn" onclick="setMode('games15', event)">15 Games</button>
-      <button class="tog-btn" onclick="setMode('season', event)">Season</button>
+      <button class="tog-btn" onclick="setMode('season', event)">VJBL Season</button>
     </div>
   </div>
 
@@ -161,10 +162,10 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <!-- PLAYER -->
     <div class="price-card">
       <div class="tier-name">Player</div>
-      <div class="tier-desc">Your player's stats, shot chart and minutes — every game, delivered to your family.</div>
+      <div class="tier-desc">Your player's stats, shot chart and minutes — every game, in their own player view.</div>
       <div class="price-block">
         <div class="price-amount" id="p1-price">$15</div>
-        <div class="price-per" id="p1-per">per game · family view only</div>
+        <div class="price-per" id="p1-per">per game · player view only</div>
       </div>
       <ul class="features">
         <li>Player minutes &amp; playing time</li>
@@ -187,10 +188,10 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     <div class="price-card featured">
       <div class="badge">Most popular</div>
       <div class="tier-name">Team</div>
-      <div class="tier-desc">Full coach dashboard plus every player's family view — the complete team package.</div>
+      <div class="tier-desc">Full coach dashboard plus a player view for every player — the complete team package.</div>
       <div class="price-block">
         <div class="price-amount" id="p2-price">$49</div>
-        <div class="price-per" id="p2-per">per game · coach + all families</div>
+        <div class="price-per" id="p2-per">per game · coach + every player view</div>
       </div>
       <ul class="features">
         <li>Player minutes &amp; playing time</li>
@@ -225,9 +226,29 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
     </div>
 
   </div>
-  <p class="price-note">All prices in AUD · GST inclusive</p>
+  <p class="price-note">All prices in AUD · CourtTrack Analytics is not registered for GST, so no GST is charged</p>
   <p class="trial-note">Not ready to commit? <a href="/free-trial">Start with a free game →</a></p>
   <p class="asterisk-note">* Season stats &amp; trends unlock across multiple game purchases — the more games logged, the richer your data.</p>
+  <p class="asterisk-note">15-game packs and the VJBL season pass cover VJBL games: grading, regular season and finals. The VJBL season pass covers grading and all 18 regular-season rounds, with finals included at no extra cost.</p>
+
+  <!-- ADD-ONS: DOMESTIC & TOURNAMENTS -->
+  <div class="compare" id="addons">
+    <h2>Domestic &amp; tournament add-ons</h2>
+    <p style="color:var(--muted);font-size:15px;margin:-8px 0 20px;line-height:1.6;">Every plan covers VJBL games. Domestic games and tournaments are optional add-ons for any game where filming has taken place — add them whenever your team plays them.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Add-on</th><th>Player</th><th>Team</th><th>Team+</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Domestic game — per game</td><td id="ad-dom-1">$15</td><td id="ad-dom-2">$49</td><td id="ad-dom-3">$79</td></tr>
+          <tr><td>Domestic game — with a 15-game pack or VJBL season pass</td><td id="ad-domp-1">$12</td><td id="ad-domp-2">$39</td><td id="ad-domp-3">$63</td></tr>
+          <tr><td>Tournament bundle — every game from one tournament (up to 6)</td><td id="ad-tour-1">$60</td><td id="ad-tour-2">$196</td><td id="ad-tour-3">$316</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="asterisk-note" style="text-align:left;">Tournament bundles are priced as 4 games. If your team plays fewer than 4 games at a tournament, you pay per game instead.</p>
+  </div>
 
   <!-- COMPARE TABLE -->
   <div class="compare">
@@ -260,7 +281,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   <!-- CTA -->
   <div class="cta-band">
     <h2>Not sure which plan?</h2>
-    <p>Start with a free game on any plan — no commitment, no contract. We'll help you figure out what fits your team.</p>
+    <p>Start with a free game, delivered as a full Team+ pack — no commitment, no contract. We'll help you figure out what fits your team.</p>
     <a class="btn" href="/free-trial">Start free trial →</a>
   </div>
 </div>
@@ -273,23 +294,29 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 const prices = {
   game: {
     p1: { amount: '$15', per: 'per game · player view only' },
-    p2: { amount: '$49', per: 'per game · coach + all players' },
+    p2: { amount: '$49', per: 'per game · coach + every player view' },
     p3: { amount: '$79', per: 'per game · full service' }
   },
+  /* 15 VJBL games at 20% off the per-game price */
   games15: {
-    p1: { amount: '$180', per: '15 games · save 20% vs per game' },
-    p2: { amount: '$588', per: '15 games · save 20% vs per game' },
-    p3: { amount: '$948', per: '15 games · save 20% vs per game' }
+    p1: { amount: '$180', per: '15 VJBL games · save 20% vs per game' },
+    p2: { amount: '$588', per: '15 VJBL games · save 20% vs per game' },
+    p3: { amount: '$948', per: '15 VJBL games · save 20% vs per game' }
   },
+  /* VJBL season pass: priced as 26 games (grading + 18 rounds) at ~25% off,
+     finals included free. Confirmed 29 Sep 2026. If changed, also update the
+     FAQ cost answer and the /26 refund wording in terms section 7. */
   season: {
-    p1: { amount: '$225', per: 'full season · best value' },
-    p2: { amount: '$735', per: 'full season · best value' },
-    p3: { amount: '$1,185', per: 'full season · best value' }
+    p1: { amount: '$295', per: 'full VJBL season · finals included · best value' },
+    p2: { amount: '$955', per: 'full VJBL season · finals included · best value' },
+    p3: { amount: '$1,540', per: 'full VJBL season · finals included · best value' }
   }
 };
+let currentPriceMode = 'game';
 
 function setMode(mode, e) {
   const d = prices[mode];
+  currentPriceMode = mode;
   document.getElementById('p1-price').textContent = d.p1.amount;
   document.getElementById('p1-per').textContent = d.p1.per;
   document.getElementById('p2-price').textContent = d.p2.amount;
@@ -365,6 +392,19 @@ function setMode(mode, e) {
         <button type="button" onclick="addRosterRow()" style="margin-top:8px; padding:6px 12px; cursor:pointer; color:#1a1a2e; background:#f4f4f4; border:1px solid #ccc; border-radius:4px;">+ Add player</button>
       </div>
 
+      <!-- PACKAGE OPTION (VJBL) -->
+      <label style="display:block; margin-top:18px; font-weight:600; color:#1a1a2e;">Package option (VJBL games)</label>
+      <select id="psPassType" style="width:100%; padding:8px; margin-top:4px; box-sizing:border-box; color:#1a1a2e; background:#fff;">
+        <option value="per_game">Per game</option>
+        <option value="games15">15 VJBL games</option>
+        <option value="vjbl_season">VJBL season pass (finals included)</option>
+      </select>
+
+      <!-- ADD-ON INTEREST -->
+      <label style="display:block; margin-top:18px; font-weight:600; color:#1a1a2e;">Optional add-ons <span style="font-weight:400;color:#666;">(tick any your team may play — charged only when footage is submitted)</span></label>
+      <label style="display:flex; gap:8px; align-items:center; margin-top:6px; color:#1a1a2e; font-size:14px;"><input type="checkbox" id="psAddonDomestic"> Domestic games</label>
+      <label style="display:flex; gap:8px; align-items:center; margin-top:6px; color:#1a1a2e; font-size:14px;"><input type="checkbox" id="psAddonTournament"> Tournaments</label>
+
       <!-- PROMO CODE -->
       <div class="promo-section">
         <label class="promo-label" for="psPromoInput">Promo code <span>(optional)</span></label>
@@ -415,7 +455,7 @@ const PS_EMAILJS_TEMPLATE_ID = 'template_2jbxgqs'; // internal alert template, c
 const PS_NOTIFY_EMAIL = 'enquiries@courttrackanalytics.com.au'; // where the invoicing alert goes
 
 const psClient = supabase.createClient(PS_SUPABASE_URL, PS_SUPABASE_ANON_KEY);
-const TC_VERSION = '2026-08-09-v1';
+const TC_VERSION = '2026-09-29-v2';
 emailjs.init(PS_EMAILJS_PUBLIC_KEY);
 
 let psRosterCount = 0;
@@ -447,6 +487,10 @@ function openSignupForm(packageType) {
   psRosterCount = 0;
 
   if (isTeamType) addRosterRow(); // start with one row, still optional to fill
+
+  // Pre-select the package option from the pricing tab the visitor was viewing
+  const passMap = { game: 'per_game', games15: 'games15', season: 'vjbl_season' };
+  document.getElementById('psPassType').value = passMap[currentPriceMode] || 'per_game';
 
   clearPromoCode();
   document.getElementById('psOverlay').style.display = 'flex';
@@ -497,7 +541,12 @@ async function handleSignupSubmit(event) {
   const isTeamType = packageType === 'team' || packageType === 'team_plus';
 
   const signupId = psGenerateId();
-  let insertPayload = { id: signupId, package_type: packageType, team_key: null };
+  let insertPayload = {
+    id: signupId, package_type: packageType, team_key: null,
+    pass_type: document.getElementById('psPassType').value,
+    addon_domestic: document.getElementById('psAddonDomestic').checked,
+    addon_tournament: document.getElementById('psAddonTournament').checked
+  };
   let rosterRows = [];
 
   if (packageType === 'player') {
@@ -713,6 +762,10 @@ function clearPromoCode() {
 
 function buildSummaryText(packageType, payload, rosterRows) {
   const timestamp = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' });
+  const passLabels = { per_game: 'Per game', games15: '15 VJBL games', vjbl_season: 'VJBL season pass' };
+  const addons = [payload.addon_domestic ? 'Domestic' : null, payload.addon_tournament ? 'Tournaments' : null].filter(Boolean);
+  const optionLines = `- Package Option: ${passLabels[payload.pass_type] || payload.pass_type}
+- Add-on Interest: ${addons.length ? addons.join(', ') : 'None'}`;
 
   const promoSummary = validatedPromo
     ? (validatedPromo.discount_type === 'percentage'
@@ -726,6 +779,7 @@ function buildSummaryText(packageType, payload, rosterRows) {
 A new package signup has been received. Here are the details:
 
 - Package: Player
+${optionLines}
 - Player Name: ${payload.player_name}
 - Club: ${payload.player_club}
 - Team Name: ${payload.player_team_name}
@@ -745,6 +799,7 @@ A new package signup has been received. Here are the details:
 A new package signup has been received. Here are the details:
 
 - Package: ${packageLabels[packageType] || packageType}
+${optionLines}
 - Club: ${payload.team_club}
 - Team: ${payload.team_name}
 - Coach Email: ${payload.coach_email}
@@ -756,5 +811,7 @@ ${rosterLines}
 </script>
 
 
+<!-- Cloudflare Web Analytics (cookieless page counts) -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5f7221fcad5d40dfba7194728746bf76"}'></script>
 </body>
 </html>
