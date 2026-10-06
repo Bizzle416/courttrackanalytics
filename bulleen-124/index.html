@@ -1,37 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Dashboard closed | CourtTrack Analytics</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<title>Season finished — CourtTrack Analytics</title>
 <style>
-:root{--navy:#101d31;--gold:#d9a05b;--ink:#344152;--muted:#7c8698;--line:#e8e6e1;}
-*{box-sizing:border-box;}
-html,body{height:100%;margin:0;}
-body{background:var(--navy);display:flex;align-items:center;justify-content:center;padding:24px;
-  font-family:'Inter',-apple-system,'Segoe UI',sans-serif;}
-.card{background:#fff;border-radius:14px;padding:40px 32px;max-width:400px;width:100%;text-align:center;}
-.logo{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:24px;color:var(--navy);margin-bottom:20px;}
-.logo span{color:var(--gold);}
-h1{font-size:19px;color:var(--navy);margin:0 0 10px;font-weight:600;}
-p{font-size:14px;line-height:1.55;color:var(--ink);margin:0 0 24px;}
-a.btn{display:inline-block;padding:12px 22px;border-radius:8px;background:var(--navy);color:#fff;
-  text-decoration:none;font-size:14px;font-weight:600;}
-a.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
-.small{margin-top:18px;font-size:12px;color:var(--muted);}
-.small a{color:var(--muted);}
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+:root{--navy:#0d1a2b;--navy2:#132540;--chalk:#f1eee6;--muted:#8fa0b8;--faint:#5c6e88;--maple:#d9a05b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy);color:var(--chalk);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+header{border-bottom:1px solid rgba(255,255,255,.07);}
+.hd{max-width:1100px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;}
+.logo{font-family:'Barlow Condensed';font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;}
+.logo span{color:var(--maple);}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px;}
+.card{max-width:560px;background:var(--navy2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:40px 36px;}
+.kicker{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:14px;}
+h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(30px,6vw,42px);line-height:1.05;text-transform:uppercase;margin-bottom:16px;}
+p{color:var(--muted);font-size:15.5px;line-height:1.7;margin-bottom:14px;}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
+.btn{font-size:14px;font-weight:600;padding:10px 18px;border-radius:8px;}
+.btn.primary{background:var(--maple);color:var(--navy);}
+.btn.ghost{border:1px solid rgba(255,255,255,.18);}
+footer{font-family:'IBM Plex Mono';font-size:11px;color:var(--faint);text-align:center;padding:20px;}
 </style>
 </head>
 <body>
-<main class="card">
-  <div class="logo">Court<span>Track</span></div>
-  <h1>This dashboard is closed</h1>
-  <p>Bulleen 12.4 analytics were available for the 2026 season, which has now finished. Access has been closed ahead of the new season.</p>
-  <a class="btn" href="/">Go to CourtTrack Analytics</a>
-  <div class="small">Questions? Contact us via <a href="https://www.instagram.com/courttrack">@courttrack</a>.</div>
+<header><div class="hd"><a class="logo" href="/">Court<span>Track</span> Analytics</a></div></header>
+<main>
+  <div class="card">
+    <div class="kicker">2026 season</div>
+    <h1>This season has finished</h1>
+    <p>Thanks for being part of CourtTrack Analytics in 2026. This team's dashboard has been closed for the season and its data archived.</p>
+    <p>If you'd like your team covered next season, or need a copy of this season's information, get in touch.</p>
+    <div class="btns">
+      <a class="btn primary" href="mailto:enquiries@courttrackanalytics.com.au">Contact us</a>
+      <a class="btn ghost" href="/">CourtTrack home</a>
+    </div>
+  </div>
 </main>
+<footer>CourtTrack Analytics</footer>
+<script>
+/* clear any saved dashboard session for the archived team on this device */
+try{Object.keys(localStorage).forEach(function(k){if(/^courttrack_auth_|^ct_family|^ct_coach/.test(k))localStorage.removeItem(k);});}catch(e){}
+</script>
 </body>
 </html>
