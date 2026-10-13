@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="description" content="Get your first game analysed free — delivered as a full Team+ analytics pack. No commitment.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Free Trial — CourtTrack Analytics</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
@@ -19,6 +20,13 @@ nav{display:flex;align-items:center;gap:4px;}
 .nav-link{font-size:13.5px;font-weight:500;color:var(--muted);padding:8px 14px;border-radius:6px;transition:color .15s;}
 .nav-link:hover{color:var(--chalk);}
 .nav-link.active{color:var(--maple);}
+.nav-link.login{border:1px solid rgba(255,255,255,.15);color:var(--chalk);}
+.nav-link.cta{background:var(--maple);color:#0d1a2b;font-weight:600;margin-left:8px;padding:8px 18px;}
+.mob-menu{display:none;background:none;border:none;color:var(--chalk);cursor:pointer;padding:8px;}
+.mob-nav{display:none;flex-direction:column;background:var(--navy2);border-top:1px solid rgba(255,255,255,.07);padding:12px 24px 20px;}
+.mob-nav a{display:block;padding:11px 0;font-size:15px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05);}
+.mob-nav a.cta{color:var(--maple);font-weight:600;border:none;}
+@media(max-width:860px){nav{display:none;}.mob-menu{display:block;}.mob-nav.open{display:flex;}}
 .wrap{max-width:800px;margin:0 auto;padding:64px 24px 80px;}
 .kicker{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--maple);margin-bottom:14px;}
 h1{font-family:'Barlow Condensed';font-weight:700;font-size:clamp(40px,5vw,58px);text-transform:uppercase;line-height:1;margin-bottom:16px;}
@@ -67,12 +75,22 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   <div class="hd">
     <a class="logo" href="/">Court<span>Track</span> Analytics</a>
     <nav>
-      <a class="nav-link" href="/about">About</a>
-      <a class="nav-link" href="/pricing">Pricing</a>
-      <a class="nav-link" href="/faqs">FAQs</a>
-      <a class="nav-link" href="/login">Login</a>
-      <a class="nav-link active">Free Trial</a>
+      <a class="nav-link" href="/about/">About</a>
+      <a class="nav-link" href="/pricing/">Pricing</a>
+      <a class="nav-link" href="/faqs/">FAQs</a>
+      <a class="nav-link login" href="/login/">Login</a>
+      <a class="nav-link cta" href="/free-trial/" aria-current="page">Free Trial</a>
     </nav>
+    <button type="button" class="mob-menu" onclick="document.querySelector('.mob-nav').classList.toggle('open')" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/></svg>
+    </button>
+  </div>
+  <div class="mob-nav">
+    <a href="/about/">About</a>
+    <a href="/pricing/">Pricing</a>
+    <a href="/faqs/">FAQs</a>
+    <a href="/login/">Login</a>
+    <a href="/free-trial/" class="cta">Free Trial →</a>
   </div>
 </header>
 
@@ -162,6 +180,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
         <label for="t-tc" style="font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;line-height:1;">
           I have read and agree to the
           <a href="/terms/" target="_blank" style="color:var(--maple);text-decoration:underline;">Terms &amp; Conditions</a>
+          (see our <a href="/privacy/" target="_blank" style="color:var(--maple);text-decoration:underline;">Privacy Statement</a>)
         </label>
       </div>
       <div id="tc-error" style="display:none;font-family:'IBM Plex Mono';font-size:11px;color:var(--err);letter-spacing:.08em;text-transform:uppercase;margin-top:4px;">
@@ -176,7 +195,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
   </form>
 </div>
 
-<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia · <a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a>
+<footer>© 2026 CourtTrack Analytics · ABN registered · Victoria, Australia · <a href="/privacy/" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a> · <a href="/terms/" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Terms</a>
 <a class="ft-insta" href="https://instagram.com/courttrack" target="_blank" rel="noopener"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Follow @courttrack</a>
 </footer>
 
@@ -190,7 +209,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const EMAILJS_PUBLIC_KEY = 'FI23aXVHM5ZHDaACX';
 const EMAILJS_SERVICE_ID = 'service_nx9448n';
 const EMAILJS_TEMPLATE_ID = 'template_c8242oc';
-const TC_VERSION = '2026-09-29-v2';
+const TC_VERSION = '2026-10-14-v3';
 // --------------------------------------------------
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -231,10 +250,14 @@ async function handleTrial(e){
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
+  const trialId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16); });
+
   try {
     const { error: dbError } = await supabaseClient
       .from('trial_submissions')
       .insert({
+        id: trialId,
         club_name: club,
         team_name: team,
         contact_name: name,
@@ -267,6 +290,7 @@ async function handleTrial(e){
         club_name: club,
         team_name: team,
         source_table: 'trial_submissions',
+        source_id: trialId,
         user_agent: navigator.userAgent
       });
     } catch (tcLogErr) {
@@ -275,6 +299,7 @@ async function handleTrial(e){
 
     // Confirmation email is best-effort — a failure here should not make
     // the user think their submission failed, since it's already saved.
+    let emailSent = false;
     if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'REPLACE_EMAILJS_PUBLIC_KEY') {
       try {
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
@@ -288,15 +313,20 @@ async function handleTrial(e){
           game_time: gameTime,
           opposition: opp
         });
+        emailSent = true;
       } catch (emailErr) {
         console.error('Confirmation email failed (submission still saved):', emailErr);
       }
     }
 
     const pkgLine = ' Your free game comes as a full Team+ pack, so you can see everything before choosing a plan.';
-    successEl.textContent = `✓ Got it — your trial request is in. A confirmation is on its way to your inbox now, and we'll be in touch to talk through your footage.${pkgLine}`;
+    const emailLine = emailSent ? ' A confirmation is on its way to your inbox now, and we\'ll' : ' We\'ll';
+    successEl.textContent = `✓ Got it — your trial request is in.${emailLine} be in touch to talk through your footage.${pkgLine}`;
     successEl.classList.add('show');
     document.getElementById('trialForm').reset();
+    // reset() puts Competition back to VJBL but doesn't fire onchange — hide the tournament field again
+    document.getElementById('t-event-grp').style.display = 'none';
+    document.getElementById('t-event').required = false;
   } catch (err) {
     console.error('Trial submission failed:', err);
     errorEl.classList.add('show');

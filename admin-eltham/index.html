@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex, nofollow">
 <title>Eltham Coaching — CourtTrack Analytics</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
@@ -60,7 +62,7 @@ a.player-row:hover .player-name{color:var(--chalk);}
 
 <header>
   <div class="hd">
-    <a class="logo" href="/"><span>Court</span>Track Analytics</a>
+    <a class="logo" href="/">Court<span>Track</span> Analytics</a>
     <div class="admin-badge">Director of Coaching</div>
   </div>
 </header>
@@ -77,7 +79,7 @@ a.player-row:hover .player-name{color:var(--chalk);}
   <div class="notice" style="margin-top:0;"><strong>2025–26 season archived (6 Oct 2026).</strong> All 2025–26 team dashboards are closed and their data has been moved to the local archive. Teams for the new season will appear here once they are set up.</div>
 
   <div class="logout-row">
-    <button class="logout-btn" onclick="sessionStorage.removeItem('ct_admin_eltham');window.location.href='/login';">Log out</button>
+    <button type="button" class="logout-btn" onclick="sessionStorage.removeItem('ct_admin_eltham');window.location.href='/login/';">Log out</button>
   </div>
 
 </div>
@@ -85,7 +87,7 @@ a.player-row:hover .player-name{color:var(--chalk);}
 <script>
 // Gate: only accessible with the scoped Eltham admin session flag
 if (!sessionStorage.getItem('ct_admin_eltham') && !sessionStorage.getItem('ct_admin')) {
-  window.location.href = '/login';
+  window.location.href = '/login/';
 }
 </script>
 
