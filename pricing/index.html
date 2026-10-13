@@ -293,7 +293,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:24px;font-family:'IBM 
 <script>
 const prices = {
   game: {
-    p1: { amount: '$15', per: 'per game · one player's information' },
+    p1: { amount: '$15', per: "per game · one player's information" },
     p2: { amount: '$49', per: 'per game · coach + every player' },
     p3: { amount: '$79', per: 'per game · full service' }
   },
@@ -324,7 +324,7 @@ function setMode(mode, e) {
   document.getElementById('p3-price').textContent = d.p3.amount;
   document.getElementById('p3-per').textContent = d.p3.per;
   document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
+  (e.currentTarget || e.target).classList.add('active');
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
