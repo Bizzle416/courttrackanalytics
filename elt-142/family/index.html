@@ -1701,10 +1701,21 @@ function vPlayersParent(d){
   return h+'</div></div>';
 }
 
+/* Player on the roster but no game stats yet (pre-season, or hasn't taken the court yet).
+   Neutral wording: never mentions minutes or selection. */
+function playerEmptyState(d,pid,withBack){
+  if(!d.names||!d.names[pid])return'<div class="card">Player not found.</div>';
+  const name=pname(d.names,pid),num=pnum(d.names,pid);
+  let h=withBack?'<button class="back-btn" onclick="selPlayer=null;render();">← Pick a different player</button>':'';
+  h+='<div class="p-player-card"><div style="display:flex;align-items:baseline;gap:8px;"><span class="p-player-num">'+num+'</span><span class="p-player-name">'+name+'</span></div>';
+  h+='<div class="p-player-team">'+d.team.full+'</div></div>';
+  h+='<div class="card"><div class="sec-h">No stats recorded yet</div><div style="font-size:13px;color:var(--ink2);padding:4px 0;">Stats for '+name.split(' ')[0]+' will appear here automatically as each game is coded. Check back after the next game.</div></div>';
+  return h;
+}
 function playerPanelParent(d,pid){
   const allPlayers=seasonPlayers(d);
   const a=allPlayers.find(x=>x.pid===pid);
-  if(!a)return'<div class="card">Player not found.</div>';
+  if(!a)return playerEmptyState(d,pid,!ctFamLocked());
   const name=pname(d.names,pid);
   const num=pnum(d.names,pid);
   const minPG=a.gp>0?(a.min/a.gp).toFixed(1):'—';
@@ -1972,7 +1983,7 @@ function vProgressionParent(d){
   const pid=selPlayer;
   const allPlayers=seasonPlayers(d);
   const a=allPlayers.find(x=>x.pid===pid);
-  if(!a)return progressionPickerParent(d);
+  if(!a)return playerEmptyState(d,pid,!ctFamLocked());
   const name=pname(d.names,pid),num=pnum(d.names,pid);
   const gs=d.games;
   const gpInGs=gs.filter(g=>g.summary&&g.summary.minutes&&(g.summary.minutes[pid]||0)>0).length;
