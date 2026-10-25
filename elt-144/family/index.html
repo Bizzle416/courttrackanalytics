@@ -391,7 +391,17 @@ function viewLabel(viewId){
 
 /* stamp header */
 document.querySelector('.hd-logo').insertAdjacentHTML('afterend',
-  '<span class="mode-badge '+(IS_COACH?'coach':'parent')+'">'+(IS_COACH?'Coach view':'Your Player Information')+'</span>');
+  '<span id="mode-badge" class="mode-badge '+(IS_COACH?'coach':'parent')+'">'+(IS_COACH?'Coach view':'Your Player Information')+'</span>');
+/* Family code: badge shows the player's name (names only arrive from the server after unlock).
+   Coach/admin on the family page keep "Your Player Information". */
+function ctSetModeBadge(d){
+  try{
+    const el=document.getElementById('mode-badge');if(!el||IS_COACH)return;
+    const pid=(typeof FAMILY_UNLOCKED_PID!=='undefined')?FAMILY_UNLOCKED_PID:null;
+    const n=(pid!=null&&d&&d.names&&d.names[pid])?d.names[pid].name:'';
+    el.textContent=n||'Your Player Information';
+  }catch(e){}
+}
 /* Admin Hub link -- only shown to a browser tab that actually logged into
    /admin this session (sessionStorage flag set there). Regular coaches and
    families never see this; it never appears for them. */
@@ -2322,6 +2332,7 @@ async function render(reload){
   try{
     if(reload||!cache[curTeam])mainEl.innerHTML='<div class="loading">Loading season data&hellip;</div>';
     const d=await loadTeam(curTeam);
+    ctSetModeBadge(d);
     const t=d.team;
     let h='<div class="page-hd"><div class="page-hd-team">'+t.full+'</div><div class="page-hd-meta">'+t.comp+'  ·  '+d.games.length+' game'+(d.games.length===1?'':'s')+' synced</div></div>';
     h=subNavHtml()+h;
